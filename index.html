@@ -1,0 +1,2090 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Luchpuch — Soft Things, Warm Feelings</title>
+<meta name="description" content="Luchpuch — oversized tees, joggers, shorts & sleeveless tees, every design listed individually. Comfort you can live in, made for India.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"></noscript>
+<style>
+  :root{
+    --bg:#f7efe3; --bg-soft:#efe4d3; --paper:#fffaf2;
+    --ink:#3a2a20; --ink-dim:rgba(58,42,32,0.62);
+    --sage:#8fa274; --sage-dk:#6c7d54;
+    --blush:#e3a08f; --lav:#b7a6d9;
+    --charcoal:#211b16; --charcoal-2:#2c241d;
+    --line: rgba(58,42,32,0.14);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+  ::selection{background:var(--blush);color:var(--paper);}
+  h1,h2,h3,.display{font-family:'Fredoka',sans-serif;}
+  a{color:inherit;}
+  img{display:block;max-width:100%;}
+  button{font-family:'Inter',sans-serif;}
+  .wrap{max-width:1240px;margin:0 auto;padding:0 6vw;}
+
+  /* ---------- nav ---------- */
+  #nav{position:fixed;top:0;left:0;right:0;z-index:300;display:flex;align-items:center;justify-content:space-between;padding:16px 6vw;background:color-mix(in srgb, var(--bg) 78%, transparent);backdrop-filter:blur(14px);opacity:0;transform:translateY(-10px);pointer-events:none;transition:opacity .4s ease, transform .4s ease;border-bottom:1px solid transparent;}
+  #nav.on{opacity:1;transform:none;pointer-events:auto;border-color:var(--line);}
+  #nav .mark{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.02em;font-size:18px;cursor:pointer;background:none;border:none;color:var(--ink);}
+  #nav .mark span{color:var(--sage-dk);}
+  #nav .links{display:flex;gap:2.2vw;align-items:center;}
+  #nav .links a{font-size:13px;letter-spacing:.03em;text-decoration:none;color:var(--ink-dim);transition:color .2s;}
+  #nav .links a:hover{color:var(--ink);}
+  #nav .navcta{border:1.5px solid var(--ink);border-radius:100px;padding:9px 18px;font-size:12.5px;font-weight:600;text-decoration:none;white-space:nowrap;transition:background .25s,color .25s;background:none;cursor:pointer;color:var(--ink);display:flex;align-items:center;gap:8px;}
+  #nav .navcta:hover{background:var(--ink);color:var(--paper);}
+  #nav .navcta .count{background:var(--blush);color:var(--paper);border-radius:50%;width:18px;height:18px;font-size:10.5px;display:flex;align-items:center;justify-content:center;font-weight:700;}
+  @media (max-width:900px){ #nav .links a{display:none;} }
+
+  /* ---------- hero ---------- */
+  #hero{min-height:100vh;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:14vh 6vw 8vh;overflow:hidden;}
+  .doodle{position:absolute;font-size:38px;opacity:.85;animation:bob 6s ease-in-out infinite;user-select:none;filter:drop-shadow(0 6px 10px rgba(58,42,32,.12));}
+  .doodle.d1{top:16%;left:10%;animation-delay:0s;}
+  .doodle.d2{top:24%;right:12%;animation-delay:1.1s;font-size:30px;}
+  .doodle.d3{bottom:22%;left:15%;animation-delay:2s;font-size:26px;}
+  .doodle.d4{bottom:14%;right:9%;animation-delay:.6s;font-size:34px;}
+  .doodle.d5{top:52%;left:5%;animation-delay:2.6s;font-size:22px;}
+  .doodle.d6{top:48%;right:6%;animation-delay:1.6s;font-size:24px;}
+  @keyframes bob{0%,100%{transform:translateY(0) rotate(-4deg);}50%{transform:translateY(-18px) rotate(4deg);}}
+  #hero .logo-mark{width:96px;height:96px;border-radius:50%;border:2px solid var(--ink);display:flex;align-items:center;justify-content:center;margin-bottom:26px;position:relative;}
+  #hero .logo-mark span{font-family:'Fredoka';font-weight:600;font-size:34px;color:var(--ink);}
+  #hero .logo-mark .heart{position:absolute;top:6px;right:8px;color:var(--blush);font-size:16px;}
+  #hero h1{font-size:clamp(40px,8vw,104px);font-weight:600;letter-spacing:-0.02em;line-height:1.02;max-width:16ch;}
+  #hero h1 em{font-style:normal;color:var(--sage-dk);}
+  #hero p.sub{margin-top:22px;font-size:clamp(15px,1.6vw,19px);color:var(--ink-dim);max-width:46ch;line-height:1.65;}
+  #hero .cta-row{margin-top:38px;display:flex;gap:16px;flex-wrap:wrap;justify-content:center;}
+  .btn{display:inline-block;padding:14px 30px;border-radius:100px;font-weight:600;font-size:14.5px;text-decoration:none;letter-spacing:.01em;transition:transform .25s ease, box-shadow .25s ease, background .25s;border:none;cursor:pointer;}
+  .btn-solid{background:var(--ink);color:var(--paper);}
+  .btn-solid:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(58,42,32,.22);}
+  .btn-ghost{border:1.5px solid var(--ink);color:var(--ink);background:none;}
+  .btn-ghost:hover{background:var(--ink);color:var(--paper);}
+  #scrollcue{margin-top:64px;display:flex;flex-direction:column;align-items:center;gap:10px;color:var(--ink-dim);font-size:11px;letter-spacing:.3em;text-transform:uppercase;}
+  #scrollcue::after{content:"";width:1px;height:30px;background:linear-gradient(var(--sage-dk),transparent);animation:cue 1.8s ease-in-out infinite;}
+  @keyframes cue{0%,100%{transform:translateY(0);opacity:1;}50%{transform:translateY(8px);opacity:.35;}}
+
+  [data-reveal]{opacity:0;transform:translateY(28px);transition:opacity .8s cubic-bezier(.2,.6,.2,1), transform .8s cubic-bezier(.2,.6,.2,1);}
+  [data-reveal].in{opacity:1;transform:none;}
+
+  .sec{position:relative;padding:12vh 6vw;max-width:1300px;margin:0 auto;}
+  .kicker{font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--sage-dk);margin-bottom:16px;font-weight:600;}
+  .sec h2{font-size:clamp(30px,4.2vw,54px);font-weight:600;letter-spacing:-0.02em;line-height:1.06;}
+  .sec p.lead{color:var(--ink-dim);font-size:clamp(14.5px,1.25vw,17px);line-height:1.75;max-width:48ch;margin-top:16px;}
+
+  #manifesto{text-align:center;padding:16vh 6vw;}
+  #manifesto h2{font-size:clamp(34px,6.4vw,84px);max-width:18ch;margin:0 auto;}
+  #manifesto .brass{color:var(--sage-dk);}
+
+  #why .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-top:52px;}
+  .why-card{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:28px 22px;text-align:left;}
+  .why-card .ic{font-size:26px;margin-bottom:14px;}
+  .why-card h3{font-size:16px;font-weight:600;margin-bottom:8px;}
+  .why-card p{font-size:13.5px;color:var(--ink-dim);line-height:1.6;}
+  @media (max-width:900px){#why .grid{grid-template-columns:repeat(2,1fr);}}
+  @media (max-width:560px){#why .grid{grid-template-columns:1fr;}}
+
+  /* mood match */
+  #moodmatch{background:var(--charcoal);color:var(--paper);border-radius:28px;margin:6vh 6vw;padding:8vh 6vw;}
+  #moodmatch .kicker{color:var(--lav);}
+  #moodmatch h2{color:var(--paper);}
+  #moodmatch p.lead{color:rgba(255,250,242,.6);}
+  .mood-pills{display:flex;flex-wrap:wrap;gap:10px;margin-top:36px;}
+  .mood-pill{border:1px solid rgba(255,250,242,.28);color:rgba(255,250,242,.85);background:transparent;border-radius:100px;padding:9px 18px;font-size:13px;cursor:pointer;transition:.2s;}
+  .mood-pill:hover{border-color:var(--lav);color:var(--paper);}
+  .mood-pill.active{background:var(--lav);border-color:var(--lav);color:var(--charcoal);font-weight:600;}
+  #matchcard{margin-top:34px;background:var(--charcoal-2);border:1px solid rgba(255,250,242,.14);border-radius:18px;padding:26px 28px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;min-height:96px;}
+  #matchcard .info .tag{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--lav);margin-bottom:6px;}
+  #matchcard .info .name{font-family:'Fredoka';font-size:22px;font-weight:600;}
+  #matchcard .info .cat{font-size:13px;color:rgba(255,250,242,.55);margin-top:4px;}
+  #matchcard .goto{border:1.5px solid var(--paper);color:var(--paper);border-radius:100px;padding:11px 22px;font-size:13px;font-weight:600;text-decoration:none;white-space:nowrap;transition:.2s;background:none;cursor:pointer;}
+  #matchcard .goto:hover{background:var(--paper);color:var(--charcoal);}
+  #matchcard.empty .info .name{color:rgba(255,250,242,.4);font-weight:400;font-size:16px;}
+
+  /* ---------- SHOP: product grid ---------- */
+  #shop{padding:12vh 6vw 4vh;max-width:1400px;margin:0 auto;}
+  #shop .shophead{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:24px;}
+  #tabs{position:sticky;top:70px;z-index:60;display:flex;gap:10px;flex-wrap:wrap;padding:14px 0 26px;background:linear-gradient(var(--bg) 70%, transparent);margin-top:10px;}
+  .tab{border:1.5px solid var(--line);background:var(--paper);color:var(--ink-dim);border-radius:100px;padding:10px 20px;font-size:13px;font-weight:600;cursor:pointer;transition:.2s;}
+  .tab.active{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+  .tab .n{opacity:.6;font-weight:400;margin-left:4px;}
+  .pgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;margin-top:10px;}
+  #moodFilterNote{display:flex;align-items:center;gap:10px;margin-top:16px;font-size:13.5px;color:var(--ink-dim);}
+  #moodFilterNote button{border:1px solid var(--line);background:none;color:var(--ink);border-radius:100px;padding:5px 13px;font-size:12.5px;font-weight:600;cursor:pointer;}
+  #moodFilterNote button:hover{background:var(--ink);color:var(--paper);}
+  .emptyshop{grid-column:1/-1;text-align:center;padding:10vh 4vw;color:var(--ink-dim);}
+  .emptyshop p{font-size:15px;margin-bottom:20px;}
+  .pcard{background:var(--paper);border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;transition:transform .25s ease, box-shadow .25s ease;}
+  .pcard:hover{transform:translateY(-5px);box-shadow:0 20px 40px -18px rgba(58,42,32,.28);}
+  .pcard .pimg{aspect-ratio:1/1.28;overflow:hidden;background:var(--bg-soft);position:relative;}
+  .pcard .pimg img{width:100%;height:100%;object-fit:cover;object-position:top center;}
+  .pcard .pcat{position:absolute;top:10px;left:10px;background:rgba(255,250,242,.92);color:var(--ink);font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:100px;font-weight:700;}
+  .pcard .pmulti{position:absolute;bottom:10px;right:10px;background:rgba(33,27,22,.72);color:var(--paper);font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:100px;}
+  .pcard .pname{cursor:pointer;}
+  .pcard .pname:hover{text-decoration:underline;}
+  .pcard .pbody{padding:16px 16px 18px;display:flex;flex-direction:column;gap:8px;flex:1;}
+  .pcard .pname{font-family:'Fredoka';font-weight:600;font-size:15.5px;line-height:1.25;}
+  .pcard .pmood{font-size:12px;color:var(--ink-dim);}
+  .pcard .prow{margin-top:auto;display:flex;align-items:center;justify-content:space-between;padding-top:10px;}
+  .pcard .pprice{font-family:'Fredoka';font-weight:600;font-size:15px;color:var(--sage-dk);}
+  .pcard .addbtn{border:1.5px solid var(--ink);background:none;color:var(--ink);border-radius:100px;padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer;transition:.2s;white-space:nowrap;}
+  .pcard .addbtn:hover{background:var(--ink);color:var(--paper);}
+  .pcard .addbtn.added{background:var(--sage-dk);border-color:var(--sage-dk);color:var(--paper);}
+  .pcard .incartnote{font-size:11.5px;color:var(--sage-dk);margin-top:2px;}
+  .pcard .sizerow{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+  .sizechip{border:1.5px solid var(--ink);background:none;color:var(--ink);border-radius:8px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;transition:.2s;}
+  .sizechip:hover{background:var(--ink);color:var(--paper);}
+  @media (max-width:1080px){.pgrid{grid-template-columns:repeat(3,1fr);}}
+  @media (max-width:760px){.pgrid{grid-template-columns:repeat(2,1fr);} #tabs{top:64px;}}
+  @media (max-width:460px){.pgrid{grid-template-columns:1fr 1fr;gap:14px;}}
+
+  /* cart drawer */
+  #cartback{position:fixed;inset:0;background:rgba(33,27,22,.45);z-index:400;opacity:0;pointer-events:none;transition:opacity .3s ease;}
+  #cartback.on{opacity:1;pointer-events:auto;}
+  #cart{position:fixed;top:0;right:0;bottom:0;width:min(400px,92vw);background:var(--paper);z-index:401;transform:translateX(100%);transition:transform .35s cubic-bezier(.2,.7,.2,1);display:flex;flex-direction:column;}
+  #cart.on{transform:none;}
+  #cart .chead{padding:22px 24px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;}
+  #cart .chead h3{font-size:18px;}
+  #cart .cclose{background:none;border:none;font-size:22px;cursor:pointer;color:var(--ink);line-height:1;}
+  #cartitems{flex:1;overflow-y:auto;padding:10px 24px;}
+  .citem{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid var(--line);align-items:center;}
+  .citem img{width:52px;height:64px;object-fit:cover;border-radius:8px;}
+  .citem .cinfo{flex:1;}
+  .citem .cinfo .cn{font-weight:600;font-size:13.5px;}
+  .citem .cinfo .cm{font-size:11.5px;color:var(--ink-dim);}
+  .citem .cprice{font-size:13px;font-weight:600;color:var(--sage-dk);white-space:nowrap;}
+  .citem .cremove{background:none;border:none;color:var(--ink-dim);font-size:12px;text-decoration:underline;cursor:pointer;margin-left:8px;}
+  #cartempty{padding:40px 0;text-align:center;color:var(--ink-dim);font-size:14px;}
+  #cartfoot{padding:20px 24px;border-top:1px solid var(--line);}
+  #cartfoot .ctotal{display:flex;justify-content:space-between;font-weight:600;font-size:16px;margin-bottom:14px;}
+  #cartfoot .note{font-size:11.5px;color:var(--ink-dim);margin-top:10px;text-align:center;}
+  .cemaillabel{display:block;font-size:11px;font-weight:600;color:var(--ink-dim);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;}
+  .cemailinput{width:100%;padding:11px 13px;border:1.5px solid var(--line);border-radius:10px;font-size:13.5px;font-family:'Inter';background:var(--bg);color:var(--ink);margin-bottom:16px;}
+  .regiontoggle{display:flex;gap:8px;margin-bottom:16px;}
+  .rtab{flex:1;border:1.5px solid var(--line);background:var(--paper);color:var(--ink-dim);border-radius:100px;padding:9px 10px;font-size:12px;font-weight:600;cursor:pointer;transition:.2s;}
+  .rtab.active{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+  #paypal-buttons{min-height:44px;}
+
+  /* palette */
+  #palette{text-align:center;}
+  .swatches{display:flex;flex-wrap:wrap;justify-content:center;gap:26px;margin-top:44px;}
+  .swatch{display:flex;flex-direction:column;align-items:center;gap:10px;}
+  .swatch i{width:52px;height:52px;border-radius:50%;display:block;border:1px solid var(--line);}
+  .swatch span{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-dim);}
+
+  /* fit */
+  #fit .fitgrid{display:grid;grid-template-columns:1fr 1fr;gap:6vw;align-items:start;margin-top:10px;}
+  table.sizetable{width:100%;border-collapse:collapse;margin-top:20px;}
+  table.sizetable th, table.sizetable td{padding:12px 10px;border-bottom:1px solid var(--line);font-size:13.5px;text-align:center;}
+  table.sizetable th{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-dim);font-weight:600;}
+  table.sizetable td:first-child, table.sizetable th:first-child{text-align:left;font-weight:600;}
+  .carecard{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:26px;}
+  .carecard h3{font-size:15px;margin-bottom:14px;}
+  .carecard ul{list-style:none;font-size:13.5px;color:var(--ink-dim);line-height:2.1;}
+  .carecard li::before{content:"— ";color:var(--sage-dk);}
+  @media (max-width:860px){#fit .fitgrid{grid-template-columns:1fr;}}
+
+  #reviews .qrow{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:48px;}
+  .qcard{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:28px 24px;}
+  .qcard p{font-size:15.5px;line-height:1.65;font-weight:500;}
+  .qcard cite{display:block;margin-top:18px;font-style:normal;font-size:12px;letter-spacing:.08em;color:var(--ink-dim);}
+  @media (max-width:900px){#reviews .qrow{grid-template-columns:1fr;}}
+
+  #indiastrip{background:var(--sage);color:var(--charcoal);}
+  #indiastrip .stripgrid{display:flex;flex-wrap:wrap;justify-content:space-between;gap:24px;padding:6vh 6vw;max-width:1300px;margin:0 auto;}
+  .strip-item{flex:1;min-width:180px;text-align:center;}
+  .strip-item .ic{font-size:24px;margin-bottom:8px;}
+  .strip-item p{font-size:13px;font-weight:600;line-height:1.5;}
+
+  #ctaband{text-align:center;padding:20vh 6vw;}
+  #ctaband h2{font-size:clamp(32px,5.6vw,64px);max-width:16ch;margin:0 auto;}
+
+  footer{border-top:1px solid var(--line);padding:8vh 6vw 5vh;background:var(--bg-soft);}
+  .footcols{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:5vw;max-width:1300px;margin:0 auto;}
+  .footcols h4{font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--ink-dim);margin-bottom:16px;}
+  .footcols a{display:block;color:var(--ink-dim);text-decoration:none;font-size:13.5px;margin-bottom:10px;transition:color .2s;}
+  .footcols a:hover{color:var(--ink);}
+  .footbrand{font-family:'Fredoka';font-weight:600;font-size:20px;}
+  .footbrand span{color:var(--sage-dk);}
+  .footcols p.tag{margin-top:14px;font-size:13px;color:var(--ink-dim);max-width:26ch;line-height:1.6;}
+  .fine{margin-top:7vh;text-align:center;font-size:11.5px;letter-spacing:.06em;color:rgba(58,42,32,.4);}
+  @media (max-width:800px){.footcols{grid-template-columns:1fr 1fr;}}
+
+  /* toast */
+  #toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--charcoal);color:var(--paper);padding:13px 24px;border-radius:100px;font-size:13.5px;font-weight:600;z-index:500;opacity:0;pointer-events:none;transition:opacity .3s, transform .3s;}
+  #toast.on{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  /* ---------- ORDER CONFIRMATION MODAL ---------- */
+  #ocBack{position:fixed;inset:0;background:rgba(33,27,22,.55);z-index:1200;display:none;align-items:center;justify-content:center;padding:4vh 4vw;}
+  #ocBack.on{display:flex;}
+  #ocModal{background:var(--paper);border-radius:18px;max-width:400px;width:100%;padding:32px;text-align:center;}
+  .occheck{width:56px;height:56px;border-radius:50%;background:var(--sage-dk);color:var(--paper);font-size:26px;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;}
+  #ocModal h3{font-family:'Fredoka';font-size:22px;margin-bottom:6px;}
+  #ocOrderId{font-family:'Fredoka';font-size:24px;font-weight:600;letter-spacing:.06em;background:var(--bg-soft);border:1px dashed var(--line);border-radius:10px;padding:14px;margin:18px 0;color:var(--sage-dk);}
+
+  /* ---------- TRACK ORDER PAGE ---------- */
+  #trackview{display:none;position:fixed;inset:0;z-index:900;background:var(--bg);overflow-y:auto;}
+  #trackview.on{display:block;}
+  .trackform{display:flex;gap:10px;margin-top:30px;flex-wrap:wrap;}
+  .trackform input{flex:1;min-width:200px;padding:13px 16px;border:1.5px solid var(--line);border-radius:10px;font-size:14px;font-family:'Inter';background:var(--paper);color:var(--ink);}
+  #trackResult{margin-top:6vh;}
+  .trackcard{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:26px;}
+  .trackstack{display:flex;flex-direction:column;gap:24px;}
+  .trackcard .tid{font-family:'Fredoka';font-size:18px;font-weight:600;}
+  .trackcard .tdate{font-size:12.5px;color:var(--ink-dim);margin-top:4px;}
+  .stepper{display:flex;justify-content:space-between;margin:32px 0 26px;position:relative;}
+  .stepper::before{content:"";position:absolute;top:11px;left:5%;right:5%;height:2px;background:var(--line);}
+  .step{position:relative;flex:1;text-align:center;}
+  .step .dot{width:24px;height:24px;border-radius:50%;background:var(--paper);border:2px solid var(--line);margin:0 auto 8px;position:relative;z-index:1;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--ink-dim);}
+  .step.done .dot{background:var(--sage-dk);border-color:var(--sage-dk);color:var(--paper);}
+  .step .slabel{font-size:10.5px;color:var(--ink-dim);letter-spacing:.02em;}
+  .step.done .slabel{color:var(--ink);font-weight:600;}
+  .trackitems{margin-top:22px;border-top:1px solid var(--line);padding-top:18px;}
+  .trackitem{display:flex;gap:12px;align-items:center;padding:8px 0;}
+  .trackitem img{width:40px;height:50px;object-fit:cover;border-radius:6px;}
+  .trackitem .tin{flex:1;font-size:13px;}
+  .trackitem .tip{font-size:13px;font-weight:600;color:var(--sage-dk);}
+  .tracktotal{display:flex;justify-content:space-between;margin-top:14px;padding-top:14px;border-top:1px solid var(--line);font-weight:600;}
+  .trackcard .tinvbtn{margin-top:16px;width:100%;}
+
+  /* ---------- INVOICE VIEW ---------- */
+  #invoiceview{display:none;position:fixed;inset:0;z-index:1300;background:rgba(33,27,22,.55);}
+  #invoiceview.on{display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;padding:4vh 3vw;}
+  #invoicePaper{background:#fff;color:#1a1a1a;width:100%;max-width:760px;border-radius:10px;padding:40px 44px;font-family:'Inter';font-size:13px;line-height:1.6;}
+  #invoiceCloseBtn{position:sticky;top:0;float:right;background:var(--charcoal);color:#fff;border:none;border-radius:100px;width:34px;height:34px;cursor:pointer;font-size:16px;}
+  .invhead{display:flex;justify-content:space-between;gap:24px;border-bottom:2px solid #1a1a1a;padding-bottom:18px;margin-bottom:20px;}
+  .invhead h2{font-family:'Fredoka';font-size:20px;margin-bottom:4px;}
+  .invmeta{text-align:right;font-size:12.5px;}
+  .invparties{display:flex;justify-content:space-between;gap:24px;margin-bottom:22px;}
+  .invparties .invcol{flex:1;}
+  .invparties h4{font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:#777;margin-bottom:6px;}
+  table.invtable{width:100%;border-collapse:collapse;margin-bottom:18px;}
+  table.invtable th, table.invtable td{border:1px solid #ddd;padding:8px 9px;font-size:12px;text-align:left;}
+  table.invtable th{background:#f5f2ee;}
+  table.invtable td.num, table.invtable th.num{text-align:right;}
+  .invtotals{margin-left:auto;max-width:320px;}
+  .invtotals div{display:flex;justify-content:space-between;padding:4px 0;}
+  .invtotals .grand{border-top:1.5px solid #1a1a1a;margin-top:6px;padding-top:8px;font-weight:700;font-size:14.5px;}
+  .invfoot{margin-top:26px;font-size:11px;color:#777;border-top:1px solid #eee;padding-top:14px;}
+  #invoiceDownloadBtn{margin:18px auto 0;display:block;}
+  @media print{
+    body *{visibility:hidden;}
+    #invoiceview, #invoiceview *{visibility:visible;}
+    #invoiceview{position:absolute;inset:0;background:#fff;padding:0;display:block;}
+    #invoicePaper{max-width:100%;border-radius:0;box-shadow:none;}
+    #invoiceCloseBtn, #invoiceDownloadBtn{display:none;}
+  }
+
+  /* ---------- LUCHI CHAT WIDGET ---------- */
+  #luchiLauncher{position:fixed;bottom:22px;right:22px;z-index:1400;width:58px;height:58px;border-radius:50%;background:var(--ink);color:var(--paper);border:none;font-size:24px;cursor:pointer;box-shadow:0 8px 24px rgba(33,27,22,.28);display:flex;align-items:center;justify-content:center;transition:transform .2s;}
+  #luchiLauncher:hover{transform:scale(1.06);}
+  #luchiPanel{display:none;position:fixed;bottom:22px;right:22px;z-index:1450;width:min(370px, calc(100vw - 32px));height:min(520px, calc(100vh - 100px));background:var(--paper);border-radius:18px;box-shadow:0 14px 44px rgba(33,27,22,.32);flex-direction:column;overflow:hidden;}
+  #luchiPanel.on{display:flex;}
+  #luchiHeader{background:var(--ink);color:var(--paper);padding:16px 18px;display:flex;justify-content:space-between;align-items:center;}
+  #luchiName{font-family:'Fredoka';font-size:16px;font-weight:600;}
+  #luchiSub{font-size:11.5px;color:rgba(255,250,242,.65);margin-top:2px;}
+  #luchiCloseBtn{background:none;border:none;color:var(--paper);font-size:20px;cursor:pointer;line-height:1;}
+  #luchiMessages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;}
+  .luchimsg{max-width:85%;padding:9px 13px;border-radius:14px;font-size:13.5px;line-height:1.5;}
+  .luchimsg.user{align-self:flex-end;background:var(--ink);color:var(--paper);border-bottom-right-radius:3px;}
+  .luchimsg.bot{align-self:flex-start;background:var(--bg-soft);color:var(--ink);border-bottom-left-radius:3px;}
+  .luchimsg.bot a{color:var(--sage-dk);font-weight:600;}
+  .luchimsg.typing{align-self:flex-start;background:var(--bg-soft);color:var(--ink-dim);font-style:italic;}
+  #luchiForm{display:flex;gap:8px;padding:12px;border-top:1px solid var(--line);}
+  #luchiInput{flex:1;border:1px solid var(--line);border-radius:100px;padding:9px 15px;font-size:13px;font-family:inherit;background:var(--paper);}
+  #luchiSendBtn{background:var(--ink);color:var(--paper);border:none;border-radius:100px;padding:9px 18px;font-size:13px;font-weight:600;cursor:pointer;}
+  #luchiSendBtn:disabled{opacity:.5;cursor:not-allowed;}
+  @media (max-width:460px){
+    #luchiLauncher{bottom:16px;right:16px;}
+    #luchiPanel{bottom:0;right:0;width:100vw;height:80vh;border-radius:18px 18px 0 0;}
+  }
+
+  /* ---------- OUR STORY PAGE ---------- */
+  #storyview{display:none;position:fixed;inset:0;z-index:900;background:var(--bg);overflow-y:auto;}
+  #storyview.on{display:block;}
+  .storybody{max-width:820px;margin:0 auto;padding:8vh 6vw 14vh;}
+  .storytitle{font-family:'Fredoka';font-weight:600;text-align:center;font-size:clamp(36px,6vw,68px);line-height:1.06;margin:14px 0 6vh;}
+  .storyprose p{font-size:16px;line-height:1.85;color:var(--ink-dim);margin-bottom:20px;}
+  .mvgrid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin:8vh 0;}
+  .mvcard{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:28px 26px;}
+  .mvcard .kicker{margin-bottom:12px;}
+  .mvcard p:last-child{font-size:15px;line-height:1.7;color:var(--ink);}
+  @media (max-width:700px){ .mvgrid{grid-template-columns:1fr;} }
+  .standfor-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:34px;}
+  @media (max-width:820px){ .standfor-grid{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:520px){ .standfor-grid{grid-template-columns:1fr;} }
+  .storyclose{text-align:center;margin-top:12vh;padding-top:8vh;border-top:1px solid var(--line);}
+  .storyclose p{font-size:15px;color:var(--ink-dim);margin-bottom:8px;}
+  .storyclose h2{font-family:'Fredoka';font-weight:600;font-size:clamp(26px,3.6vw,40px);margin-bottom:28px;}
+
+  /* ---------- PRODUCT DETAIL PAGE ---------- */
+  #productview{display:none;position:fixed;inset:0;z-index:900;background:var(--bg);overflow-y:auto;}
+  #productview.on{display:block;}
+  .pdvbar{position:sticky;top:0;z-index:5;background:color-mix(in srgb, var(--bg) 88%, transparent);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);padding:16px 6vw;}
+  .pdback{font-size:13px;font-weight:600;text-decoration:none;color:var(--ink);}
+  #pdvbody{max-width:1200px;margin:0 auto;padding:6vh 6vw 12vh;}
+  .pdvgrid{display:grid;grid-template-columns:1.1fr 1fr;gap:6vw;align-items:start;}
+  .pdvgallery .pdvmain{width:100%;aspect-ratio:1/1.2;border-radius:16px;overflow:hidden;border:1px solid var(--line);background:var(--bg-soft);}
+  .pdvgallery .pdvmain img{width:100%;height:100%;object-fit:cover;}
+  .pdvthumbs{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;}
+  .pdvthumbs img{width:64px;height:80px;object-fit:cover;border-radius:8px;border:2px solid transparent;cursor:pointer;opacity:.65;transition:.2s;}
+  .pdvthumbs img.active{border-color:var(--ink);opacity:1;}
+  .pdvthumbs img:hover{opacity:1;}
+  .pdvinfo .pdvcat{font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--sage-dk);font-weight:600;margin-bottom:10px;}
+  .pdvinfo h1{font-family:'Fredoka';font-weight:600;font-size:clamp(28px,3.4vw,42px);line-height:1.08;}
+  .pdvinfo .pdvmood{display:inline-block;margin-top:14px;font-size:13px;border:1px solid var(--line);border-radius:100px;padding:7px 16px;color:var(--ink-dim);background:var(--paper);}
+  .pdvinfo .pdvprice{font-family:'Fredoka';font-size:26px;font-weight:600;color:var(--sage-dk);margin-top:20px;}
+  .pdvinfo .pdvdesc{margin-top:20px;font-size:15px;line-height:1.75;color:var(--ink-dim);}
+  .pdvinfo .pdvqualitybox{margin-top:22px;background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:20px 22px;}
+  .pdvinfo .pdvqualitybox h4{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-dim);margin-bottom:10px;}
+  .pdvinfo .pdvqualitybox p{font-size:13.5px;line-height:1.8;}
+  .pdvinfo .pdvaddrow{margin-top:26px;display:flex;gap:12px;flex-wrap:wrap;}
+  .pdvinfo .pdvsizes{margin-top:22px;}
+  .pdvinfo .pdvsizes h4{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-dim);margin-bottom:10px;}
+  .pdvsizerow{display:flex;flex-wrap:wrap;gap:8px;}
+  .pdvchip{padding:9px 16px;font-size:13px;}
+  .pdvchip.active{background:var(--ink);color:var(--paper);}
+  .pdvinfo .incartnote{font-size:12px;color:var(--sage-dk);margin-top:10px;}
+  #pdvAddBtn:disabled{opacity:.5;cursor:not-allowed;}
+  #pdvAddBtn:disabled:hover{background:var(--ink);}
+  @media (max-width:860px){ .pdvgrid{grid-template-columns:1fr;} }
+
+
+  #adminview{display:none;position:fixed;inset:0;z-index:1000;background:var(--bg);overflow-y:auto;}
+  #adminview.on{display:block;}
+  .adminbar{position:sticky;top:0;z-index:5;background:var(--charcoal);color:var(--paper);padding:18px 4vw;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+  .adminbar h2{font-size:18px;font-family:'Fredoka';font-weight:600;}
+  .adminbar .abtns{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+  .abtn{border:1.5px solid rgba(255,250,242,.32);background:none;color:var(--paper);border-radius:100px;padding:9px 18px;font-size:12.5px;font-weight:600;cursor:pointer;transition:.2s;text-decoration:none;display:inline-block;}
+  .abtn:hover{background:rgba(255,250,242,.15);}
+  .abtn.primary{background:var(--sage-dk);border-color:var(--sage-dk);}
+  .abtn.primary:hover{background:var(--sage);}
+  .abtn.danger{border-color:var(--blush);color:var(--blush);}
+  .abtn.danger:hover{background:var(--blush);color:var(--charcoal);}
+  .admintabs{display:flex;gap:8px;padding:16px 4vw 0;background:var(--charcoal);}
+  .admintab{border:none;background:none;color:rgba(255,250,242,.55);padding:10px 4px;font-size:13.5px;font-weight:600;cursor:pointer;border-bottom:2.5px solid transparent;}
+  .admintab.active{color:var(--paper);border-bottom-color:var(--sage);}
+  .ordstatusselect{border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:12.5px;font-family:inherit;background:var(--paper);}
+  .trackcell{display:flex;flex-direction:column;gap:4px;min-width:150px;}
+  .trackcell input{border:1px solid var(--line);border-radius:8px;padding:5px 8px;font-size:12px;font-family:inherit;background:var(--paper);width:100%;}
+  .trackcell .abtn{padding:4px 10px;font-size:11.5px;align-self:flex-start;}
+  #adminbody{padding:4vh 4vw 10vh;max-width:1300px;margin:0 auto;}
+  .adstatus{font-size:12.5px;color:var(--ink-dim);margin-top:6px;}
+  .storagewarn{border-radius:12px;padding:16px 18px;font-size:13px;line-height:1.7;margin-bottom:18px;}
+  .storagewarn.warn{background:#f5e6c8;border:1px solid #d9b968;color:#5c4a1a;}
+  .storagewarn.danger{background:#f7dcd6;border:1px solid #d98f80;color:#6b2a1c;}
+  .storagewarn code{background:rgba(0,0,0,.08);padding:2px 7px;border-radius:5px;font-family:monospace;font-size:12px;}
+  .adtable{width:100%;border-collapse:collapse;margin-top:18px;background:var(--paper);border-radius:14px;overflow:hidden;border:1px solid var(--line);}
+  .adtable th,.adtable td{padding:12px 14px;border-bottom:1px solid var(--line);font-size:13px;text-align:left;vertical-align:middle;}
+  .adtable th{background:var(--bg-soft);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-dim);}
+  .adtable img{width:40px;height:50px;object-fit:cover;border-radius:6px;background:var(--bg-soft);}
+  .adtable .adactions{display:flex;gap:8px;}
+  .adtable .adactions button{border:1px solid var(--line);background:var(--paper);border-radius:100px;padding:5px 12px;font-size:12px;cursor:pointer;transition:.2s;}
+  .adtable .adactions button:hover{background:var(--bg-soft);}
+  .adtable .adactions button.del{color:var(--blush);border-color:var(--blush);}
+  .adtable .adactions button.del:hover{background:var(--blush);color:var(--paper);}
+
+  /* product form modal */
+  #pmodalback{position:fixed;inset:0;background:rgba(33,27,22,.5);z-index:1100;display:none;align-items:center;justify-content:center;padding:4vh 4vw;}
+  #pmodalback.on{display:flex;}
+  #pmodal{background:var(--paper);border-radius:18px;max-width:460px;width:100%;max-height:90vh;overflow-y:auto;padding:28px;}
+  #pmodal h3{font-size:19px;margin-bottom:6px;font-family:'Fredoka';}
+  #pmodal label{display:block;font-size:11px;font-weight:600;color:var(--ink-dim);margin:16px 0 6px;text-transform:uppercase;letter-spacing:.06em;}
+  #pmodal input[type=text],#pmodal input[type=number],#pmodal select,#pmodal textarea{width:100%;padding:11px 13px;border:1.5px solid var(--line);border-radius:10px;font-size:14px;font-family:'Inter';background:var(--bg);color:var(--ink);resize:vertical;}
+  #pmodal input[type=file]{margin-top:4px;font-size:12.5px;}
+  .pmimagelist{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;}
+  .pmimagelist .pmthumb{position:relative;width:74px;height:92px;border-radius:8px;overflow:hidden;border:1px solid var(--line);background:var(--bg-soft);}
+  .pmimagelist .pmthumb img{width:100%;height:100%;object-fit:cover;}
+  .pmimagelist .pmthumb button{position:absolute;top:3px;right:3px;width:20px;height:20px;border-radius:50%;border:none;background:rgba(33,27,22,.75);color:var(--paper);font-size:12px;line-height:1;cursor:pointer;}
+  .pmimagelist .pmthumb .pmmain{position:absolute;bottom:0;left:0;right:0;background:rgba(33,27,22,.75);color:var(--paper);font-size:9px;text-align:center;letter-spacing:.06em;text-transform:uppercase;padding:2px 0;}
+  #pmodal .pmodal-actions{display:flex;gap:10px;margin-top:26px;}
+  #pmodal .pmodal-actions .btn{flex:1;text-align:center;}
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <button class="mark" onclick="window.scrollTo({top:0,behavior:'smooth'})">luchpuch<span>.</span></button>
+  <div class="links">
+    <a href="#shop" onclick="setTab('All')">Shop All</a>
+    <a href="#shop" onclick="setTab('Tees')">Tees</a>
+    <a href="#shop" onclick="setTab('Trousers')">Trousers</a>
+    <a href="#shop" onclick="setTab('Shorts')">Shorts</a>
+    <a href="#shop" onclick="setTab('Sleeveless')">Sleeveless</a>
+    <a href="#fit">Size Guide</a>
+  </div>
+  <button class="navcta" onclick="openCart()">🛍️ Bag <span class="count" id="navcount">0</span></button>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <span class="doodle d1">🧸</span><span class="doodle d2">☁️</span><span class="doodle d3">🐼</span>
+  <span class="doodle d4">👻</span><span class="doodle d5">🌼</span><span class="doodle d6">🐱</span>
+  <div class="logo-mark"><span>lp</span><span class="heart">♥</span></div>
+  <h1>Soft things,<br><em>warm feelings.</em></h1>
+  <p class="sub" id="heroSub">Unique designs across tees, joggers, shorts and sleeveless tees — each one its own mood. Ultra-soft cotton, relaxed fits, made for Indian summers and Indian moods.</p>
+  <div class="cta-row">
+    <a class="btn btn-solid" href="#shop" id="shopAllBtn" onclick="setTab('All')">Shop all designs</a>
+    <a class="btn btn-ghost" href="#moodmatch">What's your mood today?</a>
+  </div>
+  <div id="scrollcue">Scroll</div>
+</section>
+
+<!-- MANIFESTO -->
+<section id="manifesto" class="sec">
+  <div data-reveal>
+    <p class="kicker" style="text-align:center">Luchpuch</p>
+    <h2>Comfort you can <span class="brass">live in.</span></h2>
+  </div>
+</section>
+
+<!-- WHY -->
+<section id="why" class="sec">
+  <div data-reveal>
+    <p class="kicker">Why Luchpuch</p>
+    <h2>Made for how you actually live.</h2>
+    <p class="lead">No stiff fabrics, no fuss. Just everyday pieces that feel like your favourite hoodie on a Sunday — whether that Sunday is in Mumbai's humidity or a Delhi winter.</p>
+  </div>
+  <div class="grid">
+    <div class="why-card" data-reveal><div class="ic">☁️</div><h3>Ultra-soft cotton</h3><p>Breathable cotton that stays soft wash after wash.</p></div>
+    <div class="why-card" data-reveal><div class="ic">📐</div><h3>Oversized, relaxed fit</h3><p>Room to move, drop shoulders, and a silhouette that works for every body.</p></div>
+    <div class="why-card" data-reveal><div class="ic">🌤️</div><h3>Built for Indian weather</h3><p>Breathable enough for humid days, cosy enough for AC rooms and hill trips.</p></div>
+    <div class="why-card" data-reveal><div class="ic">🎨</div><h3 id="whyCountTitle">Individual designs</h3><p>Every mood gets its own print — pick the one that says what you're feeling.</p></div>
+  </div>
+</section>
+
+<!-- MOOD MATCH -->
+<section id="moodmatch" class="sec" data-reveal>
+  <p class="kicker">Interactive</p>
+  <h2>What's your mood today?</h2>
+  <p class="lead">Every Luchpuch piece is designed around a mood, not just an outfit. Tap one below and we'll match you to the exact design.</p>
+  <div class="mood-pills" id="moodPills"></div>
+  <div id="matchcard" class="empty">
+    <div class="info"><div class="tag">Your match</div><div class="name">Pick a mood above ↑</div></div>
+    <button class="goto" id="matchGoto">See the design</button>
+  </div>
+</section>
+
+<!-- SHOP -->
+<section id="shop">
+  <div class="shophead" data-reveal>
+    <div>
+      <p class="kicker">Shop all designs</p>
+      <h2 style="font-family:'Fredoka';font-weight:600;font-size:clamp(28px,3.6vw,44px);">Every design, listed individually.</h2>
+      <p class="lead" id="shopLead">Unique prints across 4 categories. Tap a tab to filter, or add straight to your bag.</p>
+    </div>
+  </div>
+  <div id="tabs"></div>
+  <div id="moodFilterNote" style="display:none;"></div>
+  <div class="pgrid" id="pgrid"></div>
+</section>
+
+<!-- PALETTE -->
+<section id="palette" class="sec">
+  <div data-reveal>
+    <p class="kicker">Colourways</p>
+    <h2>Six moods of neutral.</h2>
+    <p class="lead" style="margin-left:auto;margin-right:auto;">Colours picked to mix, match, and hide the chai stains.</p>
+  </div>
+  <div class="swatches" data-reveal>
+    <div class="swatch"><i style="background:#FFFFFF;"></i><span>White</span></div>
+    <div class="swatch"><i style="background:#000000;"></i><span>Black</span></div>
+    <div class="swatch"><i style="background:#C7B9E0;"></i><span>Lavender</span></div>
+    <div class="swatch"><i style="background:#FF0000;"></i><span>Red</span></div>
+    <div class="swatch"><i style="background:#2B2622;"></i><span>Charcoal</span></div>
+    <div class="swatch"><i style="background:#9FB6C6;"></i><span>Sky Blue</span></div>
+    <div class="swatch"><i style="background:#1E2A3D;"></i><span>Navy</span></div>
+    <div class="swatch"><i style="background:#5C5F45;"></i><span>Olive</span></div>
+  </div>
+</section>
+
+<!-- FIT -->
+<section id="fit" class="sec">
+  <div data-reveal>
+    <p class="kicker">Size &amp; Fit</p>
+    <h2>Built oversized, on purpose.</h2>
+    <p class="lead">Our fit runs relaxed. If you like a true oversized look, order your regular size — for a slightly fitted look, size down.</p>
+  </div>
+  <div class="fitgrid">
+    <div data-reveal>
+      <table class="sizetable">
+        <tr><th>Size</th><th>Chest (in)</th><th>Length (in)</th></tr>
+        <tr><td>S</td><td>44</td><td>28</td></tr>
+        <tr><td>M</td><td>46</td><td>29</td></tr>
+        <tr><td>L</td><td>48</td><td>30</td></tr>
+        <tr><td>XL</td><td>50</td><td>31</td></tr>
+        <tr><td>XXL</td><td>52</td><td>32</td></tr>
+      </table>
+    </div>
+    <div class="carecard" data-reveal>
+      <h3>Fabric &amp; care</h3>
+      <ul>
+        <li>Premium cotton / cotton-blend</li>
+        <li>Machine wash cold, inside out</li>
+        <li>No bleach — line dry in shade</li>
+        <li>Warm iron on reverse side only</li>
+        <li>Designed in India, made to last</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section id="reviews" class="sec">
+  <div data-reveal style="text-align:center;">
+    <p class="kicker" style="text-align:center">Real buyers</p>
+    <h2>Loved across the country.</h2>
+  </div>
+  <div class="qrow">
+    <div class="qcard" data-reveal><p>Ordered the Doing Nothing Club tee for lounging — ended up wearing it to college too. That soft.</p><cite>— Verified buyer, Bengaluru</cite></div>
+    <div class="qcard" data-reveal><p>The joggers survived a 14-hour train ride and still looked fresh. Pockets deep enough for my phone and wallet.</p><cite>— Verified buyer, Pune</cite></div>
+    <div class="qcard" data-reveal><p>Bought the shorts for a Goa trip, now I own four. COD made it a no-brainer.</p><cite>— Verified buyer, Delhi</cite></div>
+  </div>
+</section>
+
+<!-- INDIA STRIP -->
+<section id="indiastrip">
+  <div class="stripgrid">
+    <div class="strip-item"><div class="ic">🚚</div><p>Secure shipping</p></div>
+    <div class="strip-item"><div class="ic">💵</div><p>Cash on Delivery<br>available everywhere</p></div>
+    <div class="strip-item"><div class="ic">↩️</div><p>7-day easy<br>exchange &amp; returns</p></div>
+    <div class="strip-item"><div class="ic">🧾</div><p>GST invoice<br>on every order</p></div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="ctaband" class="sec">
+  <div data-reveal>
+    <h2>Wear comfort. Spread good vibes.</h2>
+    <br>
+    <a class="btn btn-solid" href="#shop" onclick="setTab('All')">Shop the collection</a>
+  </div>
+</section>
+
+<footer>
+  <div class="footcols">
+    <div data-reveal>
+      <div class="footbrand">luchpuch<span>.</span></div>
+      <p class="tag">Soft things, warm feelings. Comfort-first streetwear, designed and shipped across India.</p>
+      <p class="tag" style="margin-top:8px;"><a href="mailto:luchpuch.co@gmail.com" style="text-decoration:underline;color:var(--ink-dim);">luchpuch.co@gmail.com</a></p>
+    </div>
+    <div data-reveal><h4>Shop</h4>
+      <a href="#shop" onclick="setTab('Tees')">Tees</a><a href="#shop" onclick="setTab('Trousers')">Trousers</a><a href="#shop" onclick="setTab('Shorts')">Shorts</a><a href="#shop" onclick="setTab('Sleeveless')">Sleeveless</a>
+    </div>
+    <div data-reveal><h4>Support</h4>
+      <a href="#fit">Size Guide</a><a href="#track">Track Order</a>    </div>
+    <div data-reveal><h4>Connect</h4>
+      <a href="https://www.instagram.com/luchpuch_clothing/" target="_blank" rel="noopener">Instagram — @luchpuch_clothing</a><a href="#story">Our Story</a>
+    </div>
+  </div>
+  <p class="fine">© 2026 LUCHPUCH. All prints designed in-house. Made with ♥. · <a href="#admin" style="text-decoration:underline;">Store Admin</a></p>
+</footer>
+
+<!-- CART DRAWER -->
+<div id="cartback" onclick="closeCart()"></div>
+<aside id="cart">
+  <div class="chead"><h3>Your Bag</h3><button class="cclose" onclick="closeCart()">×</button></div>
+  <div id="cartitems"></div>
+  <div id="cartfoot">
+    <div class="ctotal"><span>Total</span><span id="carttotal">₹0</span></div>
+
+    <label class="cemaillabel">Email (for order confirmation &amp; tracking)</label>
+    <input type="email" id="checkoutEmail" class="cemailinput" placeholder="you@example.com">
+
+    <label class="cemaillabel">Full name (for invoice)</label>
+    <input type="text" id="checkoutName" class="cemailinput" placeholder="Full name">
+
+    <label class="cemaillabel">Address</label>
+    <input type="text" id="checkoutAddress" class="cemailinput" placeholder="House/Street, Area">
+
+    <div style="display:flex;gap:10px;">
+      <input type="text" id="checkoutCity" class="cemailinput" placeholder="City" style="flex:1;">
+      <input type="text" id="checkoutPin" class="cemailinput" placeholder="PIN / ZIP" style="flex:1;">
+    </div>
+
+    <div id="checkoutStateWrap">
+      <label class="cemaillabel">State</label>
+      <select id="checkoutState" class="cemailinput">
+        <option value="">Select state</option>
+        <option>Andhra Pradesh</option><option>Arunachal Pradesh</option><option>Assam</option>
+        <option>Bihar</option><option>Chhattisgarh</option><option>Goa</option><option>Gujarat</option>
+        <option>Haryana</option><option>Himachal Pradesh</option><option>Jharkhand</option>
+        <option>Karnataka</option><option>Kerala</option><option>Madhya Pradesh</option>
+        <option>Maharashtra</option><option>Manipur</option><option>Meghalaya</option><option>Mizoram</option>
+        <option>Nagaland</option><option>Odisha</option><option>Punjab</option><option>Rajasthan</option>
+        <option>Sikkim</option><option>Tamil Nadu</option><option>Telangana</option><option>Tripura</option>
+        <option>Uttar Pradesh</option><option>Uttarakhand</option><option>West Bengal</option>
+        <option>Andaman and Nicobar Islands</option><option>Chandigarh</option>
+        <option>Dadra and Nagar Haveli and Daman and Diu</option><option>Delhi</option>
+        <option>Jammu and Kashmir</option><option>Ladakh</option><option>Lakshadweep</option>
+        <option>Puducherry</option>
+      </select>
+    </div>
+    <div id="checkoutCountryWrap" style="display:none;">
+      <label class="cemaillabel">Country</label>
+      <input type="text" id="checkoutCountry" class="cemailinput" placeholder="Country">
+    </div>
+
+    <label class="cemaillabel">GSTIN (optional — only if this is a business purchase)</label>
+    <input type="text" id="checkoutGstin" class="cemailinput" placeholder="Leave blank for personal orders">
+
+    <div class="regiontoggle">
+      <button class="rtab active" id="rtabIndia" onclick="setRegion('india')">🇮🇳 Shipping in India</button>
+      <button class="rtab" id="rtabIntl" onclick="setRegion('intl')">🌍 International</button>
+    </div>
+
+    <div id="payIndia">
+      <button class="btn btn-solid" style="width:100%;text-align:center;" onclick="payWithRazorpay()">Pay with Razorpay</button>
+      <p class="note">UPI · Cards · Netbanking · Wallets · COD on delivery</p>
+    </div>
+
+    <div id="payIntl" style="display:none;">
+      <div id="paypal-buttons"></div>
+      <p class="note">Charged in USD (~₹<span id="fxRate">88</span>/USD) · PayPal only supports cross-border payments for Indian merchants</p>
+    </div>
+
+    <p class="note">Secure shipping (India)</p>
+  </div>
+</aside>
+<div id="toast"></div>
+
+<!-- TRACK ORDER PAGE -->
+<div id="trackview">
+  <div class="pdvbar"><a class="pdback" href="#" onclick="location.hash='';return false;">← Back to shop</a></div>
+  <div id="trackbody" class="storybody" style="max-width:640px;">
+    <p class="kicker" style="text-align:center">Track your order</p>
+    <h1 class="storytitle" style="font-size:clamp(30px,4.6vw,48px);">Where's my stuff?</h1>
+    <div class="trackform">
+      <input type="email" id="trackInput" placeholder="you@example.com">
+      <button class="btn btn-solid" onclick="doTrackOrder()">Track Order</button>
+    </div>
+    <p class="adstatus" style="text-align:center;margin-top:10px;">Enter the email you used at checkout. Orders are only trackable on the device/browser you ordered from.</p>
+    <div id="trackResult"></div>
+  </div>
+</div>
+
+<!-- OUR STORY PAGE -->
+<div id="storyview">
+  <div class="pdvbar"><a class="pdback" href="#" onclick="location.hash='';return false;">← Back to shop</a></div>
+  <div id="storybody" class="storybody">
+    <p class="kicker" style="text-align:center">About Us</p>
+    <h1 class="storytitle">Comfort you can<br>live in.</h1>
+
+    <div class="storyprose">
+      <p>At LUCHPUCH, we believe that the clothes you wear every day should be the ones you love the most. Comfort isn't just a feature — it's the foundation of everything we create.</p>
+      <p>Born from the idea that everyday essentials deserve better, LUCHPUCH designs premium comfort wear that combines ultra-soft fabrics, relaxed fits, and playful designs. Whether you're working, travelling, lounging at home, hitting the gym, or hanging out with friends, our clothing is made to move with you and keep you comfortable all day long.</p>
+      <p>Our collections blend minimalist aesthetics with fun, expressive graphics that reflect individuality and positivity. Every piece is thoughtfully designed to bring together quality, durability, and effortless style, making comfort something you can wear with confidence.</p>
+      <p>We carefully select premium fabrics, focus on exceptional craftsmanship, and create timeless designs that feel as good as they look. From oversized T-shirts and joggers to shorts, hoodies, sleeveless tees, and everyday essentials, every LUCHPUCH product is built for modern living.</p>
+      <p>More than a clothing brand, LUCHPUCH is a lifestyle centred around slowing down, embracing comfort, and expressing yourself without trying too hard.</p>
+      <p>We're here for the dreamers, the creators, the overthinkers, the weekend loungers, the coffee lovers, the travellers, and everyone who believes life is simply better when you're comfortable.</p>
+    </div>
+
+    <div class="mvgrid">
+      <div class="mvcard">
+        <p class="kicker">Our Mission</p>
+        <p>To create premium comfort wear that helps people feel confident, relaxed, and authentic — every single day.</p>
+      </div>
+      <div class="mvcard">
+        <p class="kicker">Our Vision</p>
+        <p>To become one of the world's most loved comfort wear brands by redefining everyday essentials through thoughtful design, premium quality, and uncompromising comfort.</p>
+      </div>
+    </div>
+
+    <p class="kicker" style="text-align:center;margin-top:10vh;">What We Stand For</p>
+    <div class="standfor-grid">
+      <div class="why-card"><div class="ic">🛋️</div><h3>Comfort First</h3><p>Every product is designed around all-day comfort.</p></div>
+      <div class="why-card"><div class="ic">🧵</div><h3>Premium Quality</h3><p>Soft fabrics, durable construction, and attention to detail.</p></div>
+      <div class="why-card"><div class="ic">🎨</div><h3>Creative Expression</h3><p>Fun, original designs that reflect personality.</p></div>
+      <div class="why-card"><div class="ic">⏳</div><h3>Timeless Style</h3><p>Modern essentials that never go out of fashion.</p></div>
+      <div class="why-card"><div class="ic">🏡</div><h3>Made for Everyday Life</h3><p>Clothing that fits every moment, from home to the outdoors.</p></div>
+    </div>
+
+    <div class="storyclose">
+      <p>LUCHPUCH isn't just something you wear — it's how comfort feels.</p>
+      <h2>Comfort You Can Live In.</h2>
+      <a class="btn btn-solid" href="#shop" onclick="location.hash='';setTimeout(()=>setTab('All'),0);">Shop the collection</a>
+    </div>
+  </div>
+</div>
+
+<!-- PRODUCT DETAIL PAGE -->
+<div id="productview">
+  <div class="pdvbar">
+    <a class="pdback" href="#" onclick="location.hash='';return false;">← Back to shop</a>
+  </div>
+  <div id="pdvbody"></div>
+</div>
+
+<!-- ADMIN PORTAL -->
+<div id="adminview">
+  <div class="adminbar">
+    <h2>🛠️ Luchpuch — Store Admin</h2>
+    <div class="abtns">
+      <button class="abtn primary" onclick="openProductForm(null)">+ Add Product</button>
+      <button class="abtn" onclick="exportJSON()">Export JSON</button>
+      <label class="abtn" style="cursor:pointer;margin:0;">Import JSON<input type="file" accept=".json" style="display:none" onchange="importJSON(this.files[0])"></label>
+      <button class="abtn danger" onclick="clearAllProducts()">Clear All Products</button>
+      <a class="abtn" href="#" onclick="location.hash='';return false;">Close Admin →</a>
+    </div>
+  </div>
+  <div class="admintabs">
+    <button class="admintab active" id="admintabProducts" onclick="setAdminTab('products')">Products</button>
+    <button class="admintab" id="admintabOrders" onclick="setAdminTab('orders')">Orders</button>
+  </div>
+  <div id="adminProductsPanel">
+    <div id="adminbody">
+      <div id="storageWarning" class="storagewarn" style="display:none;"></div>
+      <p class="adstatus" id="adminStatus">Loading…</p>
+      <table class="adtable">
+        <thead><tr><th>Image</th><th>Name</th><th>Category</th><th>Mood</th><th>Price</th><th>Actions</th></tr></thead>
+        <tbody id="adminRows"></tbody>
+      </table>
+    </div>
+  </div>
+  <div id="adminOrdersPanel" style="display:none;">
+    <div id="adminOrdersBody">
+      <p class="adstatus" id="adminOrdersStatus">Loading orders…</p>
+      <table class="adtable">
+        <thead><tr><th>Order</th><th>Date</th><th>Customer</th><th>Total</th><th>Status</th><th>Tracking</th><th>Invoice</th></tr></thead>
+        <tbody id="adminOrderRows"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- PRODUCT FORM MODAL -->
+<div id="pmodalback" onclick="if(event.target===this) closeProductForm()">
+  <div id="pmodal">
+    <h3 id="pmTitle">Add Product</h3>
+    <p class="adstatus">At least one image is required. Add as many as you like — customers can browse all of them on the product page.</p>
+    <label>Product name</label>
+    <input type="text" id="pmName" placeholder="e.g. Doing Nothing Club">
+    <label>Category</label>
+    <select id="pmCat">
+      <option>Tees</option><option>Trousers</option><option>Shorts</option><option>Sleeveless</option>
+    </select>
+    <label>Mood</label>
+    <input type="text" id="pmMood" placeholder="e.g. Lazy but happy">
+    <label>Price (₹)</label>
+    <input type="number" id="pmPrice" min="0" placeholder="799">
+    <label>Description</label>
+    <textarea id="pmDesc" rows="3" placeholder="What is it, how does it fit, why would someone want it?"></textarea>
+    <label>Quality &amp; fabric</label>
+    <textarea id="pmQuality" rows="2" placeholder="e.g. 240 GSM cotton · Ribbed neck · Machine wash cold"></textarea>
+    <label>HSN code (for GST invoices)</label>
+    <input type="text" id="pmHsn" placeholder="e.g. 6109">
+    <label>Available sizes (comma separated)</label>
+    <input type="text" id="pmSizes" placeholder="e.g. S, M, L, XL, XXL">
+    <label>Product images</label>
+    <input type="file" id="pmImage" accept="image/*" multiple onchange="handleImageFiles(this)">
+    <div id="pmImageList" class="pmimagelist"></div>
+    <div class="pmodal-actions">
+      <button class="btn btn-ghost" onclick="closeProductForm()">Cancel</button>
+      <button class="btn btn-solid" onclick="saveProductForm()">Save product</button>
+    </div>
+  </div>
+</div>
+
+<!-- ORDER CONFIRMATION MODAL -->
+<div id="ocBack" onclick="if(event.target===this) closeOrderConfirm()">
+  <div id="ocModal">
+    <div class="occheck">✓</div>
+    <h3>Order confirmed!</h3>
+    <p class="adstatus">Your reference number — you can track this order anytime using the email you checked out with.</p>
+    <div id="ocOrderId">LP000000</div>
+    <div class="pmodal-actions">
+      <button class="btn btn-ghost" onclick="closeOrderConfirm()">Continue shopping</button>
+      <button class="btn btn-solid" id="ocTrackBtn">Track this order</button>
+    </div>
+    <button class="btn btn-ghost" style="width:100%;margin-top:10px;" id="ocInvoiceBtn">Download Invoice</button>
+  </div>
+</div>
+
+<!-- INVOICE VIEW -->
+<div id="invoiceview" onclick="if(event.target===this) closeInvoice()">
+  <div id="invoicePaper">
+    <button id="invoiceCloseBtn" onclick="closeInvoice()">×</button>
+    <div id="invoiceBody"></div>
+    <button class="btn btn-solid" id="invoiceDownloadBtn" onclick="window.print()">Download / Print PDF</button>
+  </div>
+</div>
+
+<!-- LUCHI CHAT WIDGET -->
+<button id="luchiLauncher" onclick="toggleLuchi()" aria-label="Chat with Luchi">
+  <span id="luchiLauncherIcon">💬</span>
+</button>
+<div id="luchiPanel">
+  <div id="luchiHeader">
+    <div>
+      <div id="luchiName">Luchi</div>
+      <div id="luchiSub">Luchpuch's shopping assistant</div>
+    </div>
+    <button id="luchiCloseBtn" onclick="toggleLuchi()">×</button>
+  </div>
+  <div id="luchiMessages"></div>
+  <form id="luchiForm" onsubmit="return submitLuchiMessage(event)">
+    <input type="text" id="luchiInput" placeholder="Ask about sizes, moods, your order…" autocomplete="off">
+    <button type="submit" id="luchiSendBtn">Send</button>
+  </form>
+</div>
+
+
+<script>
+// Fill in your real Supabase project ref (Project Settings -> API -> Project URL).
+// Example: "https://abcdefghijklmnop.supabase.co/functions/v1"
+const API_BASE = "https://epecmbcjaxpjyvwffxxf.supabase.co/functions/v1";
+
+/* ---------------- product data (54 individual designs) ---------------- */
+const DEFAULT_PRODUCTS = [];
+
+/* Category-level copy used to fill in description/quality for the default
+   catalogue, and as a starting point when products are added without one. */
+const CAT_BLURB = {
+  Tees: { desc: "An oversized, drop-shoulder tee in ultra-soft cotton — the kind you reach for on a lazy Sunday and then never take off.", quality: "240 GSM premium cotton · Ribbed neck · Oversized relaxed fit · Machine wash cold, inside out" },
+  Trousers: { desc: "A relaxed, wide-leg jogger built for lounging, travel, or the gym plan you'll definitely start next week.", quality: "260 GSM cotton blend · Elastic waistband · Deep side pockets · Machine wash cold, inside out" },
+  Shorts: { desc: "A drawstring cotton-blend short made for slow mornings, balcony chai, and everything in between vacay and errands.", quality: "260 GSM cotton blend · Drawstring waist · Side pockets · Machine wash cold, inside out" },
+  Sleeveless: { desc: "A round-neck sleeveless tee with wide armholes — more air, more movement, zero restriction.", quality: "240 GSM cotton · Wide armholes · Relaxed fit · Machine wash cold, inside out" },
+};
+/* Default size sets offered per category — editable per product in admin.
+   Tops use letter sizes, bottoms use waist sizes. */
+const CAT_SIZES = {
+  Tees: ["S","M","L","XL","XXL"],
+  Sleeveless: ["S","M","L","XL","XXL"],
+  Trousers: ["28","30","32","34","36"],
+  Shorts: ["28","30","32","34","36"],
+};
+const DEFAULT_SIZES = ["S","M","L","XL","XXL"];
+function normalizeProduct(p){
+  if(!p.images || !p.images.length) p.images = [p.img];
+  if(!p.img) p.img = p.images[0];
+  if(p.description === undefined) p.description = `${CAT_BLURB[p.cat]?.desc || "A Luchpuch original."} This one's for the "${p.name}" mood.`;
+  if(p.quality === undefined) p.quality = CAT_BLURB[p.cat]?.quality || "Premium cotton · Machine wash cold, inside out";
+  if(!p.hsn) p.hsn = DEFAULT_HSN;
+  if(!p.sizes || !p.sizes.length) p.sizes = CAT_SIZES[p.cat] || DEFAULT_SIZES;
+  return p;
+}
+DEFAULT_PRODUCTS.forEach(normalizeProduct);
+let PRODUCTS = [];
+function reindex(){ PRODUCTS.forEach((p,i)=> p.id = i); }
+reindex();
+
+/* ---------------- storage (Netlify Functions + Netlify Blobs) ----------------
+   Products are shared, server-side data now — every visitor's browser reads
+   and writes the same catalogue via Supabase Edge Functions, backed by
+   a Netlify Blobs store. Saving (POST) requires the admin key; reading (GET)
+   is public since the storefront needs it for every visitor. */
+function getAdminKey(){
+  try{ return sessionStorage.getItem('luchpuch:admin_key') || ''; }catch(e){ return ''; }
+}
+const Store = {
+  async get(key){
+    try{
+      const res = await fetch(`${API_BASE}/${key}`);
+      if(!res.ok) return null;
+      return await res.json();
+    }catch(e){ return null; }
+  },
+  async set(key, val){
+    try{
+      const headers = {"Content-Type":"application/json"};
+      if(key === 'products') headers['x-admin-key'] = getAdminKey();
+      const res = await fetch(`${API_BASE}/${key}`, {
+        method: "POST", headers, body: JSON.stringify(val)
+      });
+      if(!res.ok){
+        if(res.status === 401) showToast("Your admin session expired — reopen #admin to re-enter the passcode");
+        return false;
+      }
+      return true;
+    }catch(e){ return false; }
+  }
+};
+async function persist(){ return await Store.set('products', PRODUCTS); }
+
+/* ---------------- backend reachability + product load ----------------
+   This site needs its Netlify Functions to be running. That's true when
+   deployed to Netlify, or running locally via `netlify dev` — but NOT true
+   if you just open this HTML file directly (file://) or serve it with a
+   plain static server, since neither of those run the /netlify/functions
+   code. This used to be two separate fetches to the same URL (one just to
+   check reachability, then another to actually load products) — now it's
+   one request that does both, roughly halving initial load time. */
+let storageMode = "unknown"; // 'connected' | 'unreachable'
+async function loadProducts(){
+  try{
+    const res = await fetch(`${API_BASE}/products`);
+    storageMode = res.ok ? 'connected' : 'unreachable';
+    return res.ok ? await res.json() : null;
+  }catch(e){
+    storageMode = 'unreachable';
+    return null;
+  }
+}
+function renderStorageWarning(){
+  const el = document.getElementById("storageWarning");
+  if(!el) return;
+  if(storageMode === 'connected'){
+    el.style.display = "none";
+  } else {
+    el.style.display = "block";
+    el.className = "storagewarn danger";
+    el.innerHTML = `🚫 <b>Can't reach the store's backend functions.</b> Products and orders won't load or save. This page needs to run through Netlify (deployed, or locally via <code>netlify dev</code>) — opening the HTML file directly, or serving it with a plain static server, won't run the <code>/netlify/functions</code> code. See README-DEPLOY.md for how to deploy it properly.`;
+  }
+}
+
+/* ---------------- reveal on scroll ---------------- */
+const io = new IntersectionObserver((es)=>es.forEach(e=>e.isIntersecting && e.target.classList.add("in")), {threshold:.15});
+document.querySelectorAll("[data-reveal]").forEach(el=>io.observe(el));
+const revealNow = () => document.querySelectorAll("[data-reveal]:not(.in)").forEach(el=>{
+  const r = el.getBoundingClientRect();
+  if (r.top < innerHeight*0.92 && r.bottom > 0) el.classList.add("in");
+});
+addEventListener("scroll", revealNow, {passive:true});
+
+/* ---------------- sticky nav ---------------- */
+const nav = document.getElementById("nav");
+const hero = document.getElementById("hero");
+addEventListener("scroll", ()=> nav.classList.toggle("on", scrollY > hero.offsetHeight*0.7), {passive:true});
+
+/* ---------------- tabs + product grid ---------------- */
+const CATS = ["All","Tees","Trousers","Shorts","Sleeveless"];
+let currentTab = "All";
+let currentMoodFilter = null;
+const tabsEl = document.getElementById("tabs");
+const gridEl = document.getElementById("pgrid");
+
+function updateCounts(){
+  const heroSub = document.getElementById("heroSub");
+  const shopAllBtn = document.getElementById("shopAllBtn");
+  const whyCountTitle = document.getElementById("whyCountTitle");
+  const shopLead = document.getElementById("shopLead");
+  if(heroSub) heroSub.textContent = `Unique designs across tees, joggers, shorts and sleeveless tees — each one its own mood. Ultra-soft cotton, relaxed fits, made for Indian summers and Indian moods.`;
+  if(shopAllBtn) shopAllBtn.textContent = `Shop all designs`;
+  if(whyCountTitle) whyCountTitle.textContent = `Individual designs`;
+  if(shopLead) shopLead.textContent = `Unique prints across our categories. Tap a tab to filter, or add straight to your bag.`;
+}
+
+function renderTabs(){
+  updateCounts();
+  renderMoodPills();
+  tabsEl.innerHTML = "";
+  CATS.forEach(c=>{
+    const b = document.createElement("button");
+    b.className = "tab" + (c===currentTab ? " active" : "");
+    b.textContent = c;
+    b.onclick = () => setTab(c);
+    tabsEl.appendChild(b);
+  });
+}
+
+function renderGrid(){
+  gridEl.innerHTML = "";
+  const noteEl = document.getElementById("moodFilterNote");
+  if(currentMoodFilter){
+    noteEl.style.display = "flex";
+    noteEl.innerHTML = `<span>Showing mood: <b style="color:var(--ink);">${currentMoodFilter}</b></span><button onclick="clearMoodFilter()">Clear filter ×</button>`;
+  } else {
+    noteEl.style.display = "none";
+    noteEl.innerHTML = "";
+  }
+  let list = currentTab==="All" ? PRODUCTS : PRODUCTS.filter(p=>p.cat===currentTab);
+  if(currentMoodFilter) list = list.filter(p=>p.mood===currentMoodFilter);
+  if(list.length === 0){
+    gridEl.innerHTML = `
+      <div class="emptyshop">
+        <p>${PRODUCTS.length===0 ? "No products yet." : currentMoodFilter ? `No products match "${currentMoodFilter}" yet.` : `No products in ${currentTab} yet.`}</p>
+        ${PRODUCTS.length===0
+          ? `<a class="btn btn-ghost" href="#admin">Add your first product →</a>`
+          : currentMoodFilter
+            ? `<button class="btn btn-ghost" onclick="clearMoodFilter()">Clear filter</button>`
+            : ''}
+      </div>`;
+    return;
+  }
+  list.forEach(p=>{
+    const sizes = (p.sizes && p.sizes.length) ? p.sizes : DEFAULT_SIZES;
+    const inCartSizes = cart.filter(c=>c.id===p.id).map(c=>c.size);
+    const card = document.createElement("div");
+    card.className = "pcard";
+    card.setAttribute("data-reveal","");
+    card.innerHTML = `
+      <div class="pimg"><span class="pcat">${p.cat}</span><img src="${p.img}" alt="${p.name} — ${p.cat}" loading="lazy">${p.images && p.images.length>1 ? `<span class="pmulti">+${p.images.length-1}</span>` : ''}</div>
+      <div class="pbody">
+        <div class="pname">${p.name}</div>
+        <div class="pmood">Mood: ${p.mood}</div>
+        ${inCartSizes.length ? `<div class="incartnote">In bag: ${inCartSizes.join(", ")}</div>` : ''}
+        <div class="sizerow" data-open="0"></div>
+        <div class="prow">
+          <span class="pprice">₹${p.price}</span>
+          <button class="addbtn" data-id="${p.id}">${sizes.length>1 ? 'Choose size' : 'Add to bag'}</button>
+        </div>
+      </div>`;
+    card.querySelector(".pimg").addEventListener("click", ()=>{ location.hash = `#product-${p.id}`; });
+    card.querySelector(".pname").addEventListener("click", ()=>{ location.hash = `#product-${p.id}`; });
+    card.querySelector(".pimg").style.cursor = "pointer";
+    card.querySelector(".pname").style.cursor = "pointer";
+    const addBtn = card.querySelector(".addbtn");
+    const sizerow = card.querySelector(".sizerow");
+    addBtn.addEventListener("click",(ev)=>{
+      ev.stopPropagation();
+      if(sizes.length<=1){
+        addToCart(p, sizes[0] || "One Size");
+        renderGrid();
+        return;
+      }
+      const isOpen = sizerow.dataset.open === "1";
+      if(isOpen){ sizerow.innerHTML=""; sizerow.dataset.open="0"; return; }
+      sizerow.dataset.open = "1";
+      sizerow.innerHTML = sizes.map(s=>`<button type="button" class="sizechip" data-size="${s}">${s}</button>`).join("");
+      sizerow.querySelectorAll(".sizechip").forEach(chip=>{
+        chip.addEventListener("click",(ev2)=>{
+          ev2.stopPropagation();
+          addToCart(p, chip.dataset.size);
+          renderGrid();
+        });
+      });
+    });
+    gridEl.appendChild(card);
+    io.observe(card);
+  });
+  revealNow();
+}
+
+function setTab(c){
+  currentTab = c;
+  currentMoodFilter = null;
+  document.querySelectorAll(".mood-pill").forEach(p=>p.classList.remove("active"));
+  renderTabs();
+  renderGrid();
+  document.getElementById("shop").scrollIntoView({behavior:"smooth", block:"start"});
+}
+function clearMoodFilter(){
+  currentMoodFilter = null;
+  document.querySelectorAll(".mood-pill").forEach(p=>p.classList.remove("active"));
+  renderGrid();
+}
+
+/* ---------------- mood match (dynamic — reflects whatever's in the live catalogue) ---------------- */
+const pillsEl = document.getElementById("moodPills");
+const matchCard = document.getElementById("matchcard");
+
+function renderMoodPills(){
+  pillsEl.innerHTML = "";
+  if(PRODUCTS.length === 0){
+    pillsEl.innerHTML = `<p class="adstatus" style="color:rgba(255,250,242,.5);">No products yet — add some from the Store Admin and they'll show up here.</p>`;
+    matchCard.classList.add("empty");
+    matchCard.innerHTML = `<div class="info"><div class="tag">Your match</div><div class="name">Pick a mood above ↑</div></div><button class="goto" id="matchGoto">See the design</button>`;
+    document.getElementById("matchGoto").onclick = ()=> setTab("All");
+    return;
+  }
+  const seenMoods = [];
+  PRODUCTS.forEach(p=>{
+    const mood = p.mood || p.name;
+    if(!seenMoods.includes(mood)) seenMoods.push(mood);
+  });
+  seenMoods.slice(0,16).forEach(mood=>{
+    const b = document.createElement("button");
+    b.className = "mood-pill";
+    b.textContent = mood;
+    b.addEventListener("click", ()=> selectMood(mood,b));
+    pillsEl.appendChild(b);
+  });
+}
+function selectMood(mood, btn){
+  document.querySelectorAll(".mood-pill").forEach(p=>p.classList.remove("active"));
+  btn.classList.add("active");
+  const matches = PRODUCTS.filter(p=>(p.mood || p.name) === mood);
+  if(matches.length === 0) return;
+  matchCard.classList.remove("empty");
+  if(matches.length === 1){
+    const p = matches[0];
+    matchCard.innerHTML = `
+      <div class="info">
+        <div class="tag">Your match — ${mood}</div>
+        <div class="name">${p.name}</div>
+        <div class="cat">₹${p.price} · ${p.cat}</div>
+      </div>
+      <button class="goto" id="matchGoto">See the design</button>`;
+    document.getElementById("matchGoto").onclick = ()=> location.hash = `#product-${p.id}`;
+  } else {
+    matchCard.innerHTML = `
+      <div class="info">
+        <div class="tag">Your match — ${mood}</div>
+        <div class="name">${matches.length} designs for this mood</div>
+        <div class="cat">${matches.map(p=>p.name).join(" · ")}</div>
+      </div>
+      <button class="goto" id="matchGoto">See all ${matches.length} designs</button>`;
+    document.getElementById("matchGoto").onclick = ()=>{
+      currentTab = "All";
+      currentMoodFilter = mood;
+      renderTabs();
+      renderGrid();
+      document.getElementById("shop").scrollIntoView({behavior:"smooth", block:"start"});
+    };
+  }
+}
+
+/* ---------------- cart ---------------- */
+let cart = [];
+const cartback = document.getElementById("cartback");
+const cartEl = document.getElementById("cart");
+const cartItemsEl = document.getElementById("cartitems");
+const navcount = document.getElementById("navcount");
+const carttotal = document.getElementById("carttotal");
+
+function addToCart(p, size){
+  if(!cart.some(c=>c.id===p.id && c.size===size)){
+    cart.push({...p, size});
+    showToast(`Added "${p.name}" (${size}) to your bag`);
+  } else {
+    showToast(`"${p.name}" (${size}) is already in your bag`);
+  }
+  renderCart();
+}
+function removeFromCart(id, size){
+  cart = cart.filter(c=>!(c.id===id && c.size===size));
+  renderCart();
+  renderGrid();
+}
+function renderCart(){
+  navcount.textContent = cart.length;
+  if(cart.length===0){
+    cartItemsEl.innerHTML = `<div id="cartempty">Your bag is empty.<br>Go find your mood 👀</div>`;
+  } else {
+    cartItemsEl.innerHTML = cart.map(p=>`
+      <div class="citem">
+        <img src="${p.img}" alt="${p.name}">
+        <div class="cinfo">
+          <div class="cn">${p.name}</div>
+          <div class="cm">${p.cat} · Size: ${p.size} · Mood: ${p.mood}</div>
+          <button class="cremove" onclick="removeFromCart(${p.id}, '${p.size}')">Remove</button>
+        </div>
+        <div class="cprice">₹${p.price}</div>
+      </div>`).join("");
+  }
+  const total = cart.reduce((s,p)=>s+p.price,0);
+  carttotal.textContent = "₹" + total;
+  if(region === "intl" && paypalLoaded) renderPayPalButtons();
+}
+function openCart(){ cartback.classList.add("on"); cartEl.classList.add("on"); }
+function closeCart(){ cartback.classList.remove("on"); cartEl.classList.remove("on"); }
+
+/* ================= CHECKOUT CONFIG =================
+   Swap these two placeholders for your real keys before going live.
+   - Razorpay Key ID: from dashboard.razorpay.com → Settings → API Keys
+     (use the rzp_test_... key while testing, rzp_live_... once verified)
+   - PayPal Client ID: from developer.paypal.com → Apps & Credentials
+     (PayPal for Indian merchants only works for CROSS-BORDER / foreign-
+     currency orders — it cannot process India-to-India payments, so this
+     path is USD-only and meant for international customers.)
+====================================================== */
+const RAZORPAY_KEY_ID = "rzp_live_TJrOEqxhIERsYV";
+const PAYPAL_CLIENT_ID = "YOUR_PAYPAL_CLIENT_ID_HERE";
+const USD_TO_INR = 95.39; // approximate — update to the live rate, or replace with a real FX API call
+
+/* ================= GST / INVOICE CONFIG =================
+   Used to generate tax invoices for India orders. Prices are treated as
+   GST-inclusive at GST_RATE%. Domestic orders get CGST+SGST if the buyer's
+   state matches BUSINESS_STATE, or IGST if it doesn't. International
+   (PayPal/USD) orders are treated as exports — no CGST/SGST/IGST is
+   charged, and the invoice is marked accordingly. Double-check the export
+   invoicing treatment (LUT declaration, etc.) with your CA before relying
+   on it — that part is a compliance question, not just a formatting one.
+====================================================== */
+const BUSINESS_NAME = "SB ENTERPRISES";
+const BUSINESS_GSTIN = "20AOBPD7025B1ZZ";
+const BUSINESS_ADDRESS_LINES = [
+  "Committee Market, Talgaria More",
+  "Bokaro Steel City, Bokaro District",
+  "Jharkhand — 827013"
+];
+const BUSINESS_STATE = "Jharkhand";
+const GST_RATE = 5; // percent, applied to GST-inclusive prices
+const DEFAULT_HSN = "6109";
+
+document.getElementById("fxRate").textContent = USD_TO_INR;
+
+/* ---------------- region toggle ---------------- */
+let region = "india";
+function setRegion(r){
+  region = r;
+  document.getElementById("rtabIndia").classList.toggle("active", r==="india");
+  document.getElementById("rtabIntl").classList.toggle("active", r==="intl");
+  document.getElementById("payIndia").style.display = r==="india" ? "block" : "none";
+  document.getElementById("payIntl").style.display = r==="intl" ? "block" : "none";
+  document.getElementById("checkoutStateWrap").style.display = r==="india" ? "block" : "none";
+  document.getElementById("checkoutCountryWrap").style.display = r==="intl" ? "block" : "none";
+  if(r==="intl") loadPayPal();
+}
+
+/* ---------------- Razorpay (India, INR) ---------------- */
+let razorpayLoaded = false;
+function loadRazorpayScript(){
+  return new Promise((resolve, reject)=>{
+    if(razorpayLoaded) return resolve();
+    const s = document.createElement("script");
+    s.src = "https://checkout.razorpay.com/v1/checkout.js";
+    s.onload = ()=>{ razorpayLoaded = true; resolve(); };
+    s.onerror = reject;
+    document.head.appendChild(s);
+  });
+}
+/* ---------------- orders (created on successful checkout, trackable later) ---------------- */
+function generateOrderId(){
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  let code = "";
+  for(let i=0;i<6;i++) code += chars[Math.floor(Math.random()*chars.length)];
+  return "LP" + code;
+}
+function getCheckoutEmail(){
+  return document.getElementById("checkoutEmail").value.trim().toLowerCase();
+}
+function isValidEmail(email){
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+function getBillingDetails(){
+  return {
+    name: document.getElementById("checkoutName").value.trim(),
+    address: document.getElementById("checkoutAddress").value.trim(),
+    city: document.getElementById("checkoutCity").value.trim(),
+    pin: document.getElementById("checkoutPin").value.trim(),
+    state: region === "india" ? document.getElementById("checkoutState").value : "",
+    country: region === "intl" ? document.getElementById("checkoutCountry").value.trim() : "India",
+    gstin: document.getElementById("checkoutGstin").value.trim().toUpperCase(),
+  };
+}
+function billingIncomplete(){
+  const b = getBillingDetails();
+  if(!b.name || !b.address || !b.city) return "Fill in your name and address before checking out";
+  if(region === "india" && !b.state) return "Select your state before checking out";
+  if(region === "intl" && !b.country) return "Enter your country before checking out";
+  return null;
+}
+async function createOrder(paymentRef, currencyLabel){
+  const billing = getBillingDetails();
+  const order = {
+    id: generateOrderId(),
+    email: getCheckoutEmail(),
+    date: new Date().toISOString(),
+    items: cart.map(p=>({ id:p.id, name:p.name, cat:p.cat, mood:p.mood, price:p.price, img:p.img, hsn: p.hsn || DEFAULT_HSN, size: p.size })),
+    total: cart.reduce((s,p)=>s+p.price,0),
+    currency: currencyLabel,
+    region: region,
+    paymentRef: paymentRef || "",
+    billing: billing,
+  };
+  try{
+    const res = await fetch(`${API_BASE}/orders`, {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify(order)
+    });
+    if(res.ok){
+      const data = await res.json();
+      if(data && data.order) return data.order;
+      showToast("Order placed, but we couldn't confirm it saved — please screenshot this confirmation");
+    } else {
+      showToast("Order placed, but we couldn't confirm it saved — please screenshot this confirmation");
+    }
+  }catch(e){
+    showToast("Order placed, but we couldn't confirm it saved — please screenshot this confirmation");
+  }
+  return order;
+}
+
+async function payWithRazorpay(){
+  if(cart.length===0){ showToast("Your bag is empty"); return; }
+  if(!isValidEmail(getCheckoutEmail())){ showToast("Enter a valid email before checking out"); return; }
+  const billingIssue = billingIncomplete();
+  if(billingIssue){ showToast(billingIssue); return; }
+  if(RAZORPAY_KEY_ID.includes("YOUR_KEY_ID")){
+    showToast("Add your Razorpay Key ID in the code to go live — see CHECKOUT CONFIG");
+    return;
+  }
+  try{ await loadRazorpayScript(); }
+  catch(e){ showToast("Couldn't load Razorpay — check your connection"); return; }
+
+  const total = cart.reduce((s,p)=>s+p.price,0);
+  const options = {
+    key: RAZORPAY_KEY_ID,
+    amount: total * 100, // paise
+    currency: "INR",
+    name: "Luchpuch",
+    description: `${cart.length} item(s)`,
+    prefill: { email: getCheckoutEmail() },
+    handler: async function(response){
+      const order = await createOrder(response.razorpay_payment_id, "INR");
+      showOrderConfirmed(order);
+      cart = []; renderCart(); renderGrid(); closeCart();
+    },
+    theme: { color: "#3a2a20" },
+    // NOTE: for production, create the order server-side first and pass
+    // order_id here — a pure client-side amount (as used in this demo)
+    // can be tampered with in the browser and should not be trusted for
+    // real transactions without server-side verification of the payment.
+  };
+  const rzp = new Razorpay(options);
+  rzp.open();
+}
+
+/* ---------------- PayPal (international, USD) ---------------- */
+let paypalLoaded = false;
+function loadPayPal(){
+  if(PAYPAL_CLIENT_ID.includes("YOUR_PAYPAL_CLIENT_ID")){
+    document.getElementById("paypal-buttons").innerHTML =
+      `<p class="note" style="color:var(--blush);">Add your PayPal Client ID in the code to go live — see CHECKOUT CONFIG</p>`;
+    return;
+  }
+  if(paypalLoaded){ renderPayPalButtons(); return; }
+  const s = document.createElement("script");
+  s.src = `https://www.paypal.com/sdk/js?client-id=${PAYPAL_CLIENT_ID}&currency=USD`;
+  s.onload = ()=>{ paypalLoaded = true; renderPayPalButtons(); };
+  s.onerror = ()=>{ document.getElementById("paypal-buttons").innerHTML = `<p class="note">Couldn't load PayPal.</p>`; };
+  document.head.appendChild(s);
+}
+function renderPayPalButtons(){
+  const el = document.getElementById("paypal-buttons");
+  el.innerHTML = "";
+  if(cart.length===0){ el.innerHTML = `<p class="note">Your bag is empty</p>`; return; }
+  if(!isValidEmail(getCheckoutEmail())){ el.innerHTML = `<p class="note" style="color:var(--blush);">Enter a valid email above to continue</p>`; return; }
+  const billingIssue = billingIncomplete();
+  if(billingIssue){ el.innerHTML = `<p class="note" style="color:var(--blush);">${billingIssue}</p>`; return; }
+  const totalINR = cart.reduce((s,p)=>s+p.price,0);
+  const totalUSD = (totalINR / USD_TO_INR).toFixed(2);
+  paypal.Buttons({
+    createOrder: (data, actions) => actions.order.create({
+      purchase_units: [{ amount: { value: totalUSD, currency_code: "USD" } }]
+    }),
+    onApprove: (data, actions) => actions.order.capture().then(async (details)=>{
+      const order = await createOrder(details.id, "USD");
+      showOrderConfirmed(order);
+      cart = []; renderCart(); renderGrid(); closeCart();
+    }),
+    onError: () => showToast("PayPal couldn't process that — try again"),
+  }).render("#paypal-buttons");
+}
+["checkoutEmail","checkoutName","checkoutAddress","checkoutCity","checkoutPin","checkoutCountry"].forEach(id=>{
+  document.getElementById(id).addEventListener("blur", ()=>{
+    if(region === "intl" && paypalLoaded) renderPayPalButtons();
+  });
+});
+document.getElementById("checkoutState").addEventListener("change", ()=>{
+  if(region === "intl" && paypalLoaded) renderPayPalButtons();
+});
+
+/* ---------------- order confirmation modal ---------------- */
+const orderRegistry = {};
+function showOrderConfirmed(order){
+  orderRegistry[order.id] = order;
+  document.getElementById("ocOrderId").textContent = order.id;
+  document.getElementById("ocBack").classList.add("on");
+  document.getElementById("ocTrackBtn").onclick = ()=>{
+    closeOrderConfirm();
+    location.hash = `#track-${encodeURIComponent(order.email)}`;
+  };
+  document.getElementById("ocInvoiceBtn").onclick = ()=> openInvoice(order.id);
+}
+function closeOrderConfirm(){ document.getElementById("ocBack").classList.remove("on"); }
+
+/* ---------------- invoice ---------------- */
+function fmtMoney(order, amount){
+  return order.currency === 'USD' ? '$'+(amount/USD_TO_INR).toFixed(2) : '₹'+amount.toFixed(2).replace(/\.00$/,'');
+}
+function renderInvoiceHTML(order){
+  const b = order.billing || {};
+  const hasTaxData = !!order.taxSummary;
+  const isExport = order.isExport || !hasTaxData;
+  const dateStr = new Date(order.invoiceDate || order.date).toLocaleDateString('en-IN', {day:'numeric', month:'long', year:'numeric'});
+  const rows = order.items.map(it => `
+    <tr>
+      <td>${escapeHtml(it.name)}${it.size ? ` <span style="color:#777;">(Size: ${escapeHtml(it.size)})</span>` : ''}</td>
+      <td>${escapeHtml(it.hsn || DEFAULT_HSN)}</td>
+      <td class="num">1</td>
+      <td class="num">${isExport ? fmtMoney(order, it.price) : fmtMoney(order, it.taxable)}</td>
+      ${isExport ? '' : `<td class="num">${it.cgst ? fmtMoney(order, it.cgst) : '—'}</td><td class="num">${it.sgst ? fmtMoney(order, it.sgst) : '—'}</td><td class="num">${it.igst ? fmtMoney(order, it.igst) : '—'}</td>`}
+      <td class="num">${fmtMoney(order, it.price)}</td>
+    </tr>`).join("");
+
+  const taxCols = isExport ? '' : `<th class="num">CGST</th><th class="num">SGST</th><th class="num">IGST</th>`;
+  const ts = order.taxSummary;
+
+  return `
+    <div class="invhead">
+      <div>
+        <h2>${BUSINESS_NAME}</h2>
+        ${BUSINESS_ADDRESS_LINES.map(l=>`<div>${l}</div>`).join("")}
+        ${isExport ? '' : `<div>GSTIN: ${BUSINESS_GSTIN}</div>`}
+      </div>
+      <div class="invmeta">
+        <div style="font-weight:700;font-size:14px;">${hasTaxData && !order.isExport ? 'TAX INVOICE' : 'INVOICE'}</div>
+        <div>Invoice No: ${escapeHtml(order.invoiceNumber || '—')}</div>
+        <div>Date: ${dateStr}</div>
+        <div>Order Ref: ${escapeHtml(order.id)}</div>
+      </div>
+    </div>
+    <div class="invparties">
+      <div class="invcol">
+        <h4>Bill To</h4>
+        <div>${escapeHtml(b.name)}</div>
+        <div>${escapeHtml(b.address)}</div>
+        <div>${escapeHtml([b.city, b.pin].filter(Boolean).join(' — '))}</div>
+        <div>${escapeHtml(b.state || b.country || '')}</div>
+        <div>${escapeHtml(order.email)}</div>
+        ${b.gstin ? `<div>GSTIN: ${escapeHtml(b.gstin)}</div>` : ''}
+      </div>
+    </div>
+    <table class="invtable">
+      <thead><tr>
+        <th>Item</th><th>HSN</th><th class="num">Qty</th><th class="num">Taxable Value</th>${taxCols}<th class="num">Total</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    <div class="invtotals">
+      ${isExport ? '' : `
+      <div><span>Taxable Value</span><span>${fmtMoney(order, ts.taxableTotal)}</span></div>
+      ${ts.sameState ? `
+      <div><span>CGST</span><span>${fmtMoney(order, ts.cgstTotal)}</span></div>
+      <div><span>SGST</span><span>${fmtMoney(order, ts.sgstTotal)}</span></div>` : `
+      <div><span>IGST</span><span>${fmtMoney(order, ts.igstTotal)}</span></div>`}
+      `}
+      <div class="grand"><span>Grand Total</span><span>${fmtMoney(order, order.total)}</span></div>
+    </div>
+    <div class="invfoot">
+      ${!hasTaxData
+        ? 'This order was placed before itemised GST invoicing was enabled — tax breakdown is unavailable for it.'
+        : order.isExport
+          ? 'Export of goods — GST treatment to be confirmed as applicable under LUT/export provisions.'
+          : `Prices are inclusive of GST @ ${ts.gstRate}%.`}
+      This is a computer-generated invoice and does not require a signature.
+    </div>`;
+}
+function openInvoice(orderId){
+  const order = orderRegistry[orderId];
+  if(!order){ showToast("Couldn't find that order to invoice"); return; }
+  document.getElementById("invoiceBody").innerHTML = renderInvoiceHTML(order);
+  document.getElementById("invoiceview").classList.add("on");
+}
+function closeInvoice(){ document.getElementById("invoiceview").classList.remove("on"); }
+
+/* ---------------- track order (by email — can return several orders) ---------------- */
+const ORDER_STAGES = ["Confirmed","Packed","Shipped","Out for Delivery","Delivered"];
+function stageForOrder(order){
+  // Real status, set by the admin (Store Admin → Orders) and stored on the
+  // order server-side. Orders placed before this existed won't have a
+  // status yet — treat those as "Confirmed" rather than guessing.
+  const idx = ORDER_STAGES.indexOf(order.status);
+  return idx === -1 ? 0 : idx;
+}
+function renderOrderCard(order){
+  const stage = stageForOrder(order);
+  return `
+    <div class="trackcard">
+      <div class="tid">${escapeHtml(order.id)}</div>
+      <div class="tdate">Placed ${new Date(order.date).toLocaleDateString('en-IN', {day:'numeric',month:'long',year:'numeric'})}</div>
+      ${order.awb ? `<div class="tdate">Shipped via ${escapeHtml(order.courier || 'courier')} — AWB/Tracking No. <b>${escapeHtml(order.awb)}</b></div>` : ''}
+      <div class="stepper">
+        ${ORDER_STAGES.map((s,i)=>`
+          <div class="step ${i<=stage?'done':''}">
+            <div class="dot">${i<=stage?'✓':''}</div>
+            <div class="slabel">${s}</div>
+          </div>`).join("")}
+      </div>
+      <div class="trackitems">
+        ${order.items.map(it=>`
+          <div class="trackitem">
+            <img src="${escapeHtml(it.img)}" alt="${escapeHtml(it.name)}">
+            <div class="tin">${escapeHtml(it.name)}<br><span style="color:var(--ink-dim);font-size:11.5px;">${escapeHtml(it.cat)}${it.size ? ' · Size: '+escapeHtml(it.size) : ''}</span></div>
+            <div class="tip">${order.currency==='USD' ? '$'+(it.price/USD_TO_INR).toFixed(2) : '₹'+it.price}</div>
+          </div>`).join("")}
+      </div>
+      <div class="tracktotal">
+        <span>Total</span>
+        <span>${order.currency==='USD' ? '$'+(order.total/USD_TO_INR).toFixed(2) : '₹'+order.total}</span>
+      </div>
+      <button class="btn btn-ghost tinvbtn" onclick="openInvoice('${order.id}')">Download Invoice</button>
+    </div>`;
+}
+async function doTrackOrder(){
+  const emailInput = document.getElementById("trackInput").value.trim().toLowerCase();
+  const resultEl = document.getElementById("trackResult");
+  if(!emailInput){ resultEl.innerHTML = `<p class="adstatus">Enter the email you used at checkout.</p>`; return; }
+  if(!isValidEmail(emailInput)){ resultEl.innerHTML = `<p class="adstatus">That doesn't look like a valid email — double-check it.</p>`; return; }
+  resultEl.innerHTML = `<p class="adstatus">Looking that up…</p>`;
+  let matches = [];
+  try{
+    const res = await fetch(`${API_BASE}/orders?email=${encodeURIComponent(emailInput)}`);
+    matches = res.ok ? await res.json() : [];
+  }catch(e){ matches = []; }
+  matches.forEach(o => orderRegistry[o.id] = o);
+  if(matches.length===0){
+    resultEl.innerHTML = `<p class="adstatus">We couldn't find any orders for that email. Double-check it and try again.</p>`;
+    return;
+  }
+  resultEl.innerHTML = `
+    <p class="adstatus" style="margin-bottom:16px;">${matches.length} order${matches.length===1?'':'s'} found</p>
+    <div class="trackstack">${matches.map(renderOrderCard).join("")}</div>`;
+}
+
+/* ---------------- toast ---------------- */
+let toastTimer;
+function showToast(msg){
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("on");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove("on"), 2200);
+}
+
+/* ---------------- admin portal ---------------- */
+const adminRowsEl = document.getElementById("adminRows");
+const adminStatusEl = document.getElementById("adminStatus");
+
+function renderAdminTable(){
+  adminRowsEl.innerHTML = PRODUCTS.map(p=>`
+    <tr>
+      <td><img src="${p.img}" alt="${p.name}"></td>
+      <td>${p.name}</td>
+      <td>${p.cat}</td>
+      <td>${p.mood}</td>
+      <td>₹${p.price}</td>
+      <td class="adactions">
+        <button onclick="openProductForm(${p.id})">Edit</button>
+        <button class="del" onclick="deleteProduct(${p.id})">Delete</button>
+      </td>
+    </tr>`).join("");
+  const modeLabel = storageMode === 'connected' ? "the shared store (visible to everyone)" : "nowhere — backend unreachable, use Export/Import";
+  adminStatusEl.textContent = `${PRODUCTS.length} products · saved to ${modeLabel}`;
+  renderStorageWarning();
+}
+
+/* ---------------- admin: orders tab ---------------- */
+let adminOrdersLoaded = false;
+function setAdminTab(tab){
+  document.getElementById("admintabProducts").classList.toggle("active", tab==="products");
+  document.getElementById("admintabOrders").classList.toggle("active", tab==="orders");
+  document.getElementById("adminProductsPanel").style.display = tab==="products" ? "block" : "none";
+  document.getElementById("adminOrdersPanel").style.display = tab==="orders" ? "block" : "none";
+  if(tab==="orders" && !adminOrdersLoaded) loadAdminOrders();
+}
+async function loadAdminOrders(){
+  const statusEl = document.getElementById("adminOrdersStatus");
+  statusEl.textContent = "Loading orders…";
+  try{
+    const res = await fetch(`${API_BASE}/orders`, { headers: { 'x-admin-key': getAdminKey() } });
+    if(!res.ok){
+      statusEl.textContent = res.status === 401
+        ? "Your admin session expired — reopen #admin to re-enter the passcode"
+        : "Couldn't load orders — check your connection and try again";
+      return;
+    }
+    const orders = await res.json();
+    orders.forEach(o => orderRegistry[o.id] = o);
+    adminOrdersLoaded = true;
+    renderAdminOrderRows(orders);
+  }catch(e){
+    statusEl.textContent = "Couldn't load orders — check your connection and try again";
+  }
+}
+function renderAdminOrderRows(orders){
+  const statusEl = document.getElementById("adminOrdersStatus");
+  statusEl.textContent = `${orders.length} order${orders.length===1?'':'s'}`;
+  document.getElementById("adminOrderRows").innerHTML = orders.map(o=>`
+    <tr>
+      <td>${escapeHtml(o.id)}</td>
+      <td>${new Date(o.date).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}</td>
+      <td>${escapeHtml(o.email)}</td>
+      <td>${o.currency==='USD' ? '$'+(o.total/USD_TO_INR).toFixed(2) : '₹'+o.total}</td>
+      <td>
+        <select class="ordstatusselect" onchange="updateOrderStatus('${o.id}', this.value, this)">
+          ${ORDER_STAGES.map(s=>`<option value="${s}" ${o.status===s?'selected':''}>${s}</option>`).join("")}
+        </select>
+      </td>
+      <td>
+        <div class="trackcell">
+          <input type="text" placeholder="Courier (e.g. Delhivery)" id="courier-${o.id}" value="${escapeHtml(o.courier || '')}">
+          <input type="text" placeholder="AWB / tracking no." id="awb-${o.id}" value="${escapeHtml(o.awb || '')}">
+          <button class="abtn" onclick="saveOrderTracking('${o.id}', this)">Save</button>
+        </div>
+      </td>
+      <td><button class="abtn" style="color:var(--charcoal);border-color:var(--line);" onclick="openInvoice('${o.id}')">View</button></td>
+    </tr>`).join("");
+}
+async function updateOrderStatus(id, status, selectEl){
+  selectEl.disabled = true;
+  try{
+    const res = await fetch(`${API_BASE}/order-status`, {
+      method: "POST",
+      headers: { "Content-Type":"application/json", "x-admin-key": getAdminKey() },
+      body: JSON.stringify({ id, status })
+    });
+    if(res.ok){
+      const data = await res.json();
+      if(data && data.order) orderRegistry[data.order.id] = data.order;
+      showToast(`${id} marked as "${status}" — customer notified by email`);
+    } else if(res.status === 401){
+      showToast("Your admin session expired — reopen #admin to re-enter the passcode");
+    } else {
+      showToast("Couldn't update that order's status");
+    }
+  }catch(e){
+    showToast("Couldn't update that order's status");
+  }
+  selectEl.disabled = false;
+}
+async function saveOrderTracking(id, btnEl){
+  const courier = document.getElementById(`courier-${id}`).value.trim();
+  const awb = document.getElementById(`awb-${id}`).value.trim();
+  btnEl.disabled = true;
+  const original = btnEl.textContent;
+  btnEl.textContent = "Saving…";
+  try{
+    const res = await fetch(`${API_BASE}/order-status`, {
+      method: "POST",
+      headers: { "Content-Type":"application/json", "x-admin-key": getAdminKey() },
+      body: JSON.stringify({ id, courier, awb })
+    });
+    if(res.ok){
+      const data = await res.json();
+      if(data && data.order) orderRegistry[data.order.id] = data.order;
+      showToast(`Tracking saved for ${id}`);
+    } else if(res.status === 401){
+      showToast("Your admin session expired — reopen #admin to re-enter the passcode");
+    } else {
+      showToast("Couldn't save tracking details");
+    }
+  }catch(e){
+    showToast("Couldn't save tracking details");
+  }
+  btnEl.disabled = false;
+  btnEl.textContent = original;
+}
+
+let editingId = null;
+let pendingImages = [];
+
+function renderPmImageList(){
+  const list = document.getElementById("pmImageList");
+  list.innerHTML = pendingImages.map((src,i)=>`
+    <div class="pmthumb">
+      <img src="${src}" alt="Image ${i+1}">
+      <button type="button" onclick="removePendingImage(${i})" title="Remove">×</button>
+      ${i===0 ? '<div class="pmmain">Main</div>' : ''}
+    </div>`).join("");
+}
+function removePendingImage(i){
+  pendingImages.splice(i,1);
+  renderPmImageList();
+}
+
+function openProductForm(id){
+  editingId = id;
+  pendingImages = [];
+  if(id !== null){
+    const p = PRODUCTS.find(x=>x.id===id);
+    document.getElementById("pmTitle").textContent = "Edit product";
+    document.getElementById("pmName").value = p.name;
+    document.getElementById("pmCat").value = p.cat;
+    document.getElementById("pmMood").value = p.mood;
+    document.getElementById("pmPrice").value = p.price;
+    document.getElementById("pmDesc").value = p.description || "";
+    document.getElementById("pmQuality").value = p.quality || "";
+    document.getElementById("pmHsn").value = p.hsn || DEFAULT_HSN;
+    document.getElementById("pmSizes").value = (p.sizes && p.sizes.length ? p.sizes : (CAT_SIZES[p.cat]||DEFAULT_SIZES)).join(", ");
+    pendingImages = [...(p.images && p.images.length ? p.images : [p.img])];
+  } else {
+    document.getElementById("pmTitle").textContent = "Add product";
+    document.getElementById("pmName").value = "";
+    document.getElementById("pmCat").value = "Tees";
+    document.getElementById("pmMood").value = "";
+    document.getElementById("pmPrice").value = "";
+    document.getElementById("pmDesc").value = "";
+    document.getElementById("pmQuality").value = "";
+    document.getElementById("pmHsn").value = DEFAULT_HSN;
+    document.getElementById("pmSizes").value = CAT_SIZES["Tees"].join(", ");
+  }
+  renderPmImageList();
+  document.getElementById("pmImage").value = "";
+  document.getElementById("pmodalback").classList.add("on");
+}
+document.getElementById("pmCat").addEventListener("change", (e)=>{
+  // Only auto-fill sizes for a brand-new product — editing an existing one
+  // respects whatever sizes are already set, so switching category doesn't
+  // silently wipe a custom size list.
+  if(editingId === null){
+    document.getElementById("pmSizes").value = (CAT_SIZES[e.target.value] || DEFAULT_SIZES).join(", ");
+  }
+});
+function closeProductForm(){ document.getElementById("pmodalback").classList.remove("on"); }
+
+/* ---------------- image compression ----------------
+   Uploaded photos get resized and re-encoded as JPEG before they're stored,
+   instead of embedding the raw file. Phone photos especially can be 5-10MB
+   each — at that size, just 2-3 products can blow past what a serverless
+   function will accept in a single request, causing saves to silently fail.
+   Capping the longest side at 1600px and encoding at ~82% JPEG quality keeps
+   product photos looking sharp while landing typically in the tens-to-low-
+   hundreds of KB instead of megabytes.
+   Trade-off: this converts everything to JPEG, so any transparency (e.g. a
+   PNG with a transparent background) will be flattened onto a white
+   background. Fine for ordinary product photography, worth knowing if you
+   ever upload logos/graphics with transparency. */
+const IMG_MAX_DIM = 1600;
+const IMG_JPEG_QUALITY = 0.82;
+
+function compressImageFile(file){
+  return new Promise((resolve, reject)=>{
+    const reader = new FileReader();
+    reader.onerror = () => reject(reader.error || new Error("Couldn't read file"));
+    reader.onload = (e)=>{
+      const img = new Image();
+      img.onerror = () => reject(new Error("Couldn't decode image"));
+      img.onload = ()=>{
+        let { width, height } = img;
+        if(width > IMG_MAX_DIM || height > IMG_MAX_DIM){
+          if(width >= height){ height = Math.round(height * (IMG_MAX_DIM/width)); width = IMG_MAX_DIM; }
+          else { width = Math.round(width * (IMG_MAX_DIM/height)); height = IMG_MAX_DIM; }
+        }
+        const canvas = document.createElement("canvas");
+        canvas.width = width; canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, width, height);
+        ctx.drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL("image/jpeg", IMG_JPEG_QUALITY));
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+async function handleImageFiles(input){
+  const files = Array.from(input.files || []);
+  if(!files.length) return;
+  showToast(`Compressing ${files.length} image${files.length>1?'s':''}…`);
+  try{
+    const compressed = await Promise.all(files.map(compressImageFile));
+    pendingImages.push(...compressed);
+    renderPmImageList();
+  }catch(e){
+    showToast("Couldn't process one of those images — try a different file");
+  }
+  input.value = "";
+}
+
+async function saveProductForm(){
+  const name = document.getElementById("pmName").value.trim();
+  const cat = document.getElementById("pmCat").value;
+  const mood = document.getElementById("pmMood").value.trim();
+  const price = parseInt(document.getElementById("pmPrice").value, 10) || 0;
+  const description = document.getElementById("pmDesc").value.trim();
+  const quality = document.getElementById("pmQuality").value.trim();
+  const hsn = document.getElementById("pmHsn").value.trim() || DEFAULT_HSN;
+  const sizes = document.getElementById("pmSizes").value.split(",").map(s=>s.trim()).filter(Boolean);
+  if(!name){ showToast("Give the product a name first"); return; }
+  if(!pendingImages.length){ showToast("Add at least one product image"); return; }
+  if(!sizes.length){ showToast("Add at least one size"); return; }
+  let label;
+  if(editingId !== null){
+    const p = PRODUCTS.find(x=>x.id===editingId);
+    p.name = name; p.cat = cat; p.mood = mood; p.price = price;
+    p.description = description; p.quality = quality; p.hsn = hsn; p.sizes = sizes;
+    p.images = [...pendingImages]; p.img = pendingImages[0];
+    label = `Updated "${name}"`;
+  } else {
+    PRODUCTS.push({
+      id: PRODUCTS.length, cat, img: pendingImages[0], images: [...pendingImages],
+      name, mood, price, description, quality, hsn, sizes
+    });
+    label = `Added "${name}" to the catalogue`;
+  }
+  reindex();
+  const ok = await persist();
+  if(ok) showToast(label);
+  closeProductForm();
+  renderAdminTable();
+  renderTabs();
+  renderGrid();
+}
+
+async function deleteProduct(id){
+  const p = PRODUCTS.find(x=>x.id===id);
+  if(!confirm(`Delete "${p.name}"? This can't be undone.`)) return;
+  PRODUCTS = PRODUCTS.filter(x=>x.id!==id);
+  reindex();
+  const ok = await persist();
+  renderAdminTable();
+  renderTabs();
+  renderGrid();
+  if(ok) showToast(`Deleted "${p.name}"`);
+}
+
+async function clearAllProducts(){
+  if(!confirm(`Delete all ${PRODUCTS.length} product(s) from the catalogue? This can't be undone.`)) return;
+  PRODUCTS = [];
+  reindex();
+  const ok = await persist();
+  renderAdminTable();
+  renderTabs();
+  renderGrid();
+  if(ok) showToast("Catalogue cleared");
+}
+
+function exportJSON(){
+  const blob = new Blob([JSON.stringify(PRODUCTS, null, 2)], {type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = "luchpuch-products.json";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importJSON(file){
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = async (e)=>{
+    try{
+      const parsed = JSON.parse(e.target.result);
+      if(!Array.isArray(parsed)) throw new Error("not an array");
+      PRODUCTS = parsed;
+      PRODUCTS.forEach(normalizeProduct);
+      reindex();
+      const ok = await persist();
+      renderAdminTable();
+      renderTabs();
+      renderGrid();
+      if(ok) showToast(`Imported ${PRODUCTS.length} products`);
+    }catch(err){
+      showToast("Couldn't read that file — expecting a Luchpuch products JSON export");
+    }
+  };
+  reader.readAsText(file);
+}
+
+/* ---------------- product detail page ---------------- */
+const productViewEl = document.getElementById("productview");
+function renderProductPage(id){
+  const p = PRODUCTS.find(x=>x.id===id);
+  const body = document.getElementById("pdvbody");
+  if(!p){
+    body.innerHTML = `<p class="adstatus">This product isn't available anymore. <a href="#" onclick="location.hash='';return false;">Back to shop →</a></p>`;
+    return;
+  }
+  const images = (p.images && p.images.length) ? p.images : [p.img];
+  const sizes = (p.sizes && p.sizes.length) ? p.sizes : DEFAULT_SIZES;
+  const inCartSizes = cart.filter(c=>c.id===p.id).map(c=>c.size);
+  let selectedSize = null;
+  body.innerHTML = `
+    <div class="pdvgrid">
+      <div class="pdvgallery">
+        <div class="pdvmain"><img id="pdvMainImg" src="${images[0]}" alt="${p.name}"></div>
+        ${images.length>1 ? `<div class="pdvthumbs">${images.map((src,i)=>`<img src="${src}" class="${i===0?'active':''}" onclick="swapPdvImage(${i})" alt="${p.name} ${i+1}">`).join("")}</div>` : ''}
+      </div>
+      <div class="pdvinfo">
+        <div class="pdvcat">${p.cat}</div>
+        <h1>${p.name}</h1>
+        <span class="pdvmood">Mood: ${p.mood}</span>
+        <div class="pdvprice">₹${p.price}</div>
+        <p class="pdvdesc">${p.description || ""}</p>
+        ${p.quality ? `<div class="pdvqualitybox"><h4>Quality &amp; Fabric</h4><p>${p.quality}</p></div>` : ''}
+        <div class="pdvsizes">
+          <h4>Select size</h4>
+          <div class="pdvsizerow">${sizes.map(s=>`<button type="button" class="sizechip pdvchip" data-size="${s}">${s}</button>`).join("")}</div>
+          ${inCartSizes.length ? `<div class="incartnote">In bag: ${inCartSizes.join(", ")}</div>` : ''}
+        </div>
+        <div class="pdvaddrow">
+          <button class="btn btn-solid" id="pdvAddBtn" disabled>Select a size</button>
+          <button class="btn btn-ghost" onclick="location.hash='';">Continue shopping</button>
+        </div>
+      </div>
+    </div>`;
+  const addBtn = document.getElementById("pdvAddBtn");
+  body.querySelectorAll(".pdvchip").forEach(chip=>{
+    chip.addEventListener("click", ()=>{
+      body.querySelectorAll(".pdvchip").forEach(c=>c.classList.remove("active"));
+      chip.classList.add("active");
+      selectedSize = chip.dataset.size;
+      addBtn.disabled = false;
+      addBtn.textContent = `Add to bag — Size ${selectedSize}`;
+    });
+  });
+  addBtn.addEventListener("click", ()=>{
+    if(!selectedSize) return;
+    addToCart(p, selectedSize);
+    renderProductPage(id);
+  });
+  window.scrollTo(0,0);
+}
+let pdvImages = [];
+function swapPdvImage(i){
+  const thumbs = document.querySelectorAll(".pdvthumbs img");
+  thumbs.forEach((t,ti)=>t.classList.toggle("active", ti===i));
+  document.getElementById("pdvMainImg").src = thumbs[i].src;
+}
+
+/* ---------------- admin route (simple passcode gate) ---------------- */
+const adminViewEl = document.getElementById("adminview");
+const storyViewEl = document.getElementById("storyview");
+const trackViewEl = document.getElementById("trackview");
+let adminUnlocked = false;
+try{ adminUnlocked = sessionStorage.getItem('luchpuch:admin_ok') === '1' && !!sessionStorage.getItem('luchpuch:admin_key'); }catch(e){}
+
+function hideAllViews(){
+  adminViewEl.classList.remove("on");
+  productViewEl.classList.remove("on");
+  storyViewEl.classList.remove("on");
+  trackViewEl.classList.remove("on");
+}
+
+async function checkRoute(){
+  const hash = location.hash;
+  if(hash === "#admin"){
+    if(!adminUnlocked){
+      const code = prompt("Enter the admin passcode to manage products:");
+      if(code === null){ location.hash = ""; return; }
+      let ok = false;
+      try{
+        const res = await fetch(`${API_BASE}/admin-check`, { headers: { 'x-admin-key': code } });
+        ok = res.ok;
+      }catch(e){ ok = false; }
+      if(ok){
+        adminUnlocked = true;
+        try{
+          sessionStorage.setItem('luchpuch:admin_ok','1');
+          sessionStorage.setItem('luchpuch:admin_key', code);
+        }catch(e){}
+      } else {
+        showToast("Incorrect passcode");
+        location.hash = "";
+        return;
+      }
+    }
+    hideAllViews();
+    adminViewEl.classList.add("on");
+    document.body.style.overflow = "hidden";
+  } else if(hash.startsWith("#product-")){
+    const id = parseInt(hash.replace("#product-",""), 10);
+    hideAllViews();
+    productViewEl.classList.add("on");
+    document.body.style.overflow = "hidden";
+    renderProductPage(id);
+  } else if(hash === "#story"){
+    hideAllViews();
+    storyViewEl.classList.add("on");
+    document.body.style.overflow = "hidden";
+    window.scrollTo(0,0);
+  } else if(hash.startsWith("#track")){
+    hideAllViews();
+    trackViewEl.classList.add("on");
+    document.body.style.overflow = "hidden";
+    window.scrollTo(0,0);
+    const presetId = hash.startsWith("#track-") ? decodeURIComponent(hash.replace("#track-","")) : "";
+    document.getElementById("trackInput").value = presetId;
+    if(presetId) doTrackOrder();
+    else document.getElementById("trackResult").innerHTML = "";
+  } else {
+    hideAllViews();
+    document.body.style.overflow = "";
+  }
+}
+addEventListener("hashchange", checkRoute);
+
+/* ---------------- Luchi chat widget ---------------- */
+let luchiHistory = [];
+let luchiOpened = false;
+function escapeHtml(s){
+  return String(s == null ? "" : s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+function renderLuchiText(text){
+  let safe = escapeHtml(text);
+  // Only internal #hash links are allowed through, since that's all Luchi is
+  // instructed to produce — keeps chat output from being able to inject
+  // arbitrary markup or external links.
+  safe = safe.replace(/\[([^\]]+)\]\((#[\w-]+)\)/g, (m, label, href) => `<a href="${href}">${label}</a>`);
+  safe = safe.replace(/\n/g, "<br>");
+  return safe;
+}
+function appendLuchiMessage(role, text){
+  const wrap = document.getElementById("luchiMessages");
+  const div = document.createElement("div");
+  div.className = `luchimsg ${role==='user' ? 'user' : 'bot'}`;
+  div.innerHTML = role==='user' ? escapeHtml(text) : renderLuchiText(text);
+  wrap.appendChild(div);
+  wrap.scrollTop = wrap.scrollHeight;
+  return div;
+}
+function toggleLuchi(){
+  const panel = document.getElementById("luchiPanel");
+  const isOpen = panel.classList.toggle("on");
+  if(isOpen && !luchiOpened){
+    luchiOpened = true;
+    appendLuchiMessage("bot", "Hey! I'm Luchi 👋 Ask me about moods, sizes, shipping, or your order status — I can look up real order info if you give me your email.");
+  }
+  if(isOpen) document.getElementById("luchiInput").focus();
+}
+async function submitLuchiMessage(event){
+  event.preventDefault();
+  const input = document.getElementById("luchiInput");
+  const text = input.value.trim();
+  if(!text) return false;
+  appendLuchiMessage("user", text);
+  luchiHistory.push({role:"user", content:text});
+  input.value = "";
+  const sendBtn = document.getElementById("luchiSendBtn");
+  sendBtn.disabled = true;
+  const wrap = document.getElementById("luchiMessages");
+  const typingEl = document.createElement("div");
+  typingEl.className = "luchimsg bot typing";
+  typingEl.textContent = "Luchi is typing…";
+  wrap.appendChild(typingEl);
+  wrap.scrollTop = wrap.scrollHeight;
+  try{
+    const res = await fetch(`${API_BASE}/luchi-chat`, {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({ messages: luchiHistory })
+    });
+    typingEl.remove();
+    if(res.ok){
+      const data = await res.json();
+      const reply = data.reply || "Sorry, I didn't quite catch that — could you try again?";
+      appendLuchiMessage("bot", reply);
+      luchiHistory.push({role:"assistant", content:reply});
+    } else {
+      appendLuchiMessage("bot", "Sorry, I'm having trouble right now — try Track Order (#track) instead.");
+    }
+  }catch(e){
+    typingEl.remove();
+    appendLuchiMessage("bot", "Sorry, I'm having trouble connecting — check your internet and try again.");
+  }
+  sendBtn.disabled = false;
+  input.focus();
+  return false;
+}
+document.getElementById("luchiMessages").addEventListener("click", (e)=>{
+  if(e.target.tagName === "A") document.getElementById("luchiPanel").classList.remove("on");
+});
+
+/* ---------------- init ---------------- */
+(async function init(){
+  const saved = await loadProducts();
+  if(saved && Array.isArray(saved) && saved.length){
+    PRODUCTS = saved;
+    PRODUCTS.forEach(normalizeProduct);
+    reindex();
+  }
+  renderTabs();
+  renderGrid();
+  renderCart();
+  renderAdminTable();
+  renderStorageWarning();
+  revealNow();
+  checkRoute();
+})();
+</script>
+
+</body>
+</html>
