@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Luchpuch — Soft Things, Warm Feelings</title>
 <meta name="description" content="Luchpuch — oversized tees, joggers, shorts & sleeveless tees, every design listed individually. Comfort you can live in, made for India.">
+<link rel="icon" type="image/jpeg" href="logo.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" media="print" onload="this.media='all'">
@@ -28,10 +29,14 @@
   button{font-family:'Inter',sans-serif;}
   .wrap{max-width:1240px;margin:0 auto;padding:0 6vw;}
 
+  /* ---------- flowing star field overlay ---------- */
+  #starfield{position:fixed;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none;}
+
   /* ---------- nav ---------- */
   #nav{position:fixed;top:0;left:0;right:0;z-index:300;display:flex;align-items:center;justify-content:space-between;padding:16px 6vw;background:color-mix(in srgb, var(--bg) 78%, transparent);backdrop-filter:blur(14px);opacity:0;transform:translateY(-10px);pointer-events:none;transition:opacity .4s ease, transform .4s ease;border-bottom:1px solid transparent;}
   #nav.on{opacity:1;transform:none;pointer-events:auto;border-color:var(--line);}
   #nav .mark{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.02em;font-size:18px;cursor:pointer;background:none;border:none;color:var(--ink);}
+  #nav .mark img{width:34px;height:34px;border-radius:50%;object-fit:cover;}
   #nav .mark span{color:var(--sage-dk);}
   #nav .links{display:flex;gap:2.2vw;align-items:center;}
   #nav .links a{font-size:13px;letter-spacing:.03em;text-decoration:none;color:var(--ink-dim);transition:color .2s;}
@@ -40,19 +45,6 @@
   #nav .navcta:hover{background:var(--ink);color:var(--paper);}
   #nav .navcta .count{background:var(--blush);color:var(--paper);border-radius:50%;width:18px;height:18px;font-size:10.5px;display:flex;align-items:center;justify-content:center;font-weight:700;}
   @media (max-width:900px){ #nav .links a{display:none;} }
-
-  /* ---------- sound toggle ---------- */
-  #soundToggle{position:fixed;bottom:22px;right:22px;z-index:400;width:52px;height:52px;border-radius:50%;border:1.5px solid var(--ink);background:var(--paper);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:19px;box-shadow:0 6px 18px rgba(58,42,32,.15);transition:transform .25s ease, background .25s ease;}
-  #soundToggle:hover{transform:scale(1.08);}
-  #soundToggle.playing{background:var(--sage);border-color:var(--sage-dk);}
-  #soundToggle .pulse{position:absolute;inset:0;border-radius:50%;border:1.5px solid var(--sage-dk);opacity:0;pointer-events:none;}
-  #soundToggle.playing .pulse{animation:soundpulse 1.8s ease-out infinite;}
-  @keyframes soundpulse{0%{opacity:.55;transform:scale(1);}100%{opacity:0;transform:scale(1.7);}}
-  @media (max-width:600px){ #soundToggle{width:44px;height:44px;bottom:16px;right:16px;font-size:16px;} }
-
-  /* beat-synced doodle pop (layers on top of the existing bob animation) */
-  .doodle.pop{animation:doodlepop .45s ease !important;}
-  @keyframes doodlepop{0%{transform:scale(1);}40%{transform:scale(1.4) rotate(-6deg);}100%{transform:scale(1);}}
 
   /* ---------- hero ---------- */
   #hero{min-height:100vh;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:14vh 6vw 8vh;overflow:hidden;}
@@ -64,9 +56,8 @@
   .doodle.d5{top:52%;left:5%;animation-delay:2.6s;font-size:22px;}
   .doodle.d6{top:48%;right:6%;animation-delay:1.6s;font-size:24px;}
   @keyframes bob{0%,100%{transform:translateY(0) rotate(-4deg);}50%{transform:translateY(-18px) rotate(4deg);}}
-  #hero .logo-mark{width:96px;height:96px;border-radius:50%;border:2px solid var(--ink);display:flex;align-items:center;justify-content:center;margin-bottom:26px;position:relative;}
-  #hero .logo-mark span{font-family:'Fredoka';font-weight:600;font-size:34px;color:var(--ink);}
-  #hero .logo-mark .heart{position:absolute;top:6px;right:8px;color:var(--blush);font-size:16px;}
+  #hero .logo-mark{width:96px;height:96px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;margin-bottom:26px;position:relative;}
+  #hero .logo-mark img{width:100%;height:100%;object-fit:cover;}
   #hero h1{font-size:clamp(40px,8vw,104px);font-weight:600;letter-spacing:-0.02em;line-height:1.02;max-width:16ch;}
   #hero h1 em{font-style:normal;color:var(--sage-dk);}
   #hero p.sub{margin-top:22px;font-size:clamp(15px,1.6vw,19px);color:var(--ink-dim);max-width:46ch;line-height:1.65;}
@@ -93,7 +84,11 @@
   #manifesto .brass{color:var(--sage-dk);}
 
   #why .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-top:52px;}
-  .why-card{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:28px 22px;text-align:left;}
+  .why-card{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:28px 22px;text-align:left;transition:transform .3s ease, box-shadow .3s ease;}
+  .why-card:hover{transform:translateY(-4px);box-shadow:0 16px 32px -16px rgba(58,42,32,.24);}
+  .why-card:hover .ic{animation:wiggle .5s ease;}
+  .why-card .ic{font-size:26px;margin-bottom:12px;display:inline-block;}
+  @keyframes wiggle{0%,100%{transform:rotate(0);}25%{transform:rotate(-14deg) scale(1.15);}75%{transform:rotate(14deg) scale(1.15);}}
   .why-card .ic{font-size:26px;margin-bottom:14px;}
   .why-card h3{font-size:16px;font-weight:600;margin-bottom:8px;}
   .why-card p{font-size:13.5px;color:var(--ink-dim);line-height:1.6;}
@@ -133,7 +128,8 @@
   .pcard{background:var(--paper);border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;transition:transform .25s ease, box-shadow .25s ease;}
   .pcard:hover{transform:translateY(-5px);box-shadow:0 20px 40px -18px rgba(58,42,32,.28);}
   .pcard .pimg{aspect-ratio:1/1.28;overflow:hidden;background:var(--bg-soft);position:relative;}
-  .pcard .pimg img{width:100%;height:100%;object-fit:cover;object-position:top center;}
+  .pcard .pimg img{width:100%;height:100%;object-fit:cover;object-position:top center;transition:transform .5s cubic-bezier(.2,.7,.2,1);}
+  .pcard:hover .pimg img{transform:scale(1.06) rotate(-.6deg);}
   .pcard .pcat{position:absolute;top:10px;left:10px;background:rgba(255,250,242,.92);color:var(--ink);font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:100px;font-weight:700;}
   .pcard .pmulti{position:absolute;bottom:10px;right:10px;background:rgba(33,27,22,.72);color:var(--paper);font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:100px;}
   .pcard .pname{cursor:pointer;}
@@ -310,7 +306,23 @@
   #luchiInput{flex:1;border:1px solid var(--line);border-radius:100px;padding:9px 15px;font-size:13px;font-family:inherit;background:var(--paper);}
   #luchiSendBtn{background:var(--ink);color:var(--paper);border:none;border-radius:100px;padding:9px 18px;font-size:13px;font-weight:600;cursor:pointer;}
   #luchiSendBtn:disabled{opacity:.5;cursor:not-allowed;}
+  /* ---------- MUSIC TOGGLE ---------- */
+  #musicToggle{position:fixed;bottom:22px;left:22px;z-index:1400;width:52px;height:52px;border-radius:50%;background:var(--paper);color:var(--ink);border:1.5px solid var(--line);font-size:19px;cursor:pointer;box-shadow:0 8px 24px rgba(33,27,22,.16);display:flex;align-items:center;justify-content:center;transition:transform .2s, background .2s, border-color .2s;}
+  #musicToggle:hover{transform:scale(1.06);border-color:var(--sage-dk);}
+  #musicToggle.playing{background:var(--sage);color:var(--paper);border-color:var(--sage);}
+  #musicToggle .bars{display:flex;align-items:flex-end;gap:2.5px;height:14px;}
+  #musicToggle .bars i{display:block;width:3px;border-radius:2px;background:currentColor;height:4px;opacity:.55;}
+  #musicToggle.playing .bars i{animation:eq 0.9s ease-in-out infinite;opacity:1;}
+  #musicToggle.playing .bars i:nth-child(1){animation-delay:0s;}
+  #musicToggle.playing .bars i:nth-child(2){animation-delay:.2s;}
+  #musicToggle.playing .bars i:nth-child(3){animation-delay:.4s;}
+  @keyframes eq{0%,100%{height:4px;}50%{height:14px;}}
+  #musicHint{position:fixed;bottom:32px;left:80px;z-index:1400;background:var(--charcoal);color:var(--paper);padding:8px 14px;border-radius:100px;font-size:12px;font-weight:600;white-space:nowrap;opacity:0;transform:translateX(-6px);pointer-events:none;transition:opacity .3s, transform .3s;}
+  #musicHint.show{opacity:1;transform:none;}
+  body.vibing .doodle{animation-duration:2.4s;}
   @media (max-width:460px){
+    #musicToggle{bottom:16px;left:16px;width:46px;height:46px;}
+    #musicHint{display:none;}
     #luchiLauncher{bottom:16px;right:16px;}
     #luchiPanel{bottom:0;right:0;width:100vw;height:80vh;border-radius:18px 18px 0 0;}
   }
@@ -415,12 +427,37 @@
   .pmimagelist .pmthumb .pmmain{position:absolute;bottom:0;left:0;right:0;background:rgba(33,27,22,.75);color:var(--paper);font-size:9px;text-align:center;letter-spacing:.06em;text-transform:uppercase;padding:2px 0;}
   #pmodal .pmodal-actions{display:flex;gap:10px;margin-top:26px;}
   #pmodal .pmodal-actions .btn{flex:1;text-align:center;}
+
+  /* ====== COMING SOON STYLES — delete this whole block when you launch ====== */
+  #comingSoon{position:fixed;inset:0;z-index:5000;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:6vh 6vw;background:color-mix(in srgb, var(--bg) 94%, transparent);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);}
+  #comingSoon .cs-mark{width:88px;height:88px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;margin-bottom:22px;position:relative;}
+  #comingSoon .cs-mark img{width:100%;height:100%;object-fit:cover;}
+  #comingSoon h1{font-family:'Fredoka',sans-serif;font-weight:600;font-size:clamp(32px,7vw,72px);letter-spacing:-0.02em;line-height:1.05;max-width:16ch;}
+  #comingSoon h1 em{font-style:normal;color:var(--sage-dk);}
+  #comingSoon p{margin-top:18px;font-size:clamp(14px,1.6vw,18px);color:var(--ink-dim);max-width:42ch;line-height:1.6;}
+  #comingSoon .cs-doodles{margin-top:26px;font-size:22px;letter-spacing:.4em;opacity:.85;}
+  #comingSoon .cs-social{margin-top:34px;}
+  #comingSoon .cs-social a{border:1.5px solid var(--ink);border-radius:100px;padding:11px 24px;font-size:13px;font-weight:600;text-decoration:none;color:var(--ink);transition:background .25s,color .25s;}
+  #comingSoon .cs-social a:hover{background:var(--ink);color:var(--paper);}
+  @media (max-width:460px){ #comingSoon .cs-mark{width:72px;height:72px;} }
+  /* ====== END COMING SOON STYLES ====== */
 </style>
 </head>
 <body>
+<canvas id="starfield" aria-hidden="true"></canvas>
+
+<!-- ====== COMING SOON OVERLAY — delete this whole block (start to end) when you're ready to launch ====== -->
+<div id="comingSoon">
+  <div class="cs-mark"><img src="logo.jpg" alt="Luchpuch logo"></div>
+  <h1>Something <em>soft</em> is coming.</h1>
+  <p>luchpuch is putting the finishing touches on things. Comfort-first streetwear, made for India — dropping soon.</p>
+  <div class="cs-doodles">🧸 ☁️ 🐼 👻 🌼 🐱</div>
+  <div class="cs-social"><a href="https://www.instagram.com/luchpuch_clothing/" target="_blank" rel="noopener">Follow along on Instagram</a></div>
+</div>
+<!-- ====== END COMING SOON OVERLAY ====== -->
 
 <nav id="nav">
-  <button class="mark" onclick="window.scrollTo({top:0,behavior:'smooth'})">luchpuch<span>.</span></button>
+  <button class="mark" onclick="window.scrollTo({top:0,behavior:'smooth'})"><img src="logo.jpg" alt="Luchpuch logo">luchpuch<span>.</span></button>
   <div class="links">
     <a href="#shop" onclick="setTab('All')">Shop All</a>
     <a href="#shop" onclick="setTab('Tees')">Tees</a>
@@ -436,7 +473,7 @@
 <section id="hero">
   <span class="doodle d1">🧸</span><span class="doodle d2">☁️</span><span class="doodle d3">🐼</span>
   <span class="doodle d4">👻</span><span class="doodle d5">🌼</span><span class="doodle d6">🐱</span>
-  <div class="logo-mark"><span>lp</span><span class="heart">♥</span></div>
+  <div class="logo-mark"><img src="logo.jpg" alt="Luchpuch logo"></div>
   <h1>Soft things,<br><em>warm feelings.</em></h1>
   <p class="sub" id="heroSub">Unique designs across tees, joggers, shorts and sleeveless tees — each one its own mood. Ultra-soft cotton, relaxed fits, made for Indian summers and Indian moods.</p>
   <div class="cta-row">
@@ -597,8 +634,6 @@
 </footer>
 
 <!-- CART DRAWER -->
-<button id="soundToggle" aria-label="Toggle background music" title="Toggle background music">🔈<span class="pulse"></span></button>
-
 <div id="cartback" onclick="closeCart()"></div>
 <aside id="cart">
   <div class="chead"><h3>Your Bag</h3><button class="cclose" onclick="closeCart()">×</button></div>
@@ -827,6 +862,13 @@
   </div>
 </div>
 
+<!-- BACKGROUND MUSIC -->
+<audio id="bgMusic" loop preload="none" src="bg-music.mp3"></audio>
+<button id="musicToggle" onclick="toggleMusic()" aria-label="Toggle background music">
+  <span class="bars"><i></i><i></i><i></i></span>
+</button>
+<div id="musicHint">Tap for sound 🎵</div>
+
 <!-- LUCHI CHAT WIDGET -->
 <button id="luchiLauncher" onclick="toggleLuchi()" aria-label="Chat with Luchi">
   <span id="luchiLauncherIcon">💬</span>
@@ -950,6 +992,109 @@ function renderStorageWarning(){
   }
 }
 
+/* ---------------- coming soon overlay — remove with the HTML/CSS block above ---------------- */
+(function(){
+  if(document.getElementById("comingSoon")){
+    document.body.style.overflow = "hidden";
+  }
+})();
+
+/* ---------------- flowing star field background (flying toward viewer) ---------------- */
+(function(){
+  const canvas = document.getElementById("starfield");
+  if(!canvas) return;
+  const ctx = canvas.getContext("2d");
+  const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let w, h, cx, cy, scale, stars;
+  const SPEED = 0.0032;
+
+  function resize(){
+    w = canvas.width = innerWidth;
+    h = canvas.height = innerHeight;
+    cx = w/2; cy = h/2;
+    scale = Math.min(w,h) * 0.55;
+  }
+  function spawnStar(){
+    return { x:(Math.random()-0.5)*2, y:(Math.random()-0.5)*2, z: 1 };
+  }
+  function makeStars(){
+    const count = Math.min(220, Math.floor((w*h)/6000));
+    // seed with random depths so the field isn't empty on first paint
+    stars = Array.from({length:count}, ()=>{
+      const s = spawnStar();
+      s.z = 0.05 + Math.random()*0.95;
+      return s;
+    });
+  }
+  resize(); makeStars();
+  addEventListener("resize", ()=>{ resize(); makeStars(); });
+
+  function project(s, z){
+    return { px: cx + (s.x/z)*scale, py: cy + (s.y/z)*scale };
+  }
+
+  function drawStar(s){
+    const prevZ = s.z;
+    s.z -= SPEED;
+    if(s.z <= 0.015){ Object.assign(s, spawnStar()); return; }
+
+    const {px, py} = project(s, s.z);
+    if(px < -60 || px > w+60 || py < -60 || py > h+60){ Object.assign(s, spawnStar()); return; }
+
+    const {px:ppx, py:ppy} = project(s, prevZ);
+    const closeness = 1 - s.z;          // 0 = far / dim, 1 = close / bright
+    const alpha = Math.min(1, 0.18 + closeness*0.95);
+    const r = 0.5 + closeness*2.6;
+
+    // dark streak trail — gives the flowing-toward-camera motion
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.strokeStyle = "#2c241d";
+    ctx.lineWidth = r*0.8;
+    ctx.lineCap = "round";
+    ctx.shadowColor = "rgba(33,27,22,0.7)";
+    ctx.shadowBlur = 8 + closeness*14;
+    ctx.beginPath();
+    ctx.moveTo(ppx, ppy);
+    ctx.lineTo(px, py);
+    ctx.stroke();
+    ctx.restore();
+
+    // bright glinting head — the "shiny" sparkle
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.fillStyle = "#fffaf2";
+    ctx.shadowColor = "rgba(255,250,242,0.95)";
+    ctx.shadowBlur = 6 + closeness*12;
+    ctx.beginPath();
+    ctx.arc(px, py, r*0.55, 0, Math.PI*2);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function frame(){
+    ctx.clearRect(0,0,w,h);
+    stars.forEach(drawStar);
+    requestAnimationFrame(frame);
+  }
+
+  if(reduceMotion){
+    // static sprinkle, no motion, for users who prefer reduced motion
+    stars.forEach(s=>{
+      const {px, py} = project(s, s.z);
+      ctx.save();
+      ctx.globalAlpha = 0.5;
+      ctx.fillStyle = "#211b16";
+      ctx.beginPath();
+      ctx.arc(px, py, 1.2, 0, Math.PI*2);
+      ctx.fill();
+      ctx.restore();
+    });
+  } else {
+    frame();
+  }
+})();
+
 /* ---------------- reveal on scroll ---------------- */
 const io = new IntersectionObserver((es)=>es.forEach(e=>e.isIntersecting && e.target.classList.add("in")), {threshold:.15});
 document.querySelectorAll("[data-reveal]").forEach(el=>io.observe(el));
@@ -964,122 +1109,64 @@ const nav = document.getElementById("nav");
 const hero = document.getElementById("hero");
 addEventListener("scroll", ()=> nav.classList.toggle("on", scrollY > hero.offsetHeight*0.7), {passive:true});
 
-/* ---------------- background music ----------------
-   Fully synthesized in the browser with the Web Audio API — no audio
-   file, no sample, no copyrighted track, so there's nothing to clear
-   rights on. It's a soft, bouncy little pentatonic loop with a
-   cartoon "boop" bass, and every plucked note pops a random hero
-   doodle in time with the beat. Starts on the visitor's first
-   scroll (or tap/click, since some browsers only unlock audio on a
-   real click) and can be muted any time with the floating button. */
-(function(){
-  const toggle = document.getElementById("soundToggle");
-  if(!toggle) return;
+/* ---------------- background music ---------------- */
+const bgMusic = document.getElementById("bgMusic");
+const musicToggle = document.getElementById("musicToggle");
+const musicHint = document.getElementById("musicHint");
+let musicStarted = false;
+let musicWanted = localStorage.getItem("lp_music") !== "off"; // on by default unless user muted before
 
-  const BPM = 96;
-  const STEP = 60 / BPM / 2; // eighth notes
-  const SCALE = [261.63,293.66,329.63,392.00,440.00,523.25,587.33,659.25]; // C major pentatonic-ish, comfy octaves
-  const MELODY = [4,null,2,4, null,6,4,2, 0,null,2,0, null,4,2,null]; // two bars, deliberately a bit wonky/syncopated
-  const BASS_STEPS = [0,8]; // one cartoon "boop" per bar
+bgMusic.volume = 0;
 
-  let ctx, master, schedulerRunning = false, enabled = false, unlocked = false;
-  let stepIndex = 0, nextNoteTime = 0, timerId = null;
+function fadeAudio(target, ms){
+  const steps = 20, stepTime = ms/steps, startVol = bgMusic.volume, delta = target - startVol;
+  let i = 0;
+  const t = setInterval(()=>{
+    i++;
+    bgMusic.volume = Math.max(0, Math.min(1, startVol + delta*(i/steps)));
+    if(i>=steps){ clearInterval(t); if(target===0) bgMusic.pause(); }
+  }, stepTime);
+}
 
-  function initAudio(){
-    if(ctx) return;
-    ctx = new (window.AudioContext || window.webkitAudioContext)();
-    master = ctx.createGain();
-    master.gain.value = 0.0001;
-    master.connect(ctx.destination);
+function startMusic(){
+  if(musicStarted || !musicWanted) return;
+  musicStarted = true;
+  bgMusic.play().then(()=>{
+    fadeAudio(0.35, 1200);
+    musicToggle.classList.add("playing");
+    document.body.classList.add("vibing");
+    musicHint.classList.remove("show");
+  }).catch(()=>{
+    // Autoplay blocked — wait for a real tap/click instead
+    musicStarted = false;
+    musicHint.classList.add("show");
+    setTimeout(()=> musicHint.classList.remove("show"), 4000);
+  });
+}
+
+function toggleMusic(){
+  if(bgMusic.paused){
+    musicWanted = true;
+    localStorage.setItem("lp_music", "on");
+    musicStarted = false;
+    startMusic();
+  } else {
+    musicWanted = false;
+    localStorage.setItem("lp_music", "off");
+    fadeAudio(0, 500);
+    musicToggle.classList.remove("playing");
+    document.body.classList.remove("vibing");
+    musicStarted = false;
   }
+}
 
-  function pluck(freq, time){
-    const osc = ctx.createOscillator(), g = ctx.createGain(), filt = ctx.createBiquadFilter();
-    filt.type = "lowpass"; filt.frequency.value = 2600;
-    osc.type = "triangle";
-    osc.frequency.setValueAtTime(freq*1.015, time);
-    osc.frequency.linearRampToValueAtTime(freq, time+0.06); // tiny playful wobble on attack
-    g.gain.setValueAtTime(0.0001, time);
-    g.gain.linearRampToValueAtTime(0.5, time+0.012);
-    g.gain.exponentialRampToValueAtTime(0.0001, time+0.32);
-    osc.connect(filt); filt.connect(g); g.connect(master);
-    osc.start(time); osc.stop(time+0.4);
-  }
-
-  function boop(time){ // cartoon "boing" bass
-    const osc = ctx.createOscillator(), g = ctx.createGain();
-    osc.type = "sine";
-    osc.frequency.setValueAtTime(196, time);
-    osc.frequency.exponentialRampToValueAtTime(98, time+0.18);
-    g.gain.setValueAtTime(0.0001, time);
-    g.gain.linearRampToValueAtTime(0.35, time+0.02);
-    g.gain.exponentialRampToValueAtTime(0.0001, time+0.22);
-    osc.connect(g); g.connect(master);
-    osc.start(time); osc.stop(time+0.25);
-  }
-
-  function popDoodle(){
-    const list = document.querySelectorAll(".doodle");
-    if(!list.length) return;
-    const el = list[Math.floor(Math.random()*list.length)];
-    el.classList.remove("pop"); void el.offsetWidth; el.classList.add("pop");
-  }
-
-  function scheduleStep(time, idx){
-    const note = MELODY[idx % MELODY.length];
-    if(note !== null){
-      pluck(SCALE[note], time);
-      setTimeout(popDoodle, Math.max(0, (time-ctx.currentTime)*1000));
-    }
-    if(BASS_STEPS.includes(idx % 16)) boop(time);
-  }
-
-  function scheduler(){
-    while(nextNoteTime < ctx.currentTime + 0.15){
-      scheduleStep(nextNoteTime, stepIndex);
-      nextNoteTime += STEP;
-      stepIndex++;
-    }
-    timerId = setTimeout(scheduler, 80);
-  }
-
-  function ensureScheduler(){
-    if(schedulerRunning) return;
-    schedulerRunning = true;
-    nextNoteTime = ctx.currentTime + 0.1;
-    scheduler();
-  }
-
-  function setEnabled(on){
-    enabled = on;
-    initAudio();
-    if(ctx.state === "suspended") ctx.resume();
-    ensureScheduler();
-    master.gain.cancelScheduledValues(ctx.currentTime);
-    master.gain.linearRampToValueAtTime(on ? 0.16 : 0.0001, ctx.currentTime + (on ? 0.6 : 0.4));
-    toggle.classList.toggle("playing", on);
-    toggle.firstChild.textContent = on ? "🔊" : "🔈";
-    try{ localStorage.setItem("luchpuch:sound", on ? "on" : "off"); }catch(e){}
-  }
-
-  toggle.addEventListener("click", ()=> setEnabled(!enabled));
-
-  function unlock(){
-    if(unlocked) return;
-    unlocked = true;
-    let wantsSound = true;
-    try{ wantsSound = localStorage.getItem("luchpuch:sound") !== "off"; }catch(e){}
-    setEnabled(wantsSound);
-    removeEventListener("scroll", unlock);
-    removeEventListener("click", unlock);
-    removeEventListener("touchstart", unlock);
-    removeEventListener("keydown", unlock);
-  }
-  addEventListener("scroll", unlock, {passive:true, once:true});
-  addEventListener("click", unlock, {once:true});
-  addEventListener("touchstart", unlock, {once:true});
-  addEventListener("keydown", unlock, {once:true});
-})();
+// Scroll is the primary trigger the user asked for. Most browsers won't start
+// audio-with-sound from a scroll event alone (it isn't treated as a "user
+// gesture"), so we also arm on the first tap/click anywhere as a silent
+// fallback — whichever happens first turns the music on.
+addEventListener("scroll", startMusic, {passive:true, once:true});
+addEventListener("touchstart", startMusic, {passive:true, once:true});
+addEventListener("click", startMusic, {once:true});
 
 /* ---------------- tabs + product grid ---------------- */
 const CATS = ["All","Tees","Trousers","Shorts","Sleeveless"];
