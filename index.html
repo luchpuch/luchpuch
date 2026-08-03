@@ -41,6 +41,19 @@
   #nav .navcta .count{background:var(--blush);color:var(--paper);border-radius:50%;width:18px;height:18px;font-size:10.5px;display:flex;align-items:center;justify-content:center;font-weight:700;}
   @media (max-width:900px){ #nav .links a{display:none;} }
 
+  /* ---------- sound toggle ---------- */
+  #soundToggle{position:fixed;bottom:22px;right:22px;z-index:400;width:52px;height:52px;border-radius:50%;border:1.5px solid var(--ink);background:var(--paper);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:19px;box-shadow:0 6px 18px rgba(58,42,32,.15);transition:transform .25s ease, background .25s ease;}
+  #soundToggle:hover{transform:scale(1.08);}
+  #soundToggle.playing{background:var(--sage);border-color:var(--sage-dk);}
+  #soundToggle .pulse{position:absolute;inset:0;border-radius:50%;border:1.5px solid var(--sage-dk);opacity:0;pointer-events:none;}
+  #soundToggle.playing .pulse{animation:soundpulse 1.8s ease-out infinite;}
+  @keyframes soundpulse{0%{opacity:.55;transform:scale(1);}100%{opacity:0;transform:scale(1.7);}}
+  @media (max-width:600px){ #soundToggle{width:44px;height:44px;bottom:16px;right:16px;font-size:16px;} }
+
+  /* beat-synced doodle pop (layers on top of the existing bob animation) */
+  .doodle.pop{animation:doodlepop .45s ease !important;}
+  @keyframes doodlepop{0%{transform:scale(1);}40%{transform:scale(1.4) rotate(-6deg);}100%{transform:scale(1);}}
+
   /* ---------- hero ---------- */
   #hero{min-height:100vh;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:14vh 6vw 8vh;overflow:hidden;}
   .doodle{position:absolute;font-size:38px;opacity:.85;animation:bob 6s ease-in-out infinite;user-select:none;filter:drop-shadow(0 6px 10px rgba(58,42,32,.12));}
@@ -541,7 +554,7 @@
   <div class="qrow">
     <div class="qcard" data-reveal><p>Ordered the Doing Nothing Club tee for lounging — ended up wearing it to college too. That soft.</p><cite>— Verified buyer, Bengaluru</cite></div>
     <div class="qcard" data-reveal><p>The joggers survived a 14-hour train ride and still looked fresh. Pockets deep enough for my phone and wallet.</p><cite>— Verified buyer, Pune</cite></div>
-    <div class="qcard" data-reveal><p>Bought the shorts for a Goa trip, now I own four. COD made it a no-brainer.</p><cite>— Verified buyer, Delhi</cite></div>
+    <div class="qcard" data-reveal><p>Bought the shorts for a Goa trip, now I own four.</p><cite>— Verified buyer, Delhi</cite></div>
   </div>
 </section>
 
@@ -549,7 +562,7 @@
 <section id="indiastrip">
   <div class="stripgrid">
     <div class="strip-item"><div class="ic">🚚</div><p>Secure shipping</p></div>
-    <div class="strip-item"><div class="ic">💵</div><p>Cash on Delivery<br>available everywhere</p></div>
+    <div class="strip-item"><div class="ic">👕</div><p>Premium and Comfortable</p></div>
     <div class="strip-item"><div class="ic">↩️</div><p>7-day easy<br>exchange &amp; returns</p></div>
     <div class="strip-item"><div class="ic">🧾</div><p>GST invoice<br>on every order</p></div>
   </div>
@@ -584,6 +597,8 @@
 </footer>
 
 <!-- CART DRAWER -->
+<button id="soundToggle" aria-label="Toggle background music" title="Toggle background music">🔈<span class="pulse"></span></button>
+
 <div id="cartback" onclick="closeCart()"></div>
 <aside id="cart">
   <div class="chead"><h3>Your Bag</h3><button class="cclose" onclick="closeCart()">×</button></div>
@@ -948,6 +963,123 @@ addEventListener("scroll", revealNow, {passive:true});
 const nav = document.getElementById("nav");
 const hero = document.getElementById("hero");
 addEventListener("scroll", ()=> nav.classList.toggle("on", scrollY > hero.offsetHeight*0.7), {passive:true});
+
+/* ---------------- background music ----------------
+   Fully synthesized in the browser with the Web Audio API — no audio
+   file, no sample, no copyrighted track, so there's nothing to clear
+   rights on. It's a soft, bouncy little pentatonic loop with a
+   cartoon "boop" bass, and every plucked note pops a random hero
+   doodle in time with the beat. Starts on the visitor's first
+   scroll (or tap/click, since some browsers only unlock audio on a
+   real click) and can be muted any time with the floating button. */
+(function(){
+  const toggle = document.getElementById("soundToggle");
+  if(!toggle) return;
+
+  const BPM = 96;
+  const STEP = 60 / BPM / 2; // eighth notes
+  const SCALE = [261.63,293.66,329.63,392.00,440.00,523.25,587.33,659.25]; // C major pentatonic-ish, comfy octaves
+  const MELODY = [4,null,2,4, null,6,4,2, 0,null,2,0, null,4,2,null]; // two bars, deliberately a bit wonky/syncopated
+  const BASS_STEPS = [0,8]; // one cartoon "boop" per bar
+
+  let ctx, master, schedulerRunning = false, enabled = false, unlocked = false;
+  let stepIndex = 0, nextNoteTime = 0, timerId = null;
+
+  function initAudio(){
+    if(ctx) return;
+    ctx = new (window.AudioContext || window.webkitAudioContext)();
+    master = ctx.createGain();
+    master.gain.value = 0.0001;
+    master.connect(ctx.destination);
+  }
+
+  function pluck(freq, time){
+    const osc = ctx.createOscillator(), g = ctx.createGain(), filt = ctx.createBiquadFilter();
+    filt.type = "lowpass"; filt.frequency.value = 2600;
+    osc.type = "triangle";
+    osc.frequency.setValueAtTime(freq*1.015, time);
+    osc.frequency.linearRampToValueAtTime(freq, time+0.06); // tiny playful wobble on attack
+    g.gain.setValueAtTime(0.0001, time);
+    g.gain.linearRampToValueAtTime(0.5, time+0.012);
+    g.gain.exponentialRampToValueAtTime(0.0001, time+0.32);
+    osc.connect(filt); filt.connect(g); g.connect(master);
+    osc.start(time); osc.stop(time+0.4);
+  }
+
+  function boop(time){ // cartoon "boing" bass
+    const osc = ctx.createOscillator(), g = ctx.createGain();
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(196, time);
+    osc.frequency.exponentialRampToValueAtTime(98, time+0.18);
+    g.gain.setValueAtTime(0.0001, time);
+    g.gain.linearRampToValueAtTime(0.35, time+0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001, time+0.22);
+    osc.connect(g); g.connect(master);
+    osc.start(time); osc.stop(time+0.25);
+  }
+
+  function popDoodle(){
+    const list = document.querySelectorAll(".doodle");
+    if(!list.length) return;
+    const el = list[Math.floor(Math.random()*list.length)];
+    el.classList.remove("pop"); void el.offsetWidth; el.classList.add("pop");
+  }
+
+  function scheduleStep(time, idx){
+    const note = MELODY[idx % MELODY.length];
+    if(note !== null){
+      pluck(SCALE[note], time);
+      setTimeout(popDoodle, Math.max(0, (time-ctx.currentTime)*1000));
+    }
+    if(BASS_STEPS.includes(idx % 16)) boop(time);
+  }
+
+  function scheduler(){
+    while(nextNoteTime < ctx.currentTime + 0.15){
+      scheduleStep(nextNoteTime, stepIndex);
+      nextNoteTime += STEP;
+      stepIndex++;
+    }
+    timerId = setTimeout(scheduler, 80);
+  }
+
+  function ensureScheduler(){
+    if(schedulerRunning) return;
+    schedulerRunning = true;
+    nextNoteTime = ctx.currentTime + 0.1;
+    scheduler();
+  }
+
+  function setEnabled(on){
+    enabled = on;
+    initAudio();
+    if(ctx.state === "suspended") ctx.resume();
+    ensureScheduler();
+    master.gain.cancelScheduledValues(ctx.currentTime);
+    master.gain.linearRampToValueAtTime(on ? 0.16 : 0.0001, ctx.currentTime + (on ? 0.6 : 0.4));
+    toggle.classList.toggle("playing", on);
+    toggle.firstChild.textContent = on ? "🔊" : "🔈";
+    try{ localStorage.setItem("luchpuch:sound", on ? "on" : "off"); }catch(e){}
+  }
+
+  toggle.addEventListener("click", ()=> setEnabled(!enabled));
+
+  function unlock(){
+    if(unlocked) return;
+    unlocked = true;
+    let wantsSound = true;
+    try{ wantsSound = localStorage.getItem("luchpuch:sound") !== "off"; }catch(e){}
+    setEnabled(wantsSound);
+    removeEventListener("scroll", unlock);
+    removeEventListener("click", unlock);
+    removeEventListener("touchstart", unlock);
+    removeEventListener("keydown", unlock);
+  }
+  addEventListener("scroll", unlock, {passive:true, once:true});
+  addEventListener("click", unlock, {once:true});
+  addEventListener("touchstart", unlock, {once:true});
+  addEventListener("keydown", unlock, {once:true});
+})();
 
 /* ---------------- tabs + product grid ---------------- */
 const CATS = ["All","Tees","Trousers","Shorts","Sleeveless"];
