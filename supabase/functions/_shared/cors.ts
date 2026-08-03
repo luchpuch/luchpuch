@@ -11,7 +11,7 @@
 // URL is final, tighten this to that exact origin, e.g.
 // "https://yourusername.github.io" (no trailing slash/path).
 export const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Origin": "https://luchpuch.com",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-admin-key",
   "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
 };
