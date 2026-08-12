@@ -1,3 +1,5 @@
+
+
 // supabase/functions/orders/index.ts
 //
 // GET  (x-admin-key header, no ?email=) -> ALL orders, for the admin dashboard.
@@ -194,7 +196,8 @@ Deno.serve(async (req) => {
       invoice_number: order.invoiceNumber,
       total: order.total,
       currency: order.currency || "INR",
-      data: order,
+git add index.html
+git add supabase/functions/orders/index.ts      data: order,
     });
     if (insertErr) return json({ error: insertErr.message }, 500);
 
