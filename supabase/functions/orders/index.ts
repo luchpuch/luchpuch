@@ -2,19 +2,25 @@
 //
 // GET  (x-admin-key header, no ?email=) -> ALL orders, for the admin dashboard.
 // GET  ?email=someone@example.com        -> only that person's orders (public).
-// POST -> creates ONE new order (checkout, public). Re-prices every line item
-//        against the live product catalogue so a client-tampered price can
-//        never be stored or invoiced (this was in the plan but hadn't made
-//        it into your live orders.mjs yet — it's folded in here). Assigns
-//        the sequential GST invoice number via Postgres's nextval(), which
-//        is atomic under real concurrency — unlike the old Blobs
-//        read-modify-write, two simultaneous checkouts genuinely cannot
-//        collide. Computes the CGST/SGST/IGST tax breakdown and sends the
-//        confirmation email, same as before.
+// POST -> creates ONE new order (checkout). Requires a signed-in customer —
+//        the Authorization: Bearer <access_token> header must belong to a
+//        real Supabase Auth session (see _shared/auth.ts), so an order can
+//        no longer be created by a browser that never completed the email
+//        sign-in. This mirrors the "must sign in to check out" gate already
+//        enforced in index.html — this is the server-side half of it, since
+//        a client-side-only check can always be bypassed by calling the API
+//        directly. Re-prices every line item against the live product
+//        catalogue so a client-tampered price can never be stored or
+//        invoiced. Assigns the sequential GST invoice number via Postgres's
+//        nextval(), which is atomic under real concurrency — unlike the old
+//        Blobs read-modify-write, two simultaneous checkouts genuinely
+//        cannot collide. Computes the CGST/SGST/IGST tax breakdown and
+//        sends the confirmation email, same as before.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { corsHeaders } from "../_shared/cors.ts";
 import { sendEmail } from "../_shared/email.ts";
 import { orderConfirmationEmail } from "../_shared/emailTemplates.ts";
+import { getUser } from "../_shared/auth.ts";
 
 const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
 const ADMIN_KEY = Deno.env.get("ADMIN_KEY") || "luchpuch2026";
@@ -146,6 +152,9 @@ Deno.serve(async (req) => {
   }
 
   if (req.method === "POST") {
+    const user = await getUser(req);
+    if (!user) return json({ error: "Sign in before placing an order" }, 401);
+
     let order: any;
     try {
       order = await req.json();
@@ -175,6 +184,7 @@ Deno.serve(async (req) => {
     order.invoiceDate = order.date;
     order.status = ORDER_STATUSES[0];
     order.statusUpdatedAt = order.date;
+    order.userId = user.id; // links the order to the signed-in customer, independent of order.email
     applyTax(order);
 
     const { error: insertErr } = await supabase.from("orders").insert({

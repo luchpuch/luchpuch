@@ -10,6 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" media="print" onload="this.media='all'">
 <noscript><link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"></noscript>
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <style>
   :root{
     --bg:#f7efe3; --bg-soft:#efe4d3; --paper:#fffaf2;
@@ -44,6 +45,11 @@
   #nav .navcta{border:1.5px solid var(--ink);border-radius:100px;padding:9px 18px;font-size:12.5px;font-weight:600;text-decoration:none;white-space:nowrap;transition:background .25s,color .25s;background:none;cursor:pointer;color:var(--ink);display:flex;align-items:center;gap:8px;}
   #nav .navcta:hover{background:var(--ink);color:var(--paper);}
   #nav .navcta .count{background:var(--blush);color:var(--paper);border-radius:50%;width:18px;height:18px;font-size:10.5px;display:flex;align-items:center;justify-content:center;font-weight:700;}
+  #authBtn{display:flex;align-items:center;gap:7px;}
+  #authBtn .authavatar{width:20px;height:20px;border-radius:50%;object-fit:cover;}
+  #authBtn:disabled{opacity:.5;cursor:default;}
+  #authBtn:disabled:hover{background:none;color:var(--ink);}
+  @media (max-width:520px){ #authBtn .authlabel{display:none;} }
   @media (max-width:900px){ #nav .links a{display:none;} }
 
   /* ---------- hero ---------- */
@@ -132,6 +138,14 @@
   .pcard:hover .pimg img{transform:scale(1.06) rotate(-.6deg);}
   .pcard .pcat{position:absolute;top:10px;left:10px;background:rgba(255,250,242,.92);color:var(--ink);font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:100px;font-weight:700;}
   .pcard .pmulti{position:absolute;bottom:10px;right:10px;background:rgba(33,27,22,.72);color:var(--paper);font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:100px;}
+  .pcard .pcoming{position:absolute;top:10px;right:10px;background:var(--blush);color:var(--paper);font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border-radius:100px;font-weight:700;}
+  .pcard.is-coming .pimg img{filter:grayscale(.15) brightness(.92);}
+  .pcard .addbtn:disabled{opacity:.55;cursor:not-allowed;}
+  .pcard .addbtn:disabled:hover{background:none;color:var(--ink);}
+  .adminbadge{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:4px 10px;border-radius:100px;}
+  .adminbadge.coming{background:var(--blush);color:var(--paper);}
+  .adminbadge.live{background:var(--sage);color:var(--paper);}
+  .pdvcomingtag{display:inline-block;background:var(--blush);color:var(--paper);font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:5px 12px;border-radius:100px;font-weight:700;margin-bottom:10px;}
   .pcard .pname{cursor:pointer;}
   .pcard .pname:hover{text-decoration:underline;}
   .pcard .pbody{padding:16px 16px 18px;display:flex;flex-direction:column;gap:8px;flex:1;}
@@ -172,6 +186,17 @@
   #cartfoot .note{font-size:11.5px;color:var(--ink-dim);margin-top:10px;text-align:center;}
   .cemaillabel{display:block;font-size:11px;font-weight:600;color:var(--ink-dim);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;}
   .cemailinput{width:100%;padding:11px 13px;border:1.5px solid var(--line);border-radius:10px;font-size:13.5px;font-family:'Inter';background:var(--bg);color:var(--ink);margin-bottom:16px;}
+  .cemailinput[readonly]{opacity:.75;cursor:not-allowed;}
+  #authGate{background:var(--paper);border:1.5px dashed var(--line);border-radius:14px;padding:20px;text-align:left;margin-bottom:6px;}
+  #authGate p.note{margin:0 0 14px;font-size:13px;line-height:1.55;text-align:center;}
+  #authGate .cemailinput{margin-bottom:10px;}
+  .gsigninbtn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;background:var(--ink);color:var(--paper);border:none;border-radius:100px;padding:12px 18px;font-size:13.5px;font-weight:600;cursor:pointer;transition:opacity .2s,transform .2s;}
+  .gsigninbtn:hover{opacity:.88;transform:translateY(-1px);}
+  .gsigninbtn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+  .authsentbox{text-align:center;}
+  .authsentbox .authsentemail{font-weight:600;color:var(--ink);}
+  .authresend{background:none;border:none;text-decoration:underline;color:var(--ink-dim);font-size:12px;cursor:pointer;margin-top:10px;padding:0;}
+  .signedinnote{font-size:11.5px;color:var(--sage-dk);margin:-6px 0 16px;}
   .regiontoggle{display:flex;gap:8px;margin-bottom:16px;}
   .rtab{flex:1;border:1.5px solid var(--line);background:var(--paper);color:var(--ink-dim);border-radius:100px;padding:9px 10px;font-size:12px;font-weight:600;cursor:pointer;transition:.2s;}
   .rtab.active{background:var(--ink);color:var(--paper);border-color:var(--ink);}
@@ -420,6 +445,8 @@
   #pmodal label{display:block;font-size:11px;font-weight:600;color:var(--ink-dim);margin:16px 0 6px;text-transform:uppercase;letter-spacing:.06em;}
   #pmodal input[type=text],#pmodal input[type=number],#pmodal select,#pmodal textarea{width:100%;padding:11px 13px;border:1.5px solid var(--line);border-radius:10px;font-size:14px;font-family:'Inter';background:var(--bg);color:var(--ink);resize:vertical;}
   #pmodal input[type=file]{margin-top:4px;font-size:12.5px;}
+  #pmodal label.pmcheckrow{display:flex;align-items:center;gap:9px;text-transform:none;letter-spacing:0;font-size:13px;font-weight:500;color:var(--ink);background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:11px 13px;margin-top:18px;}
+  #pmodal label.pmcheckrow input[type=checkbox]{width:16px;height:16px;flex:none;accent-color:var(--blush);}
   .pmimagelist{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;}
   .pmimagelist .pmthumb{position:relative;width:74px;height:92px;border-radius:8px;overflow:hidden;border:1px solid var(--line);background:var(--bg-soft);}
   .pmimagelist .pmthumb img{width:100%;height:100%;object-fit:cover;}
@@ -428,33 +455,13 @@
   #pmodal .pmodal-actions{display:flex;gap:10px;margin-top:26px;}
   #pmodal .pmodal-actions .btn{flex:1;text-align:center;}
 
-  /* ====== COMING SOON STYLES — delete this whole block when you launch ====== */
-  #comingSoon{position:fixed;inset:0;z-index:5000;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:6vh 6vw;background:color-mix(in srgb, var(--bg) 94%, transparent);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);}
-  #comingSoon .cs-mark{width:88px;height:88px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;margin-bottom:22px;position:relative;}
-  #comingSoon .cs-mark img{width:100%;height:100%;object-fit:cover;}
-  #comingSoon h1{font-family:'Fredoka',sans-serif;font-weight:600;font-size:clamp(32px,7vw,72px);letter-spacing:-0.02em;line-height:1.05;max-width:16ch;}
-  #comingSoon h1 em{font-style:normal;color:var(--sage-dk);}
-  #comingSoon p{margin-top:18px;font-size:clamp(14px,1.6vw,18px);color:var(--ink-dim);max-width:42ch;line-height:1.6;}
-  #comingSoon .cs-doodles{margin-top:26px;font-size:22px;letter-spacing:.4em;opacity:.85;}
-  #comingSoon .cs-social{margin-top:34px;}
-  #comingSoon .cs-social a{border:1.5px solid var(--ink);border-radius:100px;padding:11px 24px;font-size:13px;font-weight:600;text-decoration:none;color:var(--ink);transition:background .25s,color .25s;}
-  #comingSoon .cs-social a:hover{background:var(--ink);color:var(--paper);}
-  @media (max-width:460px){ #comingSoon .cs-mark{width:72px;height:72px;} }
-  /* ====== END COMING SOON STYLES ====== */
+  
 </style>
 </head>
 <body>
 <canvas id="starfield" aria-hidden="true"></canvas>
 
-<!-- ====== COMING SOON OVERLAY — delete this whole block (start to end) when you're ready to launch ====== -->
-<div id="comingSoon">
-  <div class="cs-mark"><img src="logo.jpg" alt="Luchpuch logo"></div>
-  <h1>Something <em>soft</em> is coming.</h1>
-  <p>luchpuch is putting the finishing touches on things. Comfort-first streetwear, made for India — dropping soon.</p>
-  <div class="cs-doodles">🧸 ☁️ 🐼 👻 🌼 🐱</div>
-  <div class="cs-social"><a href="https://www.instagram.com/luchpuch_clothing/" target="_blank" rel="noopener">Follow along on Instagram</a></div>
-</div>
-<!-- ====== END COMING SOON OVERLAY ====== -->
+
 
 <nav id="nav">
   <button class="mark" onclick="window.scrollTo({top:0,behavior:'smooth'})"><img src="logo.jpg" alt="Luchpuch logo">luchpuch<span>.</span></button>
@@ -466,6 +473,7 @@
     <a href="#shop" onclick="setTab('Sleeveless')">Sleeveless</a>
     <a href="#fit">Size Guide</a>
   </div>
+  <button class="navcta" id="authBtn" onclick="openCart()">👤 <span class="authlabel">Sign in</span></button>
   <button class="navcta" onclick="openCart()">🛍️ Bag <span class="count" id="navcount">0</span></button>
 </nav>
 
@@ -641,8 +649,22 @@
   <div id="cartfoot">
     <div class="ctotal"><span>Total</span><span id="carttotal">₹0</span></div>
 
+    <div id="authGate" style="display:none;">
+      <p class="note">Sign in with your email to place an order. Browsing and your bag stay open either way — this step is only needed to check out. No password needed — we'll email you a one-time sign-in link.</p>
+      <div id="authGateForm">
+        <input type="email" id="authEmailInput" class="cemailinput" placeholder="you@example.com" autocomplete="email">
+        <button type="button" class="gsigninbtn" id="authSendBtn" onclick="sendMagicLink()">Send sign-in link</button>
+      </div>
+      <div id="authGateSent" class="authsentbox" style="display:none;">
+        <p class="note">Check <span class="authsentemail" id="authSentEmail"></span> for a sign-in link — it'll bring you right back here, signed in.</p>
+        <button type="button" class="authresend" onclick="showAuthForm()">Use a different email / resend</button>
+      </div>
+    </div>
+
+    <div id="checkoutFields">
     <label class="cemaillabel">Email (for order confirmation &amp; tracking)</label>
     <input type="email" id="checkoutEmail" class="cemailinput" placeholder="you@example.com">
+    <div id="signedInNote" class="signedinnote" style="display:none;"></div>
 
     <label class="cemaillabel">Full name (for invoice)</label>
     <input type="text" id="checkoutName" class="cemailinput" placeholder="Full name">
@@ -697,6 +719,7 @@
     </div>
 
     <p class="note">Secure shipping (India)</p>
+    </div>
   </div>
 </aside>
 <div id="toast"></div>
@@ -789,7 +812,7 @@
       <div id="storageWarning" class="storagewarn" style="display:none;"></div>
       <p class="adstatus" id="adminStatus">Loading…</p>
       <table class="adtable">
-        <thead><tr><th>Image</th><th>Name</th><th>Category</th><th>Mood</th><th>Price</th><th>Actions</th></tr></thead>
+        <thead><tr><th>Image</th><th>Name</th><th>Category</th><th>Mood</th><th>Price</th><th>Status</th><th>Actions</th></tr></thead>
         <tbody id="adminRows"></tbody>
       </table>
     </div>
@@ -828,6 +851,7 @@
     <input type="text" id="pmHsn" placeholder="e.g. 6109">
     <label>Available sizes (comma separated)</label>
     <input type="text" id="pmSizes" placeholder="e.g. S, M, L, XL, XXL">
+    <label class="pmcheckrow"><input type="checkbox" id="pmComingSoon"> Mark as "Coming Soon" (shown in the shop, but can't be added to bag yet)</label>
     <label>Product images</label>
     <input type="file" id="pmImage" accept="image/*" multiple onchange="handleImageFiles(this)">
     <div id="pmImageList" class="pmimagelist"></div>
@@ -894,6 +918,95 @@
 // Example: "https://abcdefghijklmnop.supabase.co/functions/v1"
 const API_BASE = "https://epecmbcjaxpjyvwffxxf.supabase.co/functions/v1";
 
+/* ================= AUTH CONFIG (email sign-in for customers) =================
+   Powers passwordless "email magic link" sign-in in the bag/checkout drawer —
+   no Google/OAuth setup, no API keys to buy, nothing but Supabase itself.
+   One thing to fill in:
+   1. Get your "anon public" key: Dashboard -> Project Settings -> API -> Project
+      API keys -> anon public. Paste it below. It's safe to ship in client-side
+      code — it only lets the browser talk to Supabase Auth, nothing sensitive.
+   That's it — Supabase Auth's email provider is on by default on every
+   project (free tier included) and needs no extra setup to send the sign-in
+   link. (Its built-in email sender is rate-limited — fine for testing and
+   modest volume; see SUPABASE-GITHUB-SETUP.md if you outgrow it and want to
+   plug in your own SMTP later.)
+   Until the anon key is filled in, the Sign in button shows a friendly
+   "not configured" state instead of crashing — the rest of the site
+   (browsing, cart) works either way.
+================================================================================ */
+const SUPABASE_URL = API_BASE.replace(/\/functions\/v1$/, "");
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVwZWNtYmNqYXhwanl2d2ZmeHhmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU2ODk2MTEsImV4cCI6MjEwMTI2NTYxMX0.PMNefYO7ZCuuzrlhCOzXAFZNomzJCoyzegh86nCvOSk";
+const authConfigured = !SUPABASE_ANON_KEY.includes("YOUR_") && !!window.supabase;
+const supabaseClient = authConfigured ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+
+let currentUser = null;
+let currentAccessToken = null;
+
+async function initAuth(){
+  const btn = document.getElementById("authBtn");
+  if(!supabaseClient){
+    btn.querySelector(".authlabel").textContent = "Sign-in not set up";
+    btn.title = "Add SUPABASE_ANON_KEY near the top of the script to turn this on";
+    btn.disabled = true;
+    return;
+  }
+  const { data } = await supabaseClient.auth.getSession();
+  applySession(data.session);
+  supabaseClient.auth.onAuthStateChange((_event, session) => applySession(session));
+}
+function applySession(session){
+  currentUser = session ? session.user : null;
+  currentAccessToken = session ? session.access_token : null;
+  renderAuthUI();
+  renderCart();
+  if(currentUser) showAuthForm(); // reset the gate form for next time, in case they sign out later
+}
+function renderAuthUI(){
+  const btn = document.getElementById("authBtn");
+  if(!btn || !supabaseClient) return;
+  if(currentUser){
+    const name = currentUser.email || "Account";
+    btn.innerHTML = `👤 <span class="authlabel">${escapeHtml(name.split("@")[0])}</span>`;
+    btn.title = "Sign out of " + name;
+    btn.onclick = signOutCustomer;
+  } else {
+    btn.innerHTML = `👤 <span class="authlabel">Sign in</span>`;
+    btn.title = "Sign in to check out";
+    btn.onclick = openCart;
+  }
+}
+async function sendMagicLink(){
+  if(!supabaseClient){ showToast("Sign-in isn't set up yet"); return; }
+  const input = document.getElementById("authEmailInput");
+  const email = (input.value || "").trim();
+  if(!isValidEmail(email)){ showToast("Enter a valid email first"); return; }
+  const sendBtn = document.getElementById("authSendBtn");
+  sendBtn.disabled = true;
+  sendBtn.textContent = "Sending…";
+  const { error } = await supabaseClient.auth.signInWithOtp({
+    email,
+    options: { emailRedirectTo: window.location.origin + window.location.pathname }
+  });
+  sendBtn.disabled = false;
+  sendBtn.textContent = "Send sign-in link";
+  if(error){ showToast("Couldn't send the link — try again in a moment"); return; }
+  document.getElementById("authSentEmail").textContent = email;
+  document.getElementById("authGateForm").style.display = "none";
+  document.getElementById("authGateSent").style.display = "block";
+}
+function showAuthForm(){
+  const form = document.getElementById("authGateForm");
+  const sent = document.getElementById("authGateSent");
+  if(!form || !sent) return;
+  form.style.display = "block";
+  sent.style.display = "none";
+}
+async function signOutCustomer(){
+  if(!supabaseClient) return;
+  await supabaseClient.auth.signOut();
+  showToast("Signed out");
+}
+
 /* ---------------- product data (54 individual designs) ---------------- */
 const DEFAULT_PRODUCTS = [];
 
@@ -921,6 +1034,7 @@ function normalizeProduct(p){
   if(p.quality === undefined) p.quality = CAT_BLURB[p.cat]?.quality || "Premium cotton · Machine wash cold, inside out";
   if(!p.hsn) p.hsn = DEFAULT_HSN;
   if(!p.sizes || !p.sizes.length) p.sizes = CAT_SIZES[p.cat] || DEFAULT_SIZES;
+  p.comingSoon = !!p.comingSoon;
   return p;
 }
 DEFAULT_PRODUCTS.forEach(normalizeProduct);
@@ -991,14 +1105,6 @@ function renderStorageWarning(){
     el.innerHTML = `🚫 <b>Can't reach the store's backend functions.</b> Products and orders won't load or save. This page needs to run through Netlify (deployed, or locally via <code>netlify dev</code>) — opening the HTML file directly, or serving it with a plain static server, won't run the <code>/netlify/functions</code> code. See README-DEPLOY.md for how to deploy it properly.`;
   }
 }
-
-/* ---------------- coming soon overlay — remove with the HTML/CSS block above ---------------- */
-(function(){
-  if(document.getElementById("comingSoon")){
-    document.body.style.overflow = "hidden";
-  }
-})();
-
 /* ---------------- flowing star field background (flying toward viewer) ---------------- */
 (function(){
   const canvas = document.getElementById("starfield");
@@ -1227,10 +1333,10 @@ function renderGrid(){
     const sizes = (p.sizes && p.sizes.length) ? p.sizes : DEFAULT_SIZES;
     const inCartSizes = cart.filter(c=>c.id===p.id).map(c=>c.size);
     const card = document.createElement("div");
-    card.className = "pcard";
+    card.className = "pcard" + (p.comingSoon ? " is-coming" : "");
     card.setAttribute("data-reveal","");
     card.innerHTML = `
-      <div class="pimg"><span class="pcat">${p.cat}</span><img src="${p.img}" alt="${p.name} — ${p.cat}" loading="lazy">${p.images && p.images.length>1 ? `<span class="pmulti">+${p.images.length-1}</span>` : ''}</div>
+      <div class="pimg"><span class="pcat">${p.cat}</span>${p.comingSoon ? `<span class="pcoming">Coming Soon</span>` : ''}<img src="${p.img}" alt="${p.name} — ${p.cat}" loading="lazy">${!p.comingSoon && p.images && p.images.length>1 ? `<span class="pmulti">+${p.images.length-1}</span>` : ''}</div>
       <div class="pbody">
         <div class="pname">${p.name}</div>
         <div class="pmood">Mood: ${p.mood}</div>
@@ -1238,7 +1344,7 @@ function renderGrid(){
         <div class="sizerow" data-open="0"></div>
         <div class="prow">
           <span class="pprice">₹${p.price}</span>
-          <button class="addbtn" data-id="${p.id}">${sizes.length>1 ? 'Choose size' : 'Add to bag'}</button>
+          <button class="addbtn" data-id="${p.id}" ${p.comingSoon ? 'disabled' : ''}>${p.comingSoon ? 'Coming soon' : (sizes.length>1 ? 'Choose size' : 'Add to bag')}</button>
         </div>
       </div>`;
     card.querySelector(".pimg").addEventListener("click", ()=>{ location.hash = `#product-${p.id}`; });
@@ -1247,7 +1353,7 @@ function renderGrid(){
     card.querySelector(".pname").style.cursor = "pointer";
     const addBtn = card.querySelector(".addbtn");
     const sizerow = card.querySelector(".sizerow");
-    addBtn.addEventListener("click",(ev)=>{
+    if(!p.comingSoon) addBtn.addEventListener("click",(ev)=>{
       ev.stopPropagation();
       if(sizes.length<=1){
         addToCart(p, sizes[0] || "One Size");
@@ -1386,7 +1492,36 @@ function renderCart(){
   }
   const total = cart.reduce((s,p)=>s+p.price,0);
   carttotal.textContent = "₹" + total;
+  renderCartAuthGate();
   if(region === "intl" && paypalLoaded) renderPayPalButtons();
+}
+function renderCartAuthGate(){
+  const authGate = document.getElementById("authGate");
+  const checkoutFields = document.getElementById("checkoutFields");
+  const emailInput = document.getElementById("checkoutEmail");
+  const signedInNote = document.getElementById("signedInNote");
+  if(!authGate || !checkoutFields) return;
+  // If sign-in isn't configured at all, don't block checkout on it — fall
+  // back to the original email-only flow rather than locking customers out.
+  if(!supabaseClient){
+    authGate.style.display = "none";
+    checkoutFields.style.display = "block";
+    return;
+  }
+  if(currentUser){
+    authGate.style.display = "none";
+    checkoutFields.style.display = "block";
+    if(emailInput && !emailInput.value && document.activeElement !== emailInput){
+      emailInput.value = currentUser.email || "";
+    }
+    if(signedInNote){
+      signedInNote.style.display = "block";
+      signedInNote.textContent = `Signed in as ${currentUser.email}`;
+    }
+  } else {
+    authGate.style.display = "block";
+    checkoutFields.style.display = "none";
+  }
 }
 function openCart(){ cartback.classList.add("on"); cartEl.classList.add("on"); }
 function closeCart(){ cartback.classList.remove("on"); cartEl.classList.remove("on"); }
@@ -1498,7 +1633,10 @@ async function createOrder(paymentRef, currencyLabel){
   try{
     const res = await fetch(`${API_BASE}/orders`, {
       method: "POST",
-      headers: {"Content-Type":"application/json"},
+      headers: {
+        "Content-Type":"application/json",
+        ...(currentAccessToken ? {"Authorization": `Bearer ${currentAccessToken}`} : {})
+      },
       body: JSON.stringify(order)
     });
     if(res.ok){
@@ -1515,6 +1653,7 @@ async function createOrder(paymentRef, currencyLabel){
 }
 
 async function payWithRazorpay(){
+  if(supabaseClient && !currentUser){ showToast("Sign in to check out"); return; }
   if(cart.length===0){ showToast("Your bag is empty"); return; }
   if(!isValidEmail(getCheckoutEmail())){ showToast("Enter a valid email before checking out"); return; }
   const billingIssue = billingIncomplete();
@@ -1567,6 +1706,7 @@ function loadPayPal(){
 function renderPayPalButtons(){
   const el = document.getElementById("paypal-buttons");
   el.innerHTML = "";
+  if(supabaseClient && !currentUser){ el.innerHTML = `<p class="note" style="color:var(--blush);">Sign in above to continue</p>`; return; }
   if(cart.length===0){ el.innerHTML = `<p class="note">Your bag is empty</p>`; return; }
   if(!isValidEmail(getCheckoutEmail())){ el.innerHTML = `<p class="note" style="color:var(--blush);">Enter a valid email above to continue</p>`; return; }
   const billingIssue = billingIncomplete();
@@ -1769,6 +1909,7 @@ function renderAdminTable(){
       <td>${p.cat}</td>
       <td>${p.mood}</td>
       <td>₹${p.price}</td>
+      <td><button class="adminbadge ${p.comingSoon ? 'coming' : 'live'}" style="border:none;cursor:pointer;" onclick="toggleComingSoon(${p.id})" title="Click to toggle">${p.comingSoon ? 'Coming Soon' : 'Live'}</button></td>
       <td class="adactions">
         <button onclick="openProductForm(${p.id})">Edit</button>
         <button class="del" onclick="deleteProduct(${p.id})">Delete</button>
@@ -1777,6 +1918,15 @@ function renderAdminTable(){
   const modeLabel = storageMode === 'connected' ? "the shared store (visible to everyone)" : "nowhere — backend unreachable, use Export/Import";
   adminStatusEl.textContent = `${PRODUCTS.length} products · saved to ${modeLabel}`;
   renderStorageWarning();
+}
+async function toggleComingSoon(id){
+  const p = PRODUCTS.find(x=>x.id===id);
+  if(!p) return;
+  p.comingSoon = !p.comingSoon;
+  renderAdminTable();
+  const ok = await persist();
+  if(ok) showToast(`"${p.name}" marked as ${p.comingSoon ? 'Coming Soon' : 'Live'}`);
+  renderGrid();
 }
 
 /* ---------------- admin: orders tab ---------------- */
@@ -1912,6 +2062,7 @@ function openProductForm(id){
     document.getElementById("pmQuality").value = p.quality || "";
     document.getElementById("pmHsn").value = p.hsn || DEFAULT_HSN;
     document.getElementById("pmSizes").value = (p.sizes && p.sizes.length ? p.sizes : (CAT_SIZES[p.cat]||DEFAULT_SIZES)).join(", ");
+    document.getElementById("pmComingSoon").checked = !!p.comingSoon;
     pendingImages = [...(p.images && p.images.length ? p.images : [p.img])];
   } else {
     document.getElementById("pmTitle").textContent = "Add product";
@@ -1923,6 +2074,7 @@ function openProductForm(id){
     document.getElementById("pmQuality").value = "";
     document.getElementById("pmHsn").value = DEFAULT_HSN;
     document.getElementById("pmSizes").value = CAT_SIZES["Tees"].join(", ");
+    document.getElementById("pmComingSoon").checked = false;
   }
   renderPmImageList();
   document.getElementById("pmImage").value = "";
@@ -2003,6 +2155,7 @@ async function saveProductForm(){
   const quality = document.getElementById("pmQuality").value.trim();
   const hsn = document.getElementById("pmHsn").value.trim() || DEFAULT_HSN;
   const sizes = document.getElementById("pmSizes").value.split(",").map(s=>s.trim()).filter(Boolean);
+  const comingSoon = document.getElementById("pmComingSoon").checked;
   if(!name){ showToast("Give the product a name first"); return; }
   if(!pendingImages.length){ showToast("Add at least one product image"); return; }
   if(!sizes.length){ showToast("Add at least one size"); return; }
@@ -2011,12 +2164,12 @@ async function saveProductForm(){
     const p = PRODUCTS.find(x=>x.id===editingId);
     p.name = name; p.cat = cat; p.mood = mood; p.price = price;
     p.description = description; p.quality = quality; p.hsn = hsn; p.sizes = sizes;
-    p.images = [...pendingImages]; p.img = pendingImages[0];
+    p.images = [...pendingImages]; p.img = pendingImages[0]; p.comingSoon = comingSoon;
     label = `Updated "${name}"`;
   } else {
     PRODUCTS.push({
       id: PRODUCTS.length, cat, img: pendingImages[0], images: [...pendingImages],
-      name, mood, price, description, quality, hsn, sizes
+      name, mood, price, description, quality, hsn, sizes, comingSoon
     });
     label = `Added "${name}" to the catalogue`;
   }
@@ -2104,37 +2257,41 @@ function renderProductPage(id){
       </div>
       <div class="pdvinfo">
         <div class="pdvcat">${p.cat}</div>
+        ${p.comingSoon ? `<div class="pdvcomingtag">Coming Soon</div>` : ''}
         <h1>${p.name}</h1>
         <span class="pdvmood">Mood: ${p.mood}</span>
         <div class="pdvprice">₹${p.price}</div>
         <p class="pdvdesc">${p.description || ""}</p>
         ${p.quality ? `<div class="pdvqualitybox"><h4>Quality &amp; Fabric</h4><p>${p.quality}</p></div>` : ''}
+        ${p.comingSoon ? '' : `
         <div class="pdvsizes">
           <h4>Select size</h4>
           <div class="pdvsizerow">${sizes.map(s=>`<button type="button" class="sizechip pdvchip" data-size="${s}">${s}</button>`).join("")}</div>
           ${inCartSizes.length ? `<div class="incartnote">In bag: ${inCartSizes.join(", ")}</div>` : ''}
-        </div>
+        </div>`}
         <div class="pdvaddrow">
-          <button class="btn btn-solid" id="pdvAddBtn" disabled>Select a size</button>
+          <button class="btn btn-solid" id="pdvAddBtn" disabled>${p.comingSoon ? "Coming soon" : "Select a size"}</button>
           <button class="btn btn-ghost" onclick="location.hash='';">Continue shopping</button>
         </div>
       </div>
     </div>`;
   const addBtn = document.getElementById("pdvAddBtn");
-  body.querySelectorAll(".pdvchip").forEach(chip=>{
-    chip.addEventListener("click", ()=>{
-      body.querySelectorAll(".pdvchip").forEach(c=>c.classList.remove("active"));
-      chip.classList.add("active");
-      selectedSize = chip.dataset.size;
-      addBtn.disabled = false;
-      addBtn.textContent = `Add to bag — Size ${selectedSize}`;
+  if(!p.comingSoon){
+    body.querySelectorAll(".pdvchip").forEach(chip=>{
+      chip.addEventListener("click", ()=>{
+        body.querySelectorAll(".pdvchip").forEach(c=>c.classList.remove("active"));
+        chip.classList.add("active");
+        selectedSize = chip.dataset.size;
+        addBtn.disabled = false;
+        addBtn.textContent = `Add to bag — Size ${selectedSize}`;
+      });
     });
-  });
-  addBtn.addEventListener("click", ()=>{
-    if(!selectedSize) return;
-    addToCart(p, selectedSize);
-    renderProductPage(id);
-  });
+    addBtn.addEventListener("click", ()=>{
+      if(!selectedSize) return;
+      addToCart(p, selectedSize);
+      renderProductPage(id);
+    });
+  }
   window.scrollTo(0,0);
 }
 let pdvImages = [];
@@ -2302,6 +2459,7 @@ document.getElementById("luchiMessages").addEventListener("click", (e)=>{
   renderStorageWarning();
   revealNow();
   checkRoute();
+  initAuth();
 })();
 </script>
 

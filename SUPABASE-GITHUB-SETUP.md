@@ -12,6 +12,14 @@
 - **Bonus fix folded in:** `orders` now re-prices every cart item against
   the live catalogue server-side before charging/invoicing it — closes a
   price-tampering gap your last live `orders.mjs` still had.
+- **New: email sign-in for customers.** Browsing (shop, product pages,
+  bag) still needs no account. Placing an order now requires signing in
+  with a passwordless email link — no Google/OAuth setup, nothing to pay
+  for. Enforced both in the UI (the checkout form is replaced with a
+  "Send sign-in link" box until you're signed in) and on the server (the
+  `orders` function rejects POST requests with no valid Supabase Auth
+  session, using the `_shared/auth.ts` helper). Admin login is
+  unchanged — it's still the separate `x-admin-key` passcode.
 
 ## Setup, in order
 
@@ -36,8 +44,12 @@
      SUPPORT_EMAIL=hello@luchpuch.com \
      SITE_URL=https://yourusername.github.io/luchpuch
    ```
-5. **Deploy the functions** (public — no Supabase Auth login is used
-   anywhere on this site, so `--no-verify-jwt` on all five):
+5. **Deploy the functions.** All five still run with `--no-verify-jwt` —
+   that's Supabase's automatic "require a JWT for every request" gate,
+   which would also block the still-public `GET /orders?email=...` lookup
+   and the admin-key routes. The customer sign-in requirement on `POST
+   /orders` is instead checked manually inside the function itself (via
+   `getUser()` in `_shared/auth.ts`), so it doesn't need that flag on:
    ```
    supabase functions deploy products --no-verify-jwt
    supabase functions deploy orders --no-verify-jwt
@@ -58,15 +70,43 @@
    Then spot-check a few rows in the Supabase table editor.
 7. **Edit `index.html`** — replace `YOUR-PROJECT-REF` on the `API_BASE`
    line near the top of the `<script>` with your real project ref.
-8. **Push to GitHub**, then repo -> Settings -> Pages -> Deploy from a
+8. **Turn on email sign-in for customers:**
+   - Get your **anon public key**: Dashboard -> Project Settings -> API ->
+     Project API keys -> `anon` `public`. Paste it into `SUPABASE_ANON_KEY`
+     near the top of the `<script>` in `index.html` (right under
+     `API_BASE`). This key is safe to ship client-side — unlike the
+     service role key, it can't bypass Row Level Security.
+   - That's the only setup step. Supabase's email provider is on by
+     default on every project, free tier included — no Google Cloud
+     account, no OAuth client, no cost. As soon as the anon key is in
+     place, the "Sign in" button in the nav works: a customer types their
+     email, gets a one-time link, and clicking it signs them in and drops
+     them back on your site.
+   - In Supabase: Dashboard -> Authentication -> URL Configuration -> set
+     **Site URL** to your live site (e.g.
+     `https://yourusername.github.io/luchpuch`) and add it under **Redirect
+     URLs** too — otherwise the sign-in link will work but bounce back to
+     the wrong page.
+   - Supabase's built-in email sender is rate-limited (a handful of emails
+     per hour on the free tier) — fine for testing and modest traffic. If
+     you outgrow it, Dashboard -> Authentication -> Providers -> Email
+     lets you turn on **Custom SMTP** and plug in Resend, SendGrid, or
+     similar (you likely already have Resend configured for order
+     confirmations — same account can send these too).
+   - Until the anon key is filled in, the "Sign in" button in the nav
+     shows "Sign-in not set up" and stays disabled — browsing and the bag
+     still work fine either way.
+9. **Push to GitHub**, then repo -> Settings -> Pages -> Deploy from a
    branch -> `main` / root. Live at
    `https://yourusername.github.io/reponame` (or add a custom domain there
    if you bought `luchpuch.com`).
-9. **Tighten CORS.** Once your GitHub Pages URL (or custom domain) is
-   final, open `supabase/functions/_shared/cors.ts` and change
-   `"Access-Control-Allow-Origin": "*"` to your exact site origin, then
-   redeploy all five functions. `*` works for testing but currently lets
-   any website call your functions, not just yours.
+10. **Tighten CORS.** Once your GitHub Pages URL (or custom domain) is
+    final, open `supabase/functions/_shared/cors.ts` and change
+    `"Access-Control-Allow-Origin"` to your exact site origin, then
+    redeploy all five functions. Leaving it as `*` (or the wrong origin)
+    lets any website call your functions, not just yours — and if it
+    doesn't match your real site origin, the sign-in link's redirect back
+    to your site will also fail CORS on the very first API call.
 
 ## Where your service role key lives
 
@@ -76,12 +116,20 @@ Row Level Security entirely, which is exactly why `schema.sql` enables RLS
 with no policies: it blocks the public REST API from reading your tables
 directly, while your Edge Functions keep working normally.
 
+The **anon key** is different — it's meant to be public, and is what the
+browser uses for the email sign-in flow (`SUPABASE_ANON_KEY` in
+`index.html`). It only grants what your RLS policies allow, which today is
+nothing on `kv_store` or `orders` — the anon key here is purely for Auth
+(sign-in, session, sign-out), not for reading your tables directly.
+
 ## Known limitations carried over unchanged
 
-Same three caveats your Netlify README already documented — none of this
+Same caveats your Netlify README already documented — none of this
 migration changes them:
 - Admin passcode is a shared secret, not real per-person accounts.
-- Order lookup by email has no additional proof of ownership.
+- Order lookup by email has no additional proof of ownership — anyone who
+  knows an email used at checkout can look up those orders on `#track`.
+  Sign-in gates *placing* an order, not looking one up by email.
 - Order status is set manually in admin, not connected to a courier API.
 
 ## One more thing worth knowing
