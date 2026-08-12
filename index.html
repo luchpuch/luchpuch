@@ -994,7 +994,11 @@ async function sendMagicLink(){
   });
   sendBtn.disabled = false;
   sendBtn.textContent = "Send sign-in link";
-  if(error){ showToast("Couldn't send the link — try again in a moment"); return; }
+  if(error){
+    console.error("[sendMagicLink] Supabase error:", error.status, error.message, error);
+    showToast("Couldn't send the link — " + (error.message || "try again in a moment"));
+    return;
+  }
   document.getElementById("authSentEmail").textContent = email;
   document.getElementById("authGateForm").style.display = "none";
   document.getElementById("authGateSent").style.display = "block";
