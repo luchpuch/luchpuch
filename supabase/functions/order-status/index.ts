@@ -13,7 +13,8 @@ import { statusUpdateEmail } from "../_shared/emailTemplates.ts";
 const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
 const ADMIN_KEY = Deno.env.get("ADMIN_KEY") || "luchpuch2026";
 const SITE_URL = Deno.env.get("SITE_URL") || "";
-const ORDER_STATUSES = ["Confirmed", "Packed", "Shipped", "Out for Delivery", "Delivered"];
+const ORDER_STATUSES = ["Confirmed", "Packed", "Shipped", "Out for Delivery", "Delivered", "Cancelled"];
+const REFUND_STATUSES = ["Requested", "Processing", "Refunded", "Not Applicable"];
 
 function json(data: unknown, status = 200) {
   return new Response(JSON.stringify(data), {
@@ -35,13 +36,16 @@ Deno.serve(async (req) => {
   } catch (e) {
     return json({ error: "Invalid JSON body" }, 400);
   }
-  const { id, status, courier, awb } = body || {};
+  const { id, status, courier, awb, refundStatus } = body || {};
   if (!id) return json({ error: "Missing order id" }, 400);
   if (status !== undefined && !ORDER_STATUSES.includes(status)) {
     return json({ error: `status must be one of: ${ORDER_STATUSES.join(", ")}` }, 400);
   }
-  if (status === undefined && courier === undefined && awb === undefined) {
-    return json({ error: "Nothing to update — provide status, courier, and/or awb" }, 400);
+  if (refundStatus !== undefined && refundStatus !== null && !REFUND_STATUSES.includes(refundStatus)) {
+    return json({ error: `refundStatus must be one of: ${REFUND_STATUSES.join(", ")}` }, 400);
+  }
+  if (status === undefined && courier === undefined && awb === undefined && refundStatus === undefined) {
+    return json({ error: "Nothing to update — provide status, courier, awb, and/or refundStatus" }, 400);
   }
 
   const { data: existing, error: fetchErr } = await supabase.from("orders").select("*").eq("id", id).maybeSingle();
@@ -52,14 +56,24 @@ Deno.serve(async (req) => {
   const newStatus = status !== undefined ? status : existing.status;
   const newCourier = courier !== undefined ? courier : existing.courier;
   const newAwb = awb !== undefined ? awb : existing.awb;
+  const newRefundStatus = refundStatus !== undefined ? refundStatus : existing.refund_status;
 
   const { error: updateErr } = await supabase
     .from("orders")
-    .update({ status: newStatus, courier: newCourier, awb: newAwb })
+    .update({ status: newStatus, courier: newCourier, awb: newAwb, refund_status: newRefundStatus })
     .eq("id", id);
   if (updateErr) return json({ error: updateErr.message }, 500);
 
-  const order = { ...existing.data, status: newStatus, courier: newCourier, awb: newAwb, id: existing.id, email: existing.email };
+  const order = {
+    ...existing.data,
+    status: newStatus,
+    courier: newCourier,
+    awb: newAwb,
+    id: existing.id,
+    email: existing.email,
+    cancelReason: existing.cancel_reason || undefined,
+    refundStatus: newRefundStatus || undefined,
+  };
 
   if (statusChanged) {
     sendEmail({
