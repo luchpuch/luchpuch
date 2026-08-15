@@ -142,11 +142,16 @@
   .pcard .pmulti{position:absolute;bottom:10px;right:10px;background:rgba(33,27,22,.72);color:var(--paper);font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:100px;}
   .pcard .pcoming{position:absolute;top:10px;right:10px;background:var(--blush);color:var(--paper);font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border-radius:100px;font-weight:700;}
   .pcard.is-coming .pimg img{filter:grayscale(.15) brightness(.92);}
+  .pcard .ppreorder, .ppreorder{position:absolute;top:10px;right:10px;background:var(--lav);color:var(--paper);font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border-radius:100px;font-weight:700;}
+  .pdvpreordertag{display:inline-block;background:var(--lav);color:var(--paper);font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:5px 12px;border-radius:100px;font-weight:700;margin-bottom:10px;}
+  .pdvpreordernote{font-size:12.5px;color:var(--ink-dim);background:var(--bg-soft);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:4px 0 14px;}
+  .preorderbanner{background:var(--bg-soft);border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:13px;color:var(--ink-dim);margin:14px 0;}
   .pcard .addbtn:disabled{opacity:.55;cursor:not-allowed;}
   .pcard .addbtn:disabled:hover{background:none;color:var(--ink);}
   .adminbadge{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:4px 10px;border-radius:100px;}
   .adminbadge.coming{background:var(--blush);color:var(--paper);}
   .adminbadge.live{background:var(--sage);color:var(--paper);}
+  .adminbadge.preorder{background:var(--lav);color:var(--paper);}
   .pdvcomingtag{display:inline-block;background:var(--blush);color:var(--paper);font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:5px 12px;border-radius:100px;font-weight:700;margin-bottom:10px;}
   .pcard .pname{cursor:pointer;}
   .pcard .pname:hover{text-decoration:underline;}
@@ -679,6 +684,7 @@
   <div id="cartitems"></div>
   <div id="cartfoot">
     <div class="ctotal"><span>Total</span><span id="carttotal">₹0</span></div>
+    <div id="cartPreorderNote" class="preorderbanner" style="display:none;">🕒 Your bag includes a pre-order item — you'll be charged now, and that order is held and processed as soon as we mark the item Live.</div>
 
     <div id="authGate" style="display:none;">
       <p class="note">Sign in with your email to place an order. Browsing and your bag stay open either way — this step is only needed to check out. No password needed — we'll email you a one-time sign-in link.</p>
@@ -899,6 +905,7 @@
     <label>Available sizes (comma separated)</label>
     <input type="text" id="pmSizes" placeholder="e.g. S, M, L, XL, XXL">
     <label class="pmcheckrow"><input type="checkbox" id="pmComingSoon"> Mark as "Coming Soon" (shown in the shop, but can't be added to bag yet)</label>
+    <label class="pmcheckrow"><input type="checkbox" id="pmPreorder"> Mark as "Pre-order" (customers CAN pay and book stock now — the order is held and only processed once you switch this off / mark the product Live)</label>
     <label>Product images</label>
     <input type="file" id="pmImage" accept="image/*" multiple onchange="handleImageFiles(this)">
     <div id="pmImageList" class="pmimagelist"></div>
@@ -913,8 +920,8 @@
 <div id="ocBack" onclick="if(event.target===this) closeOrderConfirm()">
   <div id="ocModal">
     <div class="occheck">✓</div>
-    <h3>Order confirmed!</h3>
-    <p class="adstatus">Your reference number — you can track this order anytime using the email you checked out with.</p>
+    <h3 id="ocTitle">Order confirmed!</h3>
+    <p class="adstatus" id="ocDesc">Your reference number — you can track this order anytime using the email you checked out with.</p>
     <div id="ocOrderId">LP000000</div>
     <div class="pmodal-actions">
       <button class="btn btn-ghost" onclick="closeOrderConfirm()">Continue shopping</button>
@@ -1114,7 +1121,7 @@ const CANCEL_REASONS = [
   "Wrong size / item selected",
   "Other",
 ];
-const CANCELLABLE_STATUSES = ["Confirmed", "Packed"];
+const CANCELLABLE_STATUSES = ["Pre-Order", "Confirmed", "Packed"];
 const REFUND_LABELS = {
   Requested: "Refund requested",
   Processing: "Refund processing",
@@ -1158,13 +1165,15 @@ function renderAccountOrderCard(order){
       <div class="tid">${escapeHtml(order.id)}</div>
       <div class="tdate">Placed ${new Date(order.date).toLocaleDateString('en-IN', {day:'numeric',month:'long',year:'numeric'})}</div>
       ${order.awb ? `<div class="tdate">Shipped via ${escapeHtml(order.courier || 'courier')} — AWB/Tracking No. <b>${escapeHtml(order.awb)}</b></div>` : ''}
-      <div class="stepper">
+      ${order.status === "Pre-Order"
+        ? `<div class="preorderbanner">🕒 Pre-order placed — payment received. We'll begin processing as soon as this item goes live, and you'll get an email the moment that happens.</div>`
+        : `<div class="stepper">
         ${ORDER_STAGES.map((s,i)=>`
           <div class="step ${i<=stage && order.status!=='Cancelled' ?'done':''}">
             <div class="dot">${i<=stage && order.status!=='Cancelled' ?'✓':''}</div>
             <div class="slabel">${s}</div>
           </div>`).join("")}
-      </div>
+      </div>`}
       <div class="trackitems">
         ${order.items.map(it=>`
           <div class="trackitem">
@@ -1246,6 +1255,7 @@ function normalizeProduct(p){
   if(!p.hsn) p.hsn = DEFAULT_HSN;
   if(!p.sizes || !p.sizes.length) p.sizes = CAT_SIZES[p.cat] || DEFAULT_SIZES;
   p.comingSoon = !!p.comingSoon;
+  p.preorder = !!p.preorder;
   return p;
 }
 DEFAULT_PRODUCTS.forEach(normalizeProduct);
@@ -1547,7 +1557,7 @@ function renderGrid(){
     card.className = "pcard" + (p.comingSoon ? " is-coming" : "");
     card.setAttribute("data-reveal","");
     card.innerHTML = `
-      <div class="pimg"><span class="pcat">${p.cat}</span>${p.comingSoon ? `<span class="pcoming">Coming Soon</span>` : ''}<img src="${p.img}" alt="${p.name} — ${p.cat}" loading="lazy">${!p.comingSoon && p.images && p.images.length>1 ? `<span class="pmulti">+${p.images.length-1}</span>` : ''}</div>
+      <div class="pimg"><span class="pcat">${p.cat}</span>${p.comingSoon ? `<span class="pcoming">Coming Soon</span>` : (p.preorder ? `<span class="ppreorder">Pre-order</span>` : '')}<img src="${p.img}" alt="${p.name} — ${p.cat}" loading="lazy">${!p.comingSoon && p.images && p.images.length>1 ? `<span class="pmulti">+${p.images.length-1}</span>` : ''}</div>
       <div class="pbody">
         <div class="pname">${p.name}</div>
         <div class="pmood">Mood: ${p.mood}</div>
@@ -1555,7 +1565,7 @@ function renderGrid(){
         <div class="sizerow" data-open="0"></div>
         <div class="prow">
           <span class="pprice">₹${p.price}</span>
-          <button class="addbtn" data-id="${p.id}" ${p.comingSoon ? 'disabled' : ''}>${p.comingSoon ? 'Coming soon' : (sizes.length>1 ? 'Choose size' : 'Add to bag')}</button>
+          <button class="addbtn" data-id="${p.id}" ${p.comingSoon ? 'disabled' : ''}>${p.comingSoon ? 'Coming soon' : (sizes.length>1 ? (p.preorder ? 'Pre-order — choose size' : 'Choose size') : (p.preorder ? 'Pre-order now' : 'Add to bag'))}</button>
         </div>
       </div>`;
     card.querySelector(".pimg").addEventListener("click", ()=>{ location.hash = `#product-${p.id}`; });
@@ -1674,7 +1684,7 @@ const carttotal = document.getElementById("carttotal");
 function addToCart(p, size){
   if(!cart.some(c=>c.id===p.id && c.size===size)){
     cart.push({...p, size});
-    showToast(`Added "${p.name}" (${size}) to your bag`);
+    showToast(p.preorder ? `Added "${p.name}" (${size}) to your bag — pre-order` : `Added "${p.name}" (${size}) to your bag`);
   } else {
     showToast(`"${p.name}" (${size}) is already in your bag`);
   }
@@ -1694,7 +1704,7 @@ function renderCart(){
       <div class="citem">
         <img src="${p.img}" alt="${p.name}">
         <div class="cinfo">
-          <div class="cn">${p.name}</div>
+          <div class="cn">${p.name}${p.preorder ? ' <span class="ppreorder" style="position:static;display:inline-block;vertical-align:middle;">Pre-order</span>' : ''}</div>
           <div class="cm">${p.cat} · Size: ${p.size} · Mood: ${p.mood}</div>
           <button class="cremove" onclick="removeFromCart(${p.id}, '${p.size}')">Remove</button>
         </div>
@@ -1703,6 +1713,8 @@ function renderCart(){
   }
   const total = cart.reduce((s,p)=>s+p.price,0);
   carttotal.textContent = "₹" + total;
+  const preorderNote = document.getElementById("cartPreorderNote");
+  if(preorderNote) preorderNote.style.display = cart.some(p=>p.preorder) ? "block" : "none";
   renderCartAuthGate();
   if(region === "intl" && paypalLoaded) renderPayPalButtons();
 }
@@ -1834,7 +1846,7 @@ async function createOrder(paymentRef, currencyLabel){
     id: generateOrderId(),
     email: getCheckoutEmail(),
     date: new Date().toISOString(),
-    items: cart.map(p=>({ id:p.id, name:p.name, cat:p.cat, mood:p.mood, price:p.price, img:p.img, hsn: p.hsn || DEFAULT_HSN, size: p.size })),
+    items: cart.map(p=>({ id:p.id, name:p.name, cat:p.cat, mood:p.mood, price:p.price, img:p.img, hsn: p.hsn || DEFAULT_HSN, size: p.size, preorder: !!p.preorder })),
     total: cart.reduce((s,p)=>s+p.price,0),
     currency: currencyLabel,
     region: region,
@@ -1950,6 +1962,11 @@ const orderRegistry = {};
 function showOrderConfirmed(order){
   orderRegistry[order.id] = order;
   document.getElementById("ocOrderId").textContent = order.id;
+  const isPre = order.status === "Pre-Order";
+  document.getElementById("ocTitle").textContent = isPre ? "Pre-order confirmed!" : "Order confirmed!";
+  document.getElementById("ocDesc").textContent = isPre
+    ? "Payment received — this order is on hold and will be processed as soon as we mark the item Live. You'll get an email the moment that happens."
+    : "Your reference number — you can track this order anytime using the email you checked out with.";
   document.getElementById("ocBack").classList.add("on");
   document.getElementById("ocTrackBtn").onclick = ()=>{
     closeOrderConfirm();
@@ -2055,13 +2072,17 @@ function renderOrderCard(order){
       <div class="tid">${escapeHtml(order.id)}</div>
       <div class="tdate">Placed ${new Date(order.date).toLocaleDateString('en-IN', {day:'numeric',month:'long',year:'numeric'})}</div>
       ${order.awb ? `<div class="tdate">Shipped via ${escapeHtml(order.courier || 'courier')} — AWB/Tracking No. <b>${escapeHtml(order.awb)}</b></div>` : ''}
-      <div class="stepper">
+      ${order.status === "Pre-Order"
+        ? `<div class="preorderbanner">🕒 Pre-order placed — payment received. We'll begin processing as soon as this item goes live, and you'll get an email the moment that happens.</div>`
+        : order.status === "Cancelled"
+        ? `<div class="cancelbanner">Cancelled${order.cancelReason ? ` — <b>${escapeHtml(order.cancelReason)}</b>` : ""}</div>`
+        : `<div class="stepper">
         ${ORDER_STAGES.map((s,i)=>`
           <div class="step ${i<=stage?'done':''}">
             <div class="dot">${i<=stage?'✓':''}</div>
             <div class="slabel">${s}</div>
           </div>`).join("")}
-      </div>
+      </div>`}
       <div class="trackitems">
         ${order.items.map(it=>`
           <div class="trackitem">
@@ -2120,7 +2141,7 @@ function renderAdminTable(){
       <td>${p.cat}</td>
       <td>${p.mood}</td>
       <td>₹${p.price}</td>
-      <td><button class="adminbadge ${p.comingSoon ? 'coming' : 'live'}" style="border:none;cursor:pointer;" onclick="toggleComingSoon(${p.id})" title="Click to toggle">${p.comingSoon ? 'Coming Soon' : 'Live'}</button></td>
+      <td><button class="adminbadge ${productState(p)}" style="border:none;cursor:pointer;" onclick="cycleProductStatus(${p.id})" title="Click to cycle: Live → Pre-order → Coming Soon">${productStateLabel(p)}</button></td>
       <td class="adactions">
         <button onclick="openProductForm(${p.id})">Edit</button>
         <button class="del" onclick="deleteProduct(${p.id})">Delete</button>
@@ -2130,13 +2151,32 @@ function renderAdminTable(){
   adminStatusEl.textContent = `${PRODUCTS.length} products · saved to ${modeLabel}`;
   renderStorageWarning();
 }
-async function toggleComingSoon(id){
+// Single source of truth for a product's three-way state, since comingSoon
+// and preorder are mutually exclusive (see the checkbox pairing in the
+// product form). "coming" = not buyable at all, "preorder" = buyable now
+// but held until released, "live" = normal, ships immediately.
+function productState(p){
+  if(p.comingSoon) return 'coming';
+  if(p.preorder) return 'preorder';
+  return 'live';
+}
+function productStateLabel(p){
+  const s = productState(p);
+  return s === 'coming' ? 'Coming Soon' : s === 'preorder' ? 'Pre-order' : 'Live';
+}
+// Clicking the badge cycles Live -> Pre-order -> Coming Soon -> Live.
+// Moving OFF "preorder" is exactly the trigger that releases any held
+// pre-orders for this product (handled server-side in products/index.ts).
+async function cycleProductStatus(id){
   const p = PRODUCTS.find(x=>x.id===id);
   if(!p) return;
-  p.comingSoon = !p.comingSoon;
+  const state = productState(p);
+  if(state === 'live'){ p.preorder = true; p.comingSoon = false; }
+  else if(state === 'preorder'){ p.comingSoon = true; p.preorder = false; }
+  else { p.comingSoon = false; p.preorder = false; }
   renderAdminTable();
   const ok = await persist();
-  if(ok) showToast(`"${p.name}" marked as ${p.comingSoon ? 'Coming Soon' : 'Live'}`);
+  if(ok) showToast(`"${p.name}" marked as ${productStateLabel(p)}${productState(p)==='live' ? ' — any held pre-orders for this item are now being processed' : ''}`);
   renderGrid();
 }
 
@@ -2173,12 +2213,13 @@ function renderAdminOrderRows(orders){
   statusEl.textContent = `${orders.length} order${orders.length===1?'':'s'}`;
   document.getElementById("adminOrderRows").innerHTML = orders.map(o=>`
     <tr>
-      <td>${escapeHtml(o.id)}</td>
+      <td>${escapeHtml(o.id)}${o.items && o.items.some(it=>it.preorder) ? ' <span class="ppreorder" style="position:static;display:inline-block;vertical-align:middle;">Pre-order</span>' : ''}</td>
       <td>${new Date(o.date).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}</td>
       <td>${escapeHtml(o.email)}</td>
       <td>${o.currency==='USD' ? '$'+(o.total/USD_TO_INR).toFixed(2) : '₹'+o.total}</td>
       <td>
         <select class="ordstatusselect" onchange="updateOrderStatus('${o.id}', this.value, this)">
+          <option value="Pre-Order" ${o.status==='Pre-Order'?'selected':''}>Pre-Order</option>
           ${ORDER_STAGES.map(s=>`<option value="${s}" ${o.status===s?'selected':''}>${s}</option>`).join("")}
           <option value="Cancelled" ${o.status==='Cancelled'?'selected':''}>Cancelled</option>
         </select>
@@ -2304,6 +2345,7 @@ function openProductForm(id){
     document.getElementById("pmHsn").value = p.hsn || DEFAULT_HSN;
     document.getElementById("pmSizes").value = (p.sizes && p.sizes.length ? p.sizes : (CAT_SIZES[p.cat]||DEFAULT_SIZES)).join(", ");
     document.getElementById("pmComingSoon").checked = !!p.comingSoon;
+    document.getElementById("pmPreorder").checked = !!p.preorder;
     pendingImages = [...(p.images && p.images.length ? p.images : [p.img])];
   } else {
     document.getElementById("pmTitle").textContent = "Add product";
@@ -2316,11 +2358,20 @@ function openProductForm(id){
     document.getElementById("pmHsn").value = DEFAULT_HSN;
     document.getElementById("pmSizes").value = CAT_SIZES["Tees"].join(", ");
     document.getElementById("pmComingSoon").checked = false;
+    document.getElementById("pmPreorder").checked = false;
   }
   renderPmImageList();
   document.getElementById("pmImage").value = "";
   document.getElementById("pmodalback").classList.add("on");
 }
+// A product can't be both "Coming Soon" (not buyable at all) and
+// "Pre-order" (buyable now, fulfilled later) — checking one clears the other.
+document.getElementById("pmComingSoon").addEventListener("change", (e)=>{
+  if(e.target.checked) document.getElementById("pmPreorder").checked = false;
+});
+document.getElementById("pmPreorder").addEventListener("change", (e)=>{
+  if(e.target.checked) document.getElementById("pmComingSoon").checked = false;
+});
 document.getElementById("pmCat").addEventListener("change", (e)=>{
   // Only auto-fill sizes for a brand-new product — editing an existing one
   // respects whatever sizes are already set, so switching category doesn't
@@ -2397,6 +2448,7 @@ async function saveProductForm(){
   const hsn = document.getElementById("pmHsn").value.trim() || DEFAULT_HSN;
   const sizes = document.getElementById("pmSizes").value.split(",").map(s=>s.trim()).filter(Boolean);
   const comingSoon = document.getElementById("pmComingSoon").checked;
+  const preorder = document.getElementById("pmPreorder").checked;
   if(!name){ showToast("Give the product a name first"); return; }
   if(!pendingImages.length){ showToast("Add at least one product image"); return; }
   if(!sizes.length){ showToast("Add at least one size"); return; }
@@ -2405,12 +2457,12 @@ async function saveProductForm(){
     const p = PRODUCTS.find(x=>x.id===editingId);
     p.name = name; p.cat = cat; p.mood = mood; p.price = price;
     p.description = description; p.quality = quality; p.hsn = hsn; p.sizes = sizes;
-    p.images = [...pendingImages]; p.img = pendingImages[0]; p.comingSoon = comingSoon;
+    p.images = [...pendingImages]; p.img = pendingImages[0]; p.comingSoon = comingSoon; p.preorder = preorder;
     label = `Updated "${name}"`;
   } else {
     PRODUCTS.push({
       id: PRODUCTS.length, cat, img: pendingImages[0], images: [...pendingImages],
-      name, mood, price, description, quality, hsn, sizes, comingSoon
+      name, mood, price, description, quality, hsn, sizes, comingSoon, preorder
     });
     label = `Added "${name}" to the catalogue`;
   }
@@ -2498,12 +2550,13 @@ function renderProductPage(id){
       </div>
       <div class="pdvinfo">
         <div class="pdvcat">${p.cat}</div>
-        ${p.comingSoon ? `<div class="pdvcomingtag">Coming Soon</div>` : ''}
+        ${p.comingSoon ? `<div class="pdvcomingtag">Coming Soon</div>` : (p.preorder ? `<div class="pdvpreordertag">Pre-order</div>` : '')}
         <h1>${p.name}</h1>
         <span class="pdvmood">Mood: ${p.mood}</span>
         <div class="pdvprice">₹${p.price}</div>
         <p class="pdvdesc">${p.description || ""}</p>
         ${p.quality ? `<div class="pdvqualitybox"><h4>Quality &amp; Fabric</h4><p>${p.quality}</p></div>` : ''}
+        ${p.preorder && !p.comingSoon ? `<p class="pdvpreordernote">🕒 This is a pre-order — you can pay now to book your stock. We'll process and ship it as soon as this item goes live.</p>` : ''}
         ${p.comingSoon ? '' : `
         <div class="pdvsizes">
           <h4>Select size</h4>
@@ -2524,7 +2577,7 @@ function renderProductPage(id){
         chip.classList.add("active");
         selectedSize = chip.dataset.size;
         addBtn.disabled = false;
-        addBtn.textContent = `Add to bag — Size ${selectedSize}`;
+        addBtn.textContent = p.preorder ? `Pre-order now — Size ${selectedSize}` : `Add to bag — Size ${selectedSize}`;
       });
     });
     addBtn.addEventListener("click", ()=>{
