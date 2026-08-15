@@ -69,6 +69,7 @@ const STATUS_COPY: Record<string, string> = {
   Shipped: "Your order is on its way!",
   "Out for Delivery": "Your order is out for delivery today.",
   Delivered: "Your order has been delivered. We hope you love it!",
+  Cancelled: "Your order has been cancelled. If a payment was collected, we'll process your refund shortly.",
 };
 
 export function statusUpdateEmail(siteUrl: string, order: any) {
