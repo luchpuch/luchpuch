@@ -70,6 +70,8 @@ function rowToOrder(row: any) {
     courier: row.courier || undefined,
     awb: row.awb || undefined,
     invoiceNumber: row.invoice_number,
+    cancelReason: row.cancel_reason || undefined,
+    refundStatus: row.refund_status || undefined,
   };
 }
 
@@ -196,8 +198,7 @@ Deno.serve(async (req) => {
       invoice_number: order.invoiceNumber,
       total: order.total,
       currency: order.currency || "INR",
-git add index.html
-git add supabase/functions/orders/index.ts      data: order,
+      data: order,
     });
     if (insertErr) return json({ error: insertErr.message }, 500);
 
