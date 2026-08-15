@@ -31,6 +31,16 @@ create table if not exists orders (
 create index if not exists idx_orders_email on orders (lower(email));
 create index if not exists idx_orders_created_at on orders (created_at desc);
 
+-- Customer-initiated cancellation. cancel_reason is the reason the customer
+-- picked/typed in the "Cancel order" flow; refund_status is a separate field
+-- so an order can be Cancelled while the refund itself is still in progress
+-- (Requested -> Processing -> Refunded), or Not Applicable for COD orders
+-- that were never charged. Admin can move refund_status forward manually
+-- via order-status; the customer-facing order-cancel function only ever
+-- sets it to 'Requested'.
+alter table orders add column if not exists cancel_reason text;
+alter table orders add column if not exists refund_status text;
+
 create sequence if not exists invoice_seq start 1;
 
 -- Called via supabase.rpc("next_invoice_number") from the orders function.
