@@ -1227,6 +1227,45 @@ async function confirmCancelOrder(orderId){
   }
 }
 
+function toggleReturnForm(orderId){
+  const el = document.getElementById(`returnform-${orderId}`);
+  if(!el) return;
+  el.style.display = el.style.display === "none" ? "block" : "none";
+}
+
+function onReturnReasonChange(orderId){
+  const select = document.getElementById(`returnreason-${orderId}`);
+  const other = document.getElementById(`returnother-${orderId}`);
+  if(!select || !other) return;
+  other.style.display = select.value === "Other" ? "block" : "none";
+}
+
+async function confirmReturnRequest(orderId){
+  const select = document.getElementById(`returnreason-${orderId}`);
+  const other = document.getElementById(`returnother-${orderId}`);
+  if(!select) return;
+  let reason = select.value;
+  if(reason === "Other"){
+    reason = (other && other.value.trim()) || "";
+    if(!reason){ showToast("Add a quick note so we know why"); return; }
+  }
+  if(!currentAccessToken){ showToast("Sign in to request a return"); return; }
+  try{
+    const res = await fetch(`${API_BASE}/return-request`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${currentAccessToken}` },
+      body: JSON.stringify({ id: orderId, reason }),
+    });
+    const data = await res.json();
+    if(!res.ok){ showToast(data.error || "Couldn't request return — try again"); return; }
+    orderRegistry[data.order.id] = data.order;
+    showToast("Return request submitted");
+    loadAccountOrders();
+  }catch(e){
+    showToast("Couldn't request return — try again");
+  }
+}
+
 /* ---------------- product data (54 individual designs) ---------------- */
 const DEFAULT_PRODUCTS = [];
 
