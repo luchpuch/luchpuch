@@ -2312,7 +2312,7 @@ function renderAdminOrderRows(orders){
       </td>
       <td>
         <div class="trackcell">
-          <input type="text" placeholder="Courier (e.g. Delhivery)" id="courier-${o.id}" value="${escapeHtml(o.courier || '')}">
+          <input type="text" placeholder="Courier (e.g. Ekart)" id="courier-${o.id}" value="${escapeHtml(o.courier || '')}">
           <input type="text" placeholder="AWB / tracking no." id="awb-${o.id}" value="${escapeHtml(o.awb || '')}">
           <button class="abtn" onclick="saveOrderTracking('${o.id}', this)">Save</button>
         </div>
