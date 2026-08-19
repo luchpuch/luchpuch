@@ -23,6 +23,7 @@ import { corsHeaders } from "../_shared/cors.ts";
 import { sendEmail } from "../_shared/email.ts";
 import { orderConfirmationEmail } from "../_shared/emailTemplates.ts";
 import { getUser } from "../_shared/auth.ts";
+import { ekartService } from "../_shared/ekart.ts";
 
 const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
 const ADMIN_KEY = Deno.env.get("ADMIN_KEY") || "luchpuch2026";
@@ -208,6 +209,119 @@ Deno.serve(async (req) => {
       subject: `Order confirmed — ${order.invoiceNumber}`,
       html: orderConfirmationEmail(SITE_URL, order),
     }).catch(() => {});
+
+    // Try to create Ekart shipment automatically (non-blocking)
+    // This runs after order is saved, so any Ekart failure doesn't affect order creation
+    setTimeout(async () => {
+      try {
+        // Map order data to Ekart shipment format
+        const ekartShipmentData: any = {
+          seller_name: "Luchpuch",
+          seller_address: "Committee Market, Talgaria More, Bokaro Steel City, Bokaro District, Jharkhand — 827013",
+          seller_gst_tin: "20AOBPD7025B1ZZ",
+          seller_gst_amount: 0,
+          consignee_gst_amount: order.taxSummary ? Number(order.taxSummary.sgstTotal || 0) : 0,
+          integrated_gst_amount: order.taxSummary ? Number(order.taxSummary.igstTotal || 0) : 0,
+          ewbn: "",
+          order_number: order.id,
+          invoice_number: order.invoiceNumber || "",
+          invoice_date: order.date.split('T')[0], // YYYY-MM-DD format
+          document_number: order.id,
+          document_date: order.date.split('T')[0],
+          consignee_gst_tin: order.billing?.gstin || "",
+          consignee_name: order.billing.name,
+          consignee_alternate_phone: order.billing.phone ? String(order.billing.phone).padStart(10, '0').slice(-10) : "0000000000",
+          products_desc: order.items.map((item: any) => `${item.name} (${item.cat})`).join(", "),
+          payment_mode: order.currency === "USD" ? "Prepaid" : "COD",
+          category_of_goods: order.items[0]?.cat || "Apparel",
+          hsn_code: order.items[0]?.hsn || "6109",
+          total_amount: Number(order.total),
+          tax_value: order.taxSummary ?
+            (Number(order.taxSummary.cgstTotal || 0) + Number(order.taxSummary.sgstTotal || 0) + Number(order.taxSummary.igstTotal || 0)) : 0,
+          taxable_amount: order.taxSummary ? Number(order.taxSummary.taxableTotal || order.total) : Number(order.total),
+          commodity_value: String(order.taxSummary ? Number(order.taxSummary.taxableTotal || order.total) : Number(order.total)),
+          cod_amount: order.currency === "INR" ? Number(order.total) : 0,
+          quantity: order.items.reduce((sum: number, item: any) => sum + Number(item.quantity || 1), 0),
+          templateName: "",
+          weight: 500,
+          length: 10,
+          height: 10,
+          width: 10,
+          return_reason: "",
+          drop_location: {
+            location_type: "Office",
+            address: order.billing.address,
+            city: order.billing.city,
+            state: order.billing.state,
+            country: "India",
+            name: order.billing.name,
+            phone: order.billing.phone ? parseInt(String(order.billing.phone).padStart(10, '0').slice(-10)) : 1000000000,
+            pin: parseInt(order.billing.pin.replace(/\D/g, '') || "000000")
+          },
+          pickup_location: {
+            location_type: "Office",
+            address: "Committee Market, Talgaria More",
+            city: "Bokaro Steel City",
+            state: "Jharkhand",
+            country: "India",
+            name: "Luchpuch Warehouse",
+            phone: 1000000000,
+            pin: 827013
+          },
+          return_location: {
+            location_type: "Office",
+            address: "Committee Market, Talgaria More",
+            city: "Bokaro Steel City",
+            state: "Jharkhand",
+            country: "India",
+            name: "Luchpuch Warehouse",
+            phone: 1000000000,
+            pin: 827013
+          },
+          preferred_dispatch_date: new Date().toISOString().split('T')[0],
+          delayed_dispatch: false,
+          obd_shipment: false,
+          mps: false,
+          items: order.items.map((item: any) => ({
+            name: item.name,
+            description: item.description || "",
+            sku: "",
+            category: item.cat,
+          })),
+          what3words_address: null
+        };
+
+        // Remove empty or null fields that might cause issues
+        const cleanShipmentData = Object.fromEntries(
+          Object.entries(ekartShipmentData).filter(([_, v]) => v !== null && v !== "" && v !== undefined)
+        );
+
+        const ekartResponse = await ekartService.createShipment(cleanShipmentData);
+
+        if (ekartResponse.status && ekartResponse.tracking_id) {
+          // Update the order with Ekart tracking info
+          const { error: updateError } = await supabase
+            .from("orders")
+            .update({
+              courier: "Ekart",
+              awb: ekartResponse.tracking_id
+            })
+            .eq("id", order.id);
+
+          if (updateError) {
+            console.error("Failed to update order with Ekart tracking:", updateError);
+          } else {
+            // Optionally notify admin of successful shipment creation
+            console.log(`Ekart shipment created for order ${order.id}: AWB ${ekartResponse.tracking_id}`);
+          }
+        } else {
+          console.warn("Ekart shipment creation unsuccessful:", ekartResponse);
+        }
+      } catch (ekartError) {
+        // Log Ekart error but don't fail - admin can handle manually
+        console.error("Ekart shipment creation failed:", ekartError);
+      }
+    }, 1000); // Small delay to let order save complete
 
     return json({ ok: true, order });
   }
