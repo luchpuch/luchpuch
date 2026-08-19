@@ -989,8 +989,9 @@ const API_BASE = "https://epecmbcjaxpjyvwffxxf.supabase.co/functions/v1";
    (browsing, cart) works either way.
 ================================================================================ */
 const SUPABASE_URL = API_BASE.replace(/\/functions\/v1$/, "");
-const SUPABASE_ANON_KEY = ""; // Set your Supabase anon public key here
-const authConfigured = !SUPABASE_ANON_KEY.includes("YOUR_") && !!window.supabase;
+// Set your Supabase anon public key here (found in Project Settings -> API)
+	const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVwZWNtYmNqYXhwanl2d2ZmeHhmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU2ODk2MTEsImV4cCI6MjEwMTI2NTYxMX0.PMNefYO7ZCuuzrlhCOzXAFZNomzJCoyzegh86nCvOSk"; // <-- INSERT YOUR SUPABASE ANON KEY HERE
+const authConfigured = SUPABASE_ANON_KEY && !SUPABASE_ANON_KEY.includes("YOUR_") && !!window.supabase;
 const supabaseClient = authConfigured ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 
 let currentUser = null;
