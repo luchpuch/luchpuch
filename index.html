@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Luchpuch — Soft Things, Warm Feelings</title>
-<meta name="description" content="Luchpuch — oversized tees, joggers, shorts & sleeveless tees, every design listed individually. Comfort you can live in, made for India.">
+<meta name="description" content="Luchpuch — premium oversized tees, joggers, shorts & sleeveless tees. Every design is unique, made for comfort and self-expression. Soft cotton, relaxed fits, designed in India.">
 <link rel="icon" type="image/jpeg" href="logo.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -34,7 +34,8 @@
   #starfield{position:fixed;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none;}
 
   /* ---------- nav ---------- */
-  #nav{position:fixed;top:0;left:0;right:0;z-index:300;display:flex;align-items:center;justify-content:space-between;padding:16px 6vw;background:color-mix(in srgb, var(--bg) 78%, transparent);backdrop-filter:blur(14px);opacity:0;transform:translateY(-10px);pointer-events:none;transition:opacity .4s ease, transform .4s ease;border-bottom:1px solid transparent;}
+  #nav{position:fixed;top:0;left:0;right:0;z-index:300;display:flex;align-items:center;justify-content:space-between;padding:16px 6vw;background:color-mix(in srgb, var(--bg) 85%, transparent);backdrop-filter:blur(14px);opacity:0;transform:translateY(-10px);pointer-events:none;transition:opacity .4s ease, transform .4s ease, background .4s ease;border-bottom:1px solid transparent;}
+#nav.on{opacity:1;transform:none;pointer-events:auto;border-color:var(--line);background:color-mix(in srgb, var(--bg) 90%, transparent);}
   #nav.on{opacity:1;transform:none;pointer-events:auto;border-color:var(--line);}
   #nav .mark{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.02em;font-size:18px;cursor:pointer;background:none;border:none;color:var(--ink);}
   #nav .mark img{width:34px;height:34px;border-radius:50%;object-fit:cover;}
@@ -52,10 +53,10 @@
   #authBtn:disabled{opacity:.5;cursor:default;}
   #authBtn:disabled:hover{background:none;color:var(--ink);}
   @media (max-width:520px){ #authBtn .authlabel{display:none;} }
-  @media (max-width:900px){ #nav .links a{display:none;} }
+  @media (max-width:900px){ #nav .links a:not([href="#fit"]){display:none;} }
 
   /* ---------- hero ---------- */
-  #hero{min-height:100vh;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:14vh 6vw 8vh;overflow:hidden;}
+  #hero{min-height:100vh;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:14vh 6vw 8vh;overflow:hidden;background:color-mix(in srgb, var(--bg) 95%, transparent);}
   .doodle{position:absolute;font-size:38px;opacity:.85;animation:bob 6s ease-in-out infinite;user-select:none;filter:drop-shadow(0 6px 10px rgba(58,42,32,.12));}
   .doodle.d1{top:16%;left:10%;animation-delay:0s;}
   .doodle.d2{top:24%;right:12%;animation-delay:1.1s;font-size:30px;}
@@ -133,8 +134,8 @@
   #moodFilterNote button:hover{background:var(--ink);color:var(--paper);}
   .emptyshop{grid-column:1/-1;text-align:center;padding:10vh 4vw;color:var(--ink-dim);}
   .emptyshop p{font-size:15px;margin-bottom:20px;}
-  .pcard{background:var(--paper);border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;transition:transform .25s ease, box-shadow .25s ease;}
-  .pcard:hover{transform:translateY(-5px);box-shadow:0 20px 40px -18px rgba(58,42,32,.28);}
+  .pcard{background:var(--paper);border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;transition:transform .3s cubic-bezier(.4,0,.2,1), box-shadow .3s cubic-bezier(.4,0,.2,1), border-color .3s cubic-bezier(.4,0,.2,1);}
+  .pcard:hover{transform:translateY(-8px);box-shadow:0 24px 48px -20px rgba(58,42,32,.32);border-color:rgba(58,42,32,.2);}
   .pcard .pimg{aspect-ratio:1/1.28;overflow:hidden;background:var(--bg-soft);position:relative;}
   .pcard .pimg img{width:100%;height:100%;object-fit:cover;object-position:top center;transition:transform .5s cubic-bezier(.2,.7,.2,1);}
   .pcard:hover .pimg img{transform:scale(1.06) rotate(-.6deg);}
@@ -505,17 +506,17 @@
     <a href="#shop" onclick="setTab('Sleeveless')">Sleeveless</a>
     <a href="#fit">Size Guide</a>
   </div>
-  <button class="navcta" id="authBtn" onclick="openCart()">👤 <span class="authlabel">Sign in</span></button>
+  <button class="navcta" id="authBtn">👤 <span class="authlabel">Sign in</span></button>
   <button class="navcta" onclick="openCart()">🛍️ Bag <span class="count" id="navcount">0</span></button>
 </nav>
 
 <!-- HERO -->
 <section id="hero">
-  <span class="doodle d1">🧸</span><span class="doodle d2">☁️</span><span class="doodle d3">🐼</span>
-  <span class="doodle d4">👻</span><span class="doodle d5">🌼</span><span class="doodle d6">🐱</span>
+  <span class="doodle d1" aria-hidden="true">🧸</span><span class="doodle d2" aria-hidden="true">☁️</span><span class="doodle d3" aria-hidden="true">🐼</span>
+  <span class="doodle d4" aria-hidden="true">👻</span><span class="doodle d5" aria-hidden="true">🌼</span><span class="doodle d6" aria-hidden="true">🐱</span>
   <div class="logo-mark"><img src="logo.jpg" alt="Luchpuch logo"></div>
   <h1>Soft things,<br><em>warm feelings.</em></h1>
-  <p class="sub" id="heroSub">Unique designs across tees, joggers, shorts and sleeveless tees — each one its own mood. Ultra-soft cotton, relaxed fits, made for Indian summers and Indian moods.</p>
+  <p class="sub" id="heroSub">Unique designs across tees, joggers, shorts and sleeveless styles — each one its own mood. Ultra-soft cotton, relaxed fits, made for Indian summers and Indian moods.</p>
   <div class="cta-row">
     <a class="btn btn-solid" href="#shop" id="shopAllBtn" onclick="setTab('All')">Shop all designs</a>
     <a class="btn btn-ghost" href="#moodmatch">What's your mood today?</a>
@@ -669,7 +670,7 @@
       <a href="#shop" onclick="setTab('Tees')">Tees</a><a href="#shop" onclick="setTab('Trousers')">Trousers</a><a href="#shop" onclick="setTab('Shorts')">Shorts</a><a href="#shop" onclick="setTab('Sleeveless')">Sleeveless</a>
     </div>
     <div data-reveal><h4>Support</h4>
-      <a href="#fit">Size Guide</a><a href="#track">Track Order</a>    </div>
+      <a href="#fit">Size Guide</a><a href="#trackview">Track Order</a>    </div>
     <div data-reveal><h4>Connect</h4>
       <a href="https://www.instagram.com/luchpuch_clothing/" target="_blank" rel="noopener">Instagram — @luchpuch_clothing</a><a href="#story">Our Story</a>
     </div>
@@ -989,7 +990,7 @@ const API_BASE = "https://epecmbcjaxpjyvwffxxf.supabase.co/functions/v1";
    (browsing, cart) works either way.
 ================================================================================ */
 const SUPABASE_URL = API_BASE.replace(/\/functions\/v1$/, "");
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVwZWNtYmNqYXhwanl2d2ZmeHhmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU2ODk2MTEsImV4cCI6MjEwMTI2NTYxMX0.PMNefYO7ZCuuzrlhCOzXAFZNomzJCoyzegh86nCvOSk";
+const SUPABASE_ANON_KEY = ""; // Set your Supabase anon public key here
 const authConfigured = !SUPABASE_ANON_KEY.includes("YOUR_") && !!window.supabase;
 const supabaseClient = authConfigured ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 
@@ -1414,12 +1415,12 @@ function renderStorageWarning(){
 
     // dark streak trail — gives the flowing-toward-camera motion
     ctx.save();
-    ctx.globalAlpha = alpha;
+    ctx.globalAlpha = alpha * 0.7; // Reduced opacity for better performance
     ctx.strokeStyle = "#2c241d";
-    ctx.lineWidth = r*0.8;
+    ctx.lineWidth = r*0.6; // Reduced line width
     ctx.lineCap = "round";
-    ctx.shadowColor = "rgba(33,27,22,0.7)";
-    ctx.shadowBlur = 8 + closeness*14;
+    ctx.shadowColor = "rgba(33,27,22,0.4)"; // Reduced shadow
+    ctx.shadowBlur = 4 + closeness*8; // Reduced blur
     ctx.beginPath();
     ctx.moveTo(ppx, ppy);
     ctx.lineTo(px, py);
@@ -1428,12 +1429,12 @@ function renderStorageWarning(){
 
     // bright glinting head — the "shiny" sparkle
     ctx.save();
-    ctx.globalAlpha = alpha;
+    ctx.globalAlpha = alpha * 0.8; // Reduced opacity
     ctx.fillStyle = "#fffaf2";
-    ctx.shadowColor = "rgba(255,250,242,0.95)";
-    ctx.shadowBlur = 6 + closeness*12;
+    ctx.shadowColor = "rgba(255,250,242,0.6)"; // Reduced shadow
+    ctx.shadowBlur = 3 + closeness*6; // Reduced blur
     ctx.beginPath();
-    ctx.arc(px, py, r*0.55, 0, Math.PI*2);
+    ctx.arc(px, py, r*0.4, 0, Math.PI*2); // Reduced radius
     ctx.fill();
     ctx.restore();
   }
@@ -1577,6 +1578,30 @@ function renderGrid(){
   }
   let list = currentTab==="All" ? PRODUCTS : PRODUCTS.filter(p=>p.cat===currentTab);
   if(currentMoodFilter) list = list.filter(p=>p.mood===currentMoodFilter);
+
+  // Handle different storage modes
+  if (storageMode === 'unknown') {
+    // Loading state
+    gridEl.innerHTML = `
+      <div class="emptyshop">
+        <p>Loading products…</p>
+      </div>`;
+    return;
+  }
+
+  if (storageMode === 'unreachable') {
+    // Error state
+    gridEl.innerHTML = `
+      <div class="emptyshop">
+        <p>Couldn't load products. Please check your connection or try again later.</p>
+        ${PRODUCTS.length===0
+          ? `<a class="btn btn-ghost" href="#admin">Go to admin →</a>`
+          : ''}
+      </div>`;
+    return;
+  }
+
+  // Normal state (connected)
   if(list.length === 0){
     gridEl.innerHTML = `
       <div class="emptyshop">
@@ -1596,7 +1621,7 @@ function renderGrid(){
     card.className = "pcard" + (p.comingSoon ? " is-coming" : "");
     card.setAttribute("data-reveal","");
     card.innerHTML = `
-      <div class="pimg"><span class="pcat">${p.cat}</span>${p.comingSoon ? `<span class="pcoming">Coming Soon</span>` : (p.preorder ? `<span class="ppreorder">Pre-order</span>` : '')}<img src="${p.img}" alt="${p.name} — ${p.cat}" loading="lazy">${!p.comingSoon && p.images && p.images.length>1 ? `<span class="pmulti">+${p.images.length-1}</span>` : ''}</div>
+      <div class="pimg"><span class="pcat">${p.cat}</span>${p.comingSoon ? `<span class="pcoming">Coming Soon</span>` : (p.preorder ? `<span class="ppreorder">Pre-order</span>` : '')}<img src="${p.img}" alt="${p.name} — ${p.cat}" loading="lazy" decoding="async">${!p.comingSoon && p.images && p.images.length>1 ? `<span class="pmulti">+${p.images.length-1}</span>` : ''}</div>
       <div class="pbody">
         <div class="pname">${p.name}</div>
         <div class="pmood">Mood: ${p.mood}</div>
@@ -1784,6 +1809,21 @@ function renderCartAuthGate(){
     authGate.style.display = "block";
     checkoutFields.style.display = "none";
   }
+
+  // Update cart total display in header when cart changes
+  updateCartCountInHeader();
+}
+
+function updateCartCountInHeader(){
+  const navcount = document.getElementById("navcount");
+  if(navcount){
+    navcount.textContent = cart.length;
+    // Add animation for visual feedback
+    navcount.style.transform = 'scale(1.2)';
+    setTimeout(() => {
+      navcount.style.transform = '';
+    }, 200);
+  }
 }
 function openCart(){ cartback.classList.add("on"); cartEl.classList.add("on"); }
 function closeCart(){ cartback.classList.remove("on"); cartEl.classList.remove("on"); }
@@ -1797,8 +1837,8 @@ function closeCart(){ cartback.classList.remove("on"); cartEl.classList.remove("
      currency orders — it cannot process India-to-India payments, so this
      path is USD-only and meant for international customers.)
 ====================================================== */
-const RAZORPAY_KEY_ID = "rzp_live_TJrOEqxhIERsYV";
-const PAYPAL_CLIENT_ID = "YOUR_PAYPAL_CLIENT_ID_HERE";
+const RAZORPAY_KEY_ID = ""; // Set your Razorpay Key ID here
+const PAYPAL_CLIENT_ID = ""; // Set your PayPal Client ID here for international payments
 const USD_TO_INR = 95.39; // approximate — update to the live rate, or replace with a real FX API call
 
 /* ================= GST / INVOICE CONFIG =================
@@ -2584,7 +2624,7 @@ function renderProductPage(id){
   body.innerHTML = `
     <div class="pdvgrid">
       <div class="pdvgallery">
-        <div class="pdvmain"><img id="pdvMainImg" src="${images[0]}" alt="${p.name}"></div>
+        <div class="pdvmain"><img id="pdvMainImg" src="${images[0]}" alt="${p.name}" loading="eager"></div>
         ${images.length>1 ? `<div class="pdvthumbs">${images.map((src,i)=>`<img src="${src}" class="${i===0?'active':''}" onclick="swapPdvImage(${i})" alt="${p.name} ${i+1}">`).join("")}</div>` : ''}
       </div>
       <div class="pdvinfo">
@@ -2798,3 +2838,4 @@ document.getElementById("luchiMessages").addEventListener("click", (e)=>{
 
 </body>
 </html>
+3
