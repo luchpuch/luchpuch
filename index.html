@@ -34,9 +34,8 @@
   #starfield{position:fixed;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none;}
 
   /* ---------- nav ---------- */
-  #nav{position:fixed;top:0;left:0;right:0;z-index:300;display:flex;align-items:center;justify-content:space-between;padding:16px 6vw;background:color-mix(in srgb, var(--bg) 85%, transparent);backdrop-filter:blur(14px);opacity:0;transform:translateY(-10px);pointer-events:none;transition:opacity .4s ease, transform .4s ease, background .4s ease;border-bottom:1px solid transparent;}
+  #nav{position:fixed;top:0;left:0;right:0;z-index:300;display:flex;align-items:center;justify-content:space-between;padding:16px 6vw;background:color-mix(in srgb, var(--bg) 85%, transparent);backdrop-filter:blur(14px);opacity:0;transform:translateY(-10px);pointer-events:none;transition:opacity .4s ease, transform .4s ease, background .4s ease; border-bottom:1px solid transparent;}
 #nav.on{opacity:1;transform:none;pointer-events:auto;border-color:var(--line);background:color-mix(in srgb, var(--bg) 90%, transparent);}
-  #nav.on{opacity:1;transform:none;pointer-events:auto;border-color:var(--line);}
   #nav .mark{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.02em;font-size:18px;cursor:pointer;background:none;border:none;color:var(--ink);}
   #nav .mark img{width:34px;height:34px;border-radius:50%;object-fit:cover;}
   #nav .mark span{color:var(--sage-dk);}
