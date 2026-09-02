@@ -520,11 +520,7 @@
 <nav id="nav">
   <button class="mark" onclick="window.scrollTo({top:0,behavior:'smooth'})"><img src="logo.jpg" alt="Luchpuch logo">luchpuch<span>.</span></button>
   <div class="links">
-    <a href="#shop" onclick="setTab('All')">Shop All</a>
     <a href="#shop" onclick="setTab('Tees')">Tees</a>
-    <a href="#shop" onclick="setTab('Trousers')">Trousers</a>
-    <a href="#shop" onclick="setTab('Shorts')">Shorts</a>
-    <a href="#shop" onclick="setTab('Sleeveless')">Sleeveless</a>
     <a href="#fit">Size Guide</a>
   </div>
   <button class="navcta" id="authBtn">👤 <span class="authlabel">Sign in</span></button>
@@ -688,7 +684,7 @@
       <p class="tag" style="margin-top:8px;"><a href="mailto:luchpuch.co@gmail.com" style="text-decoration:underline;color:var(--ink-dim);">luchpuch.co@gmail.com</a></p>
     </div>
     <div data-reveal><h4>Shop</h4>
-      <a href="#shop" onclick="setTab('Tees')">Tees</a><a href="#shop" onclick="setTab('Trousers')">Trousers</a><a href="#shop" onclick="setTab('Shorts')">Shorts</a><a href="#shop" onclick="setTab('Sleeveless')">Sleeveless</a>
+      <a href="#shop" onclick="setTab('Tees')">Tees</a>
     </div>
     <div data-reveal><h4>Support</h4>
       <a href="#fit">Size Guide</a><a href="#trackview">Track Order</a>    </div>
@@ -912,7 +908,7 @@
     <input type="text" id="pmName" placeholder="e.g. Doing Nothing Club">
     <label>Category</label>
     <select id="pmCat">
-      <option>Tees</option><option>Trousers</option><option>Shorts</option><option>Sleeveless</option>
+      <option>Tees</option>
     </select>
     <label>Mood</label>
     <input type="text" id="pmMood" placeholder="e.g. Lazy but happy">
@@ -1299,17 +1295,11 @@ const DEFAULT_PRODUCTS = [];
    catalogue, and as a starting point when products are added without one. */
 const CAT_BLURB = {
   Tees: { desc: "An oversized, drop-shoulder tee in ultra-soft cotton — the kind you reach for on a lazy Sunday and then never take off.", quality: "240 GSM premium cotton · Ribbed neck · Oversized relaxed fit · Machine wash cold, inside out" },
-  Trousers: { desc: "A relaxed, wide-leg jogger built for lounging, travel, or the gym plan you'll definitely start next week.", quality: "260 GSM cotton blend · Elastic waistband · Deep side pockets · Machine wash cold, inside out" },
-  Shorts: { desc: "A drawstring cotton-blend short made for slow mornings, balcony chai, and everything in between vacay and errands.", quality: "260 GSM cotton blend · Drawstring waist · Side pockets · Machine wash cold, inside out" },
-  Sleeveless: { desc: "A round-neck sleeveless tee with wide armholes — more air, more movement, zero restriction.", quality: "240 GSM cotton · Wide armholes · Relaxed fit · Machine wash cold, inside out" },
 };
 /* Default size sets offered per category — editable per product in admin.
    Tops use letter sizes, bottoms use waist sizes. */
 const CAT_SIZES = {
   Tees: ["S","M","L","XL","XXL"],
-  Sleeveless: ["S","M","L","XL","XXL"],
-  Trousers: ["28","30","32","34","36"],
-  Shorts: ["28","30","32","34","36"],
 };
 const DEFAULT_SIZES = ["S","M","L","XL","XXL"];
 function normalizeProduct(p){
@@ -1561,7 +1551,7 @@ addEventListener("touchstart", startMusic, {passive:true, once:true});
 addEventListener("click", startMusic, {once:true});
 
 /* ---------------- tabs + product grid ---------------- */
-const CATS = ["All","Tees","Trousers","Shorts","Sleeveless"];
+const CATS = ["Tees"];
 let currentTab = "All";
 let currentMoodFilter = null;
 const tabsEl = document.getElementById("tabs");
@@ -1712,7 +1702,7 @@ function renderMoodPills(){
     pillsEl.innerHTML = `<p class="adstatus" style="color:rgba(255,250,242,.5);">No products yet — add some from the Store Admin and they'll show up here.</p>`;
     matchCard.classList.add("empty");
     matchCard.innerHTML = `<div class="info"><div class="tag">Your match</div><div class="name">Pick a mood above ↑</div></div><button class="goto" id="matchGoto">See the design</button>`;
-    document.getElementById("matchGoto").onclick = ()=> setTab("All");
+    document.getElementById("matchGoto").onclick = ()=> setTab("Tees");
     return;
   }
   const seenMoods = [];
