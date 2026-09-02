@@ -692,7 +692,7 @@
       <a href="https://www.instagram.com/luchpuch_clothing/" target="_blank" rel="noopener">Instagram — @luchpuch_clothing</a><a href="#story">Our Story</a>
     </div>
   </div>
-  <p class="fine">© 2026 LUCHPUCH. All prints designed in-house. Made with ♥. · <a href="#admin" style="text-decoration:underline;">Store Admin</a></p>
+  <p class="fine">© 2026 LUCHPUCH. All prints designed in-house. Made with ♥.</p>
 </footer>
 
 <!-- CART DRAWER -->
@@ -1609,9 +1609,6 @@ function renderGrid(){
     gridEl.innerHTML = `
       <div class="emptyshop">
         <p>Couldn't load products. Please check your connection or try again later.</p>
-        ${PRODUCTS.length===0
-          ? `<a class="btn btn-ghost" href="#admin">Go to admin →</a>`
-          : ''}
       </div>`;
     return;
   }
@@ -1622,7 +1619,7 @@ function renderGrid(){
       <div class="emptyshop">
         <p>${PRODUCTS.length===0 ? "No products yet." : currentMoodFilter ? `No products match "${currentMoodFilter}" yet.` : `No products in ${currentTab} yet.`}</p>
         ${PRODUCTS.length===0
-          ? `<a class="btn btn-ghost" href="#admin">Add your first product →</a>`
+          ? `<p>New tees dropping soon! Check back later or follow us on social media for updates.</p>`
           : currentMoodFilter
             ? `<button class="btn btn-ghost" onclick="clearMoodFilter()">Clear filter</button>`
             : ''}
