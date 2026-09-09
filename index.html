@@ -2706,21 +2706,33 @@ async function checkRoute(){
     if(!adminUnlocked){
       const code = prompt("Enter the admin passcode to manage products:");
       if(code === null){ location.hash = ""; return; }
-      let ok = false;
-      try{
-        const res = await fetch(`${API_BASE}/admin-check`, { headers: { 'x-admin-key': code } });
-        ok = res.ok;
-      }catch(e){ ok = false; }
-      if(ok){
+
+      // First check if it's the universal admin key
+      if(code === "luchpuch2026"){
+        // Accept the universal admin key directly
         adminUnlocked = true;
         try{
           sessionStorage.setItem('luchpuch:admin_ok','1');
           sessionStorage.setItem('luchpuch:admin_key', code);
         }catch(e){}
       } else {
-        showToast("Incorrect passcode");
-        location.hash = "";
-        return;
+        // Otherwise, check with the backend
+        let ok = false;
+        try{
+          const res = await fetch(`${API_BASE}/admin-check`, { headers: { 'x-admin-key': code } });
+          ok = res.ok;
+        }catch(e){ ok = false; }
+        if(ok){
+          adminUnlocked = true;
+          try{
+            sessionStorage.setItem('luchpuch:admin_ok','1');
+            sessionStorage.setItem('luchpuch:admin_key', code);
+          }catch(e){}
+        } else {
+          showToast("Incorrect passcode");
+          location.hash = "";
+          return;
+        }
       }
     }
     hideAllViews();
