@@ -519,10 +519,7 @@
 
 <nav id="nav">
   <button class="mark" onclick="window.scrollTo({top:0,behavior:'smooth'})"><img src="logo.jpg" alt="Luchpuch logo">luchpuch<span>.</span></button>
-  <div class="links">
-    <a href="#shop" onclick="setTab('Tees')">Tees</a>
-    <a href="#fit">Size Guide</a>
-  </div>
+  <div class="links"></div>
   <button class="navcta" id="authBtn">👤 <span class="authlabel">Sign in</span></button>
   <button class="navcta" onclick="openCart()">🛍️ Bag <span class="count" id="navcount">0</span></button>
 </nav>
@@ -1551,7 +1548,7 @@ addEventListener("touchstart", startMusic, {passive:true, once:true});
 addEventListener("click", startMusic, {once:true});
 
 /* ---------------- tabs + product grid ---------------- */
-const CATS = ["Tees"];
+const CATS = [];
 let currentTab = "All";
 let currentMoodFilter = null;
 const tabsEl = document.getElementById("tabs");
@@ -1565,20 +1562,25 @@ function updateCounts(){
   if(heroSub) heroSub.textContent = `Unique designs across tees, joggers, shorts and sleeveless tees — each one its own mood. Ultra-soft cotton, relaxed fits, made for Indian summers and Indian moods.`;
   if(shopAllBtn) shopAllBtn.textContent = `Shop all designs`;
   if(whyCountTitle) whyCountTitle.textContent = `Individual designs`;
-  if(shopLead) shopLead.textContent = `Unique prints across our categories. Tap a tab to filter, or add straight to your bag.`;
+  if(shopLead) shopLead.textContent = `Shop all designs`;
 }
 
 function renderTabs(){
   updateCounts();
   renderMoodPills();
-  tabsEl.innerHTML = "";
-  CATS.forEach(c=>{
-    const b = document.createElement("button");
-    b.className = "tab" + (c===currentTab ? " active" : "");
-    b.textContent = c;
-    b.onclick = () => setTab(c);
-    tabsEl.appendChild(b);
-  });
+  // Only render tabs if we have more than one category
+  if (CATS.length > 1) {
+    tabsEl.innerHTML = "";
+    CATS.forEach(c=>{
+      const b = document.createElement("button");
+      b.className = "tab" + (c===currentTab ? " active" : "");
+      b.textContent = c;
+      b.onclick = () => setTab(c);
+      tabsEl.appendChild(b);
+    });
+  } else {
+    tabsEl.innerHTML = "";
+  }
 }
 
 function renderGrid(){
