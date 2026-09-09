@@ -1760,7 +1760,12 @@ const carttotal = document.getElementById("carttotal");
 function addToCart(p, size){
   if(!cart.some(c=>c.id===p.id && c.size===size)){
     cart.push({...p, size});
-    showToast(p.preorder ? `Added "${p.name}" (${size}) to your bag — pre-order` : `Added "${p.name}" (${size}) to your bag`);
+    if(p.preorder){
+      showToast(`Added "${p.name}" (${size}) to your bag — login to continue`);
+      openCart();
+    } else {
+      showToast(`Added "${p.name}" (${size}) to your bag`);
+    }
   } else {
     showToast(`"${p.name}" (${size}) is already in your bag`);
   }
@@ -2673,8 +2678,14 @@ function renderProductPage(id){
     });
     addBtn.addEventListener("click", ()=>{
       if(!selectedSize) return;
-      addToCart(p, selectedSize);
-      renderProductPage(id);
+      if(p.preorder){
+        addToCart(p, selectedSize);
+        showToast(`Added "${p.name}" (${selectedSize}) to your bag — login to continue`);
+        openCart();
+      } else {
+        addToCart(p, selectedSize);
+        renderProductPage(id);
+      }
     });
   }
   window.scrollTo(0,0);
