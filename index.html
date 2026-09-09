@@ -1641,7 +1641,7 @@ function renderGrid(){
         <div class="sizerow" data-open="0"></div>
         <div class="prow">
           <span class="pprice">₹${p.price}</span>
-          <button class="addbtn" data-id="${p.id}" ${p.comingSoon ? 'disabled' : ''}>${p.comingSoon ? 'Coming soon' : (sizes.length>1 ? (p.preorder ? 'Pre-order — choose size' : 'Choose size') : (p.preorder ? 'Pre-order now' : 'Add to bag'))}</button>
+          <button class="addbtn" data-id="${p.id}" ${p.comingSoon ? 'disabled' : ''}>${p.comingSoon ? 'Coming soon' : (sizes.length>1 ? (p.preorder ? 'Pre-order' : 'Choose size') : (p.preorder ? 'Pre-order' : 'Add to bag'))}</button>
         </div>
       </div>`;
     card.querySelector(".pimg").addEventListener("click", ()=>{ location.hash = `#product-${p.id}`; });
@@ -2668,7 +2668,7 @@ function renderProductPage(id){
         chip.classList.add("active");
         selectedSize = chip.dataset.size;
         addBtn.disabled = false;
-        addBtn.textContent = p.preorder ? `Pre-order now — Size ${selectedSize}` : `Add to bag — Size ${selectedSize}`;
+        addBtn.textContent = p.preorder ? `Pre-order — Size ${selectedSize}` : `Add to bag — Size ${selectedSize}`;
       });
     });
     addBtn.addEventListener("click", ()=>{
