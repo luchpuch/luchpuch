@@ -1877,7 +1877,7 @@ function renderGrid(){
         <div class="prow">
           <span class="pprice">₹${p.price}</span>
           <button class="addbtn" data-id="${p.id}" ${p.comingSoon ? 'disabled' : ''}>${p.comingSoon ? 'Coming soon' : (sizes.length>1 ? (p.preorder ? 'Pre-order' : 'Choose size') : (p.preorder ? 'Pre-order' : 'Add to bag'))}</button>
-          <button class="tryonbtn" data-id="${p.id}">✨ Try On</button>
+          <button class="tryonbtn" data-id="${p.id}" ${p.comingSoon ? 'disabled' : ''}>✨ Try On</button>
         </div>
       </div>`;
     card.querySelector(".pimg").addEventListener("click", ()=>{ location.hash = `#product-${p.id}`; });
@@ -2915,7 +2915,7 @@ function renderProductPage(id){
         <div class="pdvaddrow">
           <button class="btn btn-solid" id="pdvAddBtn" disabled>${p.comingSoon ? "Coming soon" : "Select a size"}</button>
           <button class="btn btn-ghost" onclick="location.hash='';">Continue shopping</button>
-          ${!p.comingSoon ? '<button class="btn btn-ghost tryonbtn" style="margin-top:8px;" data-id="' + p.id + '">✨ Try On</button>' : ''}
+          '<button class="btn btn-ghost tryonbtn" style="margin-top:8px;" data-id="' + p.id + '">✨ Try On</button>'
         </div>
       </div>
     </div>`;
