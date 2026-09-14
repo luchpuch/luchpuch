@@ -1503,11 +1503,39 @@ const DEFAULT_PRODUCTS = [
   }
 };
 
-// Load default products
-DEFAULT_PRODUCTS.forEach(normalizeProduct);
-PRODUCTS = [...DEFAULT_PRODUCTS]; // Copy default products to PRODUCTS array
-function reindex(){ PRODUCTS.forEach((p,i)=> p.id = i); }
-reindex();
+// Initialize products - try to load from Supabase first, fall back to defaults
+async function initializeProducts() {
+  try {
+    const saved = await loadProducts();
+    if (saved && Array.isArray(saved) && saved.length) {
+      PRODUCTS = saved;
+      PRODUCTS.forEach(normalizeProduct);
+    } else {
+      // Load default products if Supabase returns empty
+      DEFAULT_PRODUCTS.forEach(normalizeProduct);
+      PRODUCTS = [...DEFAULT_PRODUCTS];
+    }
+  } catch (e) {
+    // If Supabase fails, load default products
+    console.warn("Failed to load products from Supabase, using defaults:", e);
+    DEFAULT_PRODUCTS.forEach(normalizeProduct);
+    PRODUCTS = [...DEFAULT_PRODUCTS];
+  }
+  reindex();
+}
+
+// Initialize products
+initializeProducts().then(() => {
+  // Continue with other initialization
+  renderTabs();
+  renderGrid();
+  renderCart();
+  renderAdminTable();
+  renderStorageWarning();
+  revealNow();
+  checkRoute();
+  initAuth();
+});
 
 /* ---------------- storage (Netlify Functions + Netlify Blobs) ----------------
    Products are shared, server-side data now — every visitor's browser reads
