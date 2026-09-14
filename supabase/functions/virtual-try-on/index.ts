@@ -6,7 +6,8 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { corsHeaders } from "../_shared/cors.ts"
 
 const REPLICATE_API_TOKEN = Deno.env.get("REPLICATE_API_TOKEN")
-const REPLICATE_MODEL = "chtseng/vet:d0323e95c9e6fd3a9b91d9e576d851b302cf337f2b0b0c6f7b3e0e5c1b2a3d4e" // Example version, replace with actual
+// Using a virtual try-on model from Replicate - you may want to update this to a specific version
+const REPLICATE_MODEL = "zsxkib/virtual-try-on:d48d1ee1f2674494c9b411d5d3ff0af0f5b9e113e8ef7134d10d86f8ba80e1a8"
 
 if (!REPLICATE_API_TOKEN) {
   console.warn("REPLICATE_API_TOKEN is not set. Virtual try-on will not work.")
