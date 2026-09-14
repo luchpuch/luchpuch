@@ -1501,7 +1501,7 @@ const DEFAULT_PRODUCTS = [
     comingSoon: false,
     preorder: false
   }
-};
+]
 
 // Initialize products - try to load from Supabase first, fall back to defaults
 async function initializeProducts() {
@@ -1771,6 +1771,17 @@ addEventListener("click", startMusic, {once:true});
 
 /* ---------------- tabs + product grid ---------------- */
 const CATS = [];
+function reindex() {
+  // Build CATS array: unique categories from PRODUCTS
+  CATS.length = 0; // clear
+  PRODUCTS.forEach(p => {
+    if (!CATS.includes(p.cat)) {
+      CATS.push(p.cat);
+    }
+  });
+  // Sort categories alphabetically for consistent order
+  CATS.sort();
+}
 let currentTab = "All";
 let currentMoodFilter = null;
 const tabsEl = document.getElementById("tabs");
@@ -2904,7 +2915,7 @@ function renderProductPage(id){
         <div class="pdvaddrow">
           <button class="btn btn-solid" id="pdvAddBtn" disabled>${p.comingSoon ? "Coming soon" : "Select a size"}</button>
           <button class="btn btn-ghost" onclick="location.hash='';">Continue shopping</button>
-          ${!p.comingSoon && !p.preorder ? '<button class="btn btn-ghost tryonbtn" style="margin-top:8px;" data-id="' + p.id + '">✨ Try On</button>' : ''}
+          ${!p.comingSoon && !p.preorder ? '<button class="btn btn-ghost tryon-btn" style="margin-top:8px;" data-id="' + p.id + '">✨ Try On</button>' : ''}
         </div>
       </div>
     </div>`;
@@ -3387,6 +3398,7 @@ async function generateTryonImage() {
 }
 
 // Show toast message (reuse existing function)
+// Reuse the existing showToast function from the main script
 </script>
 
 </body>
