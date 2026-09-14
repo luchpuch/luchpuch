@@ -1408,6 +1408,30 @@ async function confirmReturnRequest(orderId){
 }
 
 /* ---------------- product data (54 individual designs) ---------------- */
+/* Category-level copy used to fill in description/quality for the default
+   catalogue, and as a starting point when products are added without one. */
+const CAT_BLURB = {
+  Tees: { desc: "An oversized, drop-shoulder tee in ultra-soft cotton — the kind you reach for on a lazy Sunday and then never take off.", quality: "240 GSM premium cotton · Ribbed neck · Oversized relaxed fit · Machine wash cold, inside out" },
+};
+/* Default size sets offered per category — editable per product in admin.
+   Tops use letter sizes, bottoms use waist sizes. */
+const CAT_SIZES = {
+  Tees: ["S","M","L","XL","XXL"],
+};
+const DEFAULT_SIZES = ["S","M","L","XL","XXL"];
+function normalizeProduct(p){
+  if(!p.images || !p.images.length) p.images = [p.img];
+  if(!p.img) p.img = p.images[0];
+  if(p.description === undefined) p.description = `${CAT_BLURB[p.cat]?.desc || "A Luchpuch original."} This one's for the "${p.name}" mood.`;
+  if(p.quality === undefined) p.quality = CAT_BLURB[p.cat]?.quality || "Premium cotton · Machine wash cold, inside out";
+  if(!p.hsn) p.hsn = DEFAULT_HSN;
+  if(!p.sizes || !p.sizes.length) p.sizes = CAT_SIZES[p.cat] || DEFAULT_SIZES;
+  p.comingSoon = !!p.comingSoon;
+  p.preorder = !!p.preorder;
+  return p;
+}
+
+let PRODUCTS = [];
 const DEFAULT_PRODUCTS = [
   {
     id: 0,
@@ -1477,32 +1501,11 @@ const DEFAULT_PRODUCTS = [
     comingSoon: false,
     preorder: false
   }
-];
+};
 
-/* Category-level copy used to fill in description/quality for the default
-   catalogue, and as a starting point when products are added without one. */
-const CAT_BLURB = {
-  Tees: { desc: "An oversized, drop-shoulder tee in ultra-soft cotton — the kind you reach for on a lazy Sunday and then never take off.", quality: "240 GSM premium cotton · Ribbed neck · Oversized relaxed fit · Machine wash cold, inside out" },
-};
-/* Default size sets offered per category — editable per product in admin.
-   Tops use letter sizes, bottoms use waist sizes. */
-const CAT_SIZES = {
-  Tees: ["S","M","L","XL","XXL"],
-};
-const DEFAULT_SIZES = ["S","M","L","XL","XXL"];
-function normalizeProduct(p){
-  if(!p.images || !p.images.length) p.images = [p.img];
-  if(!p.img) p.img = p.images[0];
-  if(p.description === undefined) p.description = `${CAT_BLURB[p.cat]?.desc || "A Luchpuch original."} This one's for the "${p.name}" mood.`;
-  if(p.quality === undefined) p.quality = CAT_BLURB[p.cat]?.quality || "Premium cotton · Machine wash cold, inside out";
-  if(!p.hsn) p.hsn = DEFAULT_HSN;
-  if(!p.sizes || !p.sizes.length) p.sizes = CAT_SIZES[p.cat] || DEFAULT_SIZES;
-  p.comingSoon = !!p.comingSoon;
-  p.preorder = !!p.preorder;
-  return p;
-}
+// Load default products
 DEFAULT_PRODUCTS.forEach(normalizeProduct);
-let PRODUCTS = [];
+PRODUCTS = [...DEFAULT_PRODUCTS]; // Copy default products to PRODUCTS array
 function reindex(){ PRODUCTS.forEach((p,i)=> p.id = i); }
 reindex();
 
@@ -2873,6 +2876,7 @@ function renderProductPage(id){
         <div class="pdvaddrow">
           <button class="btn btn-solid" id="pdvAddBtn" disabled>${p.comingSoon ? "Coming soon" : "Select a size"}</button>
           <button class="btn btn-ghost" onclick="location.hash='';">Continue shopping</button>
+          ${!p.comingSoon && !p.preorder ? '<button class="btn btn-ghost tryonbtn" style="margin-top:8px;" data-id="' + p.id + '">✨ Try On</button>' : ''}
         </div>
       </div>
     </div>`;
@@ -2898,6 +2902,25 @@ function renderProductPage(id){
         renderProductPage(id);
       }
     });
+
+    // Add try-on button event listener
+    const tryonBtn = body.querySelector('.tryonbtn');
+    if (tryonBtn) {
+      tryonBtn.addEventListener('click', function(ev) {
+        ev.stopPropagation(); // Prevent triggering any parent clicks
+        // Set the product ID for try-on
+        tryonProductId = p.id;
+        // Convert the product image to base64
+        convertImageToBase64(p.img).then(base64 => {
+          tryonProductImageBase64 = base64;
+          // Open the try-on modal and go to step 1 (upload photo)
+          openTryon();
+        }).catch(err => {
+          console.error('Error converting product image for try-on:', err);
+          showToast('Could not process product image for try-on');
+        });
+      });
+    }
   }
   window.scrollTo(0,0);
 }
