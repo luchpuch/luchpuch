@@ -3296,7 +3296,7 @@ function loadProductThumbnails() {
   grid.innerHTML = '';
   // Only show products that are enabled for try-on (for now, all products)
   // In the future, we could have a virtualTryOn.enabled flag
-  const productsToShow = PRODUCTS.filter(p => !p.comingSoon && !p.preorder); // Only live products for try-on
+  const productsToShow = PRODUCTS.filter(p => !p.comingSoon); // Exclude coming soon products, allow live and preorder
   if (productsToShow.length === 0) {
     grid.innerHTML = '<p class="adstatus">No products available for try-on.</p>';
     return;
