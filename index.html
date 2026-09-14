@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <!-- LAST UPDATE: Luchi 3D animation - 2026-08-22 -->
 <html lang="en">
 <head>
@@ -368,7 +368,7 @@
 
   /* ---------- LUCHI CHAT WIDGET ---------- */
   #luchiLauncher{position:fixed;bottom:22px;right:22px;z-index:1400;width:58px;height:58px;border-radius:50%;background:var(--ink);color:var(--paper);border:none;font-size:24px;cursor:pointer;box-shadow:0 8px 24px rgba(33,27,22,.28);display:flex;align-items:center;justify-content:center;transition:transform .2s;}
-  #luchiLauncher:hover{transform:scale(1.06);}
+#luchiLauncher:hover{transform:scale(1.08) rotate(5deg);transition:transform .2s ease;}
   #luchiPanel{display:none;position:fixed;bottom:22px;right:22px;z-index:1450;width:min(370px, calc(100vw - 32px));height:min(520px, calc(100vh - 100px));background:var(--paper);border-radius:18px;box-shadow:0 14px 44px rgba(33,27,22,.32);flex-direction:column;overflow:hidden;}
   #luchiPanel.on{display:flex;}
   #luchiHeader{background:var(--ink);color:var(--paper);padding:16px 18px;display:flex;justify-content:space-between;align-items:center;}
@@ -510,6 +510,128 @@
   #pmodal .pmodal-actions .btn{flex:1;text-align:center;}
 
   
+
+/* Pulse animation for active state */
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(58,42,32,0.4); }
+  70% { box-shadow: 0 0 0 12px rgba(58,42,32,0); }
+  100% { box-shadow: 0 0 0 0 rgba(58,42,32,0); }
+}
+/* Virtual Try-On Feature */
+#tryon-backdrop{
+  position:fixed;inset:0;background:rgba(33,27,22,.7);z-index:1500;opacity:0;pointer-events:none;transition:opacity .3s ease;
+}
+#tryon-backdrop.on{opacity:1;pointer-events:auto;}
+#tryon-modal{
+  position:fixed;top:0;left:0;right:0;bottom:0;background:var(--paper);z-index:1501;transform:translateY(100%);transition:transform .4s cubic-bezier(.2,.7,.2,1);display:flex;flex-direction:column;
+}
+#tryon-modal.on{transform:none;}
+#tryon-header{
+  display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid var(--line);background:var(--ink);color:var(--paper);
+}
+#tryon-header h2{
+  font-family:'Fredoka';font-size:20px;font-weight:600;margin:0;
+}
+#tryon-close{
+  background:none;border:none;color:var(--paper);font-size:24px;cursor:pointer;line-height:1;
+}
+#tryon-steps{
+  flex:1;overflow-y:auto;padding:24px;
+}
+#tryon-step{
+  margin-bottom:32px;
+}
+#tryon-step h3{
+  font-size:18px;margin-bottom:12px;color:var(--ink);
+}
+#tryon-preview{
+  position:relative;aspect-ratio:1/1.28;background:var(--bg-soft);border-radius:16px;overflow:hidden;margin-bottom:16px;
+}
+#tryon-preview img{
+  width:100%;height:100%;object-fit:cover;
+}
+#tryon-preview .placeholder{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--ink-dim);font-size:16px;
+}
+#tryon-controls{
+  display:flex;gap:12px;flex-wrap:wrap;
+}
+#tryon-btn{
+  flex:1;min-width:120px;padding:14px;border-radius:100px;font-weight:600;font-size:14px;border:none;cursor:pointer;transition:background .2s,color .2s;
+}
+#tryon-btn-primary{
+  background:var(--ink);color:var(--paper);
+}
+#tryon-btn-primary:hover{
+  background:#211b16;
+}
+#tryon-btn-secondary{
+  border:1.5px solid var(--ink);color:var(--ink);background:none;
+}
+#tryon-btn-secondary:hover{
+  background:var(--ink);color:var(--paper);
+}
+#tryon-product-grid{
+  display:grid;grid-template-columns:repeat(auto-fill, minmax(80px, 1fr));gap:12px;margin-top:16px;
+}
+#tryon-product-chip{
+  aspect-ratio:1/1.28;overflow:hidden;border-radius:12px;border:2px solid transparent;position:relative;cursor:pointer;transition:border-color .2s, transform .2s;
+}
+#tryon-product-chip:hover{
+  transform:scale(1.03);
+}
+#tryon-product-chip.active{
+  border-color:var(--ink);
+}
+#tryon-product-chip img{
+  width:100%;height:100%;object-fit:cover;
+}
+#tryon-product-chip .label{
+  position:absolute;bottom:0;left:0;right:0;background:rgba(33,27,22,.6);color:var(--paper);font-size:10px;padding:4px 0;text-align:center;
+}
+#tryon-loading{
+  display:flex;flex-direction:column;align-items:center;gap:16px;padding:24px;
+}
+#tryon-loading .spinner{
+  width:40px;height:40px;border:4px solid var(--line);border-top-color:var(--ink);border-radius:50%;animation:spin 1s linear infinite;
+}
+@keyframes spin{
+  to{transform:rotate(360deg);}
+}
+#tryon-loading p{
+  color:var(--ink-dim);font-size:16px;
+}
+#tryon-result{
+  text-align:center;padding:24px;
+}
+#tryon-result img{
+  max-width:100%;border-radius:16px;box-shadow:0 8px 32px rgba(58,42,32,.2);margin-bottom:24px;
+}
+#tryon-result .product-info{
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+}
+#tryon-result .product-name{
+  font-family:'Fredoka';font-size:20px;font-weight:600;color:var(--ink);
+}
+#tryon-result .product-price{
+  font-family:'Fredoka';font-size:18px;font-weight:600;color:var(--sage-dk);
+}
+#tryon-result .actions{
+  display:flex;gap:12px;flex-wrap:wrap;margin-top:24px;
+}
+#tryon-result .btn{
+  flex:1;min-width:120px;
+}
+@media (max-width:480px){
+  #tryon-header{padding:16px;}
+  #tryon-steps{padding:16px;}
+  #tryon-controls{flex-direction:column;}
+  #tryon-btn{width:100%;}
+  #tryon-product-grid{grid-template-columns:repeat(2, 1fr);}
+}
+/* Try-on button */
+.tryonbtn{border:1.5px solid var(--ink);background:none;color:var(--ink);border-radius:100px;padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer;transition:.2s;white-space:nowrap;}
+.tryonbtn:hover{background:var(--ink);color:var(--paper);}
 </style>
 </head>
 <body>
@@ -1644,6 +1766,7 @@ function renderGrid(){
         <div class="prow">
           <span class="pprice">₹${p.price}</span>
           <button class="addbtn" data-id="${p.id}" ${p.comingSoon ? 'disabled' : ''}>${p.comingSoon ? 'Coming soon' : (sizes.length>1 ? (p.preorder ? 'Pre-order' : 'Choose size') : (p.preorder ? 'Pre-order' : 'Add to bag'))}</button>
+          <button class="tryonbtn" data-id="${p.id}" ${p.comingSoon ? 'disabled' : ''}>✨ Try On</button>
         </div>
       </div>`;
     card.querySelector(".pimg").addEventListener("click", ()=>{ location.hash = `#product-${p.id}`; });
@@ -1671,6 +1794,23 @@ function renderGrid(){
         });
       });
     });
+    const tryonBtn = card.querySelector(".tryonbtn");
+    if (tryonBtn) {
+      tryonBtn.addEventListener("click", function(ev) {
+        ev.stopPropagation(); // Prevent triggering the product click
+        // Set the product ID for try-on
+        tryonProductId = p.id;
+        // Convert the product image to base64
+        convertImageToBase64(p.img).then(base64 => {
+          tryonProductImageBase64 = base64;
+          // Open the try-on modal and go to step 1 (upload photo)
+          openTryon();
+        }).catch(err => {
+          console.error('Error converting product image for try-on:', err);
+          showToast('Could not process product image for try-on');
+        });
+      });
+    }
     gridEl.appendChild(card);
     io.observe(card);
   });
@@ -2793,6 +2933,8 @@ function appendLuchiMessage(role, text){
 function toggleLuchi(){
   const panel = document.getElementById("luchiPanel");
   const isOpen = panel.classList.toggle("on");
+    const launcher = document.getElementById("luchiLauncher");
+    launcher.classList.toggle("active");
   if(isOpen && !luchiOpened){
     luchiOpened = true;
     appendLuchiMessage("bot", "Hey! I'm Luchi 👋 Ask me about moods, sizes, shipping, or your order status — I can look up real order info if you give me your email.");
@@ -2859,6 +3001,272 @@ document.getElementById("luchiMessages").addEventListener("click", (e)=>{
   checkRoute();
   initAuth();
 })();
+</script>
+
+<!-- Virtual Try-On Modal -->
+<div id="tryon-backdrop" onclick="closeTryon()"></div>
+<div id="tryon-modal">
+  <div id="tryon-header">
+    <h2>✨ Luchpuch Virtual Try-On</h2>
+    <button id="tryon-close" onclick="closeTryon()">×</button>
+  </div>
+  <div id="tryon-steps">
+    <!-- Step 1: Upload Photo -->
+    <div id="tryon-step-1" class="tryon-step">
+      <h3>Upload Your Photo</h3>
+      <div id="tryon-preview">
+        <div class="placeholder">Drag & drop or click to upload</div>
+      </div>
+      <input type="file" id="tryon-photo-input" accept="image/*" style="display:none;">
+      <button id="tryon-photo-button" class="tryon-btn tryon-btn-secondary">Upload Photo</button>
+      <p id="tryon-photo-hint">For the best result, use a clear front-facing photo with your upper body visible.</p>
+    </div>
+    <!-- Step 2: Select Product -->
+    <div id="tryon-step-2" class="tryon-step" style="display:none;">
+      <h3>Choose Your Luchpuch Tee</h3>
+      <div id="tryon-product-grid"></div>
+    </div>
+    <!-- Step 3: Generate -->
+    <div id="tryon-step-3" class="tryon-step" style="display:none;">
+      <h3>Creating Your Look</h3>
+      <div id="tryon-loading">
+        <div class="spinner"></div>
+        <p>✨ Creating your Luchpuch look...</p>
+      </div>
+    </div>
+    <!-- Step 4: Result -->
+    <div id="tryon-step-4" class="tryon-step" style="display:none;">
+      <div id="tryon-result">
+        <h2>✨ Your Luchpuch Look</h2>
+        <img id="tryon-result-image" alt="Your try-on result">
+        <div class="product-info">
+          <div id="tryon-result-name" class="product-name"></div>
+          <div id="tryon-result-price" class="product-price"></div>
+        </div>
+        <div class="actions">
+          <button id="tryon-btn-change-product" class="tryon-btn tryon-btn-ghost">Try Another Tee</button>
+          <button id="tryon-btn-change-photo" class="tryon-btn tryon-btn-ghost">Change Photo</button>
+          <button id="tryon-btn-add-to-cart" class="tryon-btn tryon-btn-solid">Add This Tee to Cart</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Virtual Try-On Feature JavaScript
+let tryonPhoto = null; // base64 string of the user's photo
+let tryonProductId = null; // ID of the selected product
+let tryonProductImageBase64 = null; // base64 string of the product image (for API)
+
+// Open the try-on modal
+function openTryon() {
+  document.getElementById('tryon-backdrop').classList.add('on');
+  document.getElementById('tryon-modal').classList.add('on');
+  document.body.style.overflow = 'hidden';
+  resetTryonState();
+  showTryonStep(1);
+}
+
+// Close the try-on modal
+function closeTryon() {
+  document.getElementById('tryon-backdrop').classList.remove('on');
+  document.getElementById('tryon-modal').classList.remove('on');
+  document.body.style.overflow = '';
+}
+
+// Reset the try-on state
+function resetTryonState() {
+  tryonPhoto = null;
+  tryonProductId = null;
+  tryonProductImageBase64 = null;
+  document.getElementById('tryon-photo-input').value = '';
+  document.getElementById('tryon-preview').innerHTML = '<div class="placeholder">Drag & drop or click to upload</div>';
+  document.getElementById('tryon-product-grid').innerHTML = '';
+  document.getElementById('tryon-result-image').src = '';
+  document.getElementById('tryon-result-name').textContent = '';
+  document.getElementById('tryon-result-price').textContent = '';
+}
+
+// Show a specific step (1-4)
+function showTryonStep(step) {
+  // Hide all steps
+  for (let i = 1; i <= 4; i++) {
+    document.getElementById(`tryon-step-${i}`).style.display = 'none';
+  }
+  // Show the requested step
+  document.getElementById(`tryon-step-${step}`).style.display = 'block';
+}
+
+// Initialize the try-on feature when the DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+  // Photo upload button
+  document.getElementById('tryon-photo-button').addEventListener('click', function() {
+    document.getElementById('tryon-photo-input').click();
+  });
+
+  // Photo input change
+  document.getElementById('tryon-photo-input').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      showToast('Please select an image file');
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) { // 5MB limit
+      showToast('Image file too large (max 5MB)');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = function(event) {
+      tryonPhoto = event.target.result;
+      document.getElementById('tryon-preview').innerHTML = `<img src="${tryonPhoto}" alt="Preview">`;
+      // Enable next step if product is already selected (though we reset state, so we go to step 2)
+      showTryonStep(2);
+      loadProductThumbnails();
+    };
+    reader.onerror = function() {
+      showToast('Could not read the image file');
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // Close button
+  document.getElementById('tryon-close').addEventListener('click', closeTryon);
+
+  // Step navigation buttons
+  document.getElementById('tryon-btn-change-product').addEventListener('click', function() {
+    showTryonStep(2);
+  });
+  document.getElementById('tryon-btn-change-photo').addEventListener('click', function() {
+    showTryonStep(1);
+  });
+  document.getElementById('tryon-btn-add-to-cart').addEventListener('click', function() {
+    if (tryonProductId) {
+      // Find the product to get its details for addToCart
+      const product = PRODUCTS.find(p => p.id === tryonProductId);
+      if (product) {
+        // We need to select a size - for simplicity, we'll use the first available size
+        // In a real implementation, we might want to show a size selector, but for now we use the first size.
+        const size = product.sizes && product.sizes.length ? product.sizes[0] : 'One Size';
+        addToCart(product, size);
+        closeTryon();
+        showToast(`Added "${product.name}" to your bag`);
+      }
+    }
+  });
+
+  // Also close on backdrop click (already set in HTML)
+});
+
+// Load product thumbnails for selection
+function loadProductThumbnails() {
+  const grid = document.getElementById('tryon-product-grid');
+  grid.innerHTML = '';
+  // Only show products that are enabled for try-on (for now, all products)
+  // In the future, we could have a virtualTryOn.enabled flag
+  const productsToShow = PRODUCTS.filter(p => !p.comingSoon && !p.preorder); // Only live products for try-on
+  if (productsToShow.length === 0) {
+    grid.innerHTML = '<p class="adstatus">No products available for try-on.</p>';
+    return;
+  }
+  productsToShow.forEach(product => {
+    const chip = document.createElement('div');
+    chip.className = 'tryon-product-chip';
+    chip.dataset.productId = product.id;
+    chip.innerHTML = `
+      <img src="${product.img}" alt="${product.name}">
+      <div class="label">${product.name}</div>
+    `;
+    chip.addEventListener('click', function() {
+      // Update active chip
+      document.querySelectorAll('.tryon-product-chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      // Store selected product
+      tryonProductId = product.id;
+      // Convert product image to base64 for API
+      convertImageToBase64(product.img).then(base64 => {
+        tryonProductImageBase64 = base64;
+        // Enable generate button (we'll go to step 3)
+        showTryonStep(3);
+        // Generate the try-on image
+        generateTryonImage();
+      }).catch(err => {
+        console.error('Error converting product image:', err);
+        showToast('Could not process product image');
+        showTryonStep(2);
+      });
+    });
+    grid.appendChild(chip);
+  });
+}
+
+// Convert an image URL to base64
+function convertImageToBase64(url) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous'; // Important to avoid tainted canvas
+    img.onload = function() {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0);
+      const dataURL = canvas.toDataURL('image/jpeg', 0.82); // Same compression as product uploads
+      resolve(dataURL);
+    };
+    img.onerror = function() {
+      reject(new Error('Failed to load image'));
+    };
+    img.src = url;
+  });
+}
+
+// Generate the try-on image by calling our API
+async function generateTryonImage() {
+  if (!tryonPhoto || !tryonProductImageBase64 || !tryonProductId) {
+    showToast('Missing data for try-on generation');
+    showTryonStep(2);
+    return;
+  }
+
+  try {
+    const response = await fetch(`${API_BASE}/virtual-try-on`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        personImage: tryonPhoto,
+        garmentImage: tryonProductImageBase64,
+        productId: tryonProductId
+      })
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'API error');
+    }
+
+    const result = await response.json();
+    if (result.imageUrl) {
+      document.getElementById('tryon-result-image').src = result.imageUrl;
+      document.getElementById('tryon-result-name').textContent =
+        PRODUCTS.find(p => p.id === tryonProductId)?.name || 'Selected Product';
+      document.getElementById('tryon-result-price').textContent =
+        `₹${PRODUCTS.find(p => p.id === tryonProductId)?.price || '0'}`;
+      showTryonStep(4);
+    } else {
+      throw new Error('No image URL in response');
+    }
+  } catch (err) {
+    console.error('Try-on generation error:', err);
+    showToast('Could not generate try-on image. Please try again.');
+    showTryonStep(2);
+  }
+}
+
+// Show toast message (reuse existing function)
 </script>
 
 </body>
