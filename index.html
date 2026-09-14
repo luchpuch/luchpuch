@@ -3397,12 +3397,45 @@ async function generateTryonImage() {
 
     if (!response.ok) {
       let errorMessage = 'API error';
+      let statusCode = response.status;
       try {
         const errorData = await response.json();
-        errorMessage = errorData.error || errorData.message || 'API error';
         console.error('Try-on API error response:', errorData);
+        errorMessage = errorData.error || errorData.message ||
+          `API error ${statusCode}` ||
+          `API error (status ${statusCode})`;
+
+        // Provide more specific messages based on status code
+        if (statusCode === 400) {
+          errorMessage = 'Invalid request to try-on service. Please try again.';
+        } else if (statusCode === 401 || statusCode === 403) {
+          errorMessage = 'Try-on service access denied. Please try again later.';
+        } else if (statusCode === 404) {
+          errorMessage = 'Try-on service not found. Please contact support.';
+        } else if (statusCode === 429) {
+          errorMessage = 'Try-on service is busy. Please wait a moment and try again.';
+        } else if (statusCode >= 500) {
+          errorMessage = 'Try-on service is temporarily unavailable. Please try again later.';
+        }
       } catch (parseError) {
-        console.error('Could not parse API error response:', parseError);
+        // If JSON parsing fails, get the text response
+        console.error('Could not parse API error response as JSON:', parseError);
+        const errorText = await response.text();
+        console.error('Try-on API error response text:', errorText);
+        errorMessage = `API error ${statusCode}: ${errorText.substring(0, 100)}`;
+
+        // Provide status-based fallback messages
+        if (statusCode === 400) {
+          errorMessage = 'Invalid request to try-on service.';
+        } else if (statusCode === 401 || statusCode === 403) {
+          errorMessage = 'Try-on service access denied.';
+        } else if (statusCode === 404) {
+          errorMessage = 'Try-on service not found.';
+        } else if (statusCode === 429) {
+          errorMessage = 'Try-on service is busy. Please wait and try again.';
+        } else if (statusCode >= 500) {
+          errorMessage = 'Try-on service is temporarily unavailable.';
+        }
       }
       throw new Error(errorMessage);
     }
