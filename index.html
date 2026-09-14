@@ -1408,7 +1408,76 @@ async function confirmReturnRequest(orderId){
 }
 
 /* ---------------- product data (54 individual designs) ---------------- */
-const DEFAULT_PRODUCTS = [];
+const DEFAULT_PRODUCTS = [
+  {
+    id: 0,
+    cat: "Tees",
+    img: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+    images: [
+      "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
+    ],
+    name: "Lazy Sunday",
+    mood: "Relaxed and content",
+    price: 799,
+    description: "Perfect for those days when you just want to take it easy. Soft cotton, relaxed fit, and a design that says 'I'm doing nothing and loving it'.",
+    quality: "240 GSM premium cotton · Ribbed neck · Oversized relaxed fit · Machine wash cold, inside out",
+    hsn: "6109",
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    comingSoon: false,
+    preorder: false
+  },
+  {
+    id: 1,
+    cat: "Tees",
+    img: "https://images.unsplash.com/photo-1583743814966-8936c4b3ee08?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+    images: [
+      "https://images.unsplash.com/photo-1583743814966-8936c4b3ee08?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
+    ],
+    name: "City Wanderer",
+    mood: "Exploring new streets",
+    price: 849,
+    description: "For when you're out discovering hidden cafes and street art. Breathable fabric that keeps you comfortable as you wander.",
+    quality: "240 GSM premium cotton · Ribbed neck · Oversized relaxed fit · Machine wash cold, inside out",
+    hsn: "6109",
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    comingSoon: false,
+    preorder: false
+  },
+  {
+    id: 2,
+    cat: "Tees",
+    img: "https://images.unsplash.com/photo-1580210808899-c9308decebd4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+    images: [
+      "https://images.unsplash.com/photo-1580210808899-c9308decebd4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
+    ],
+    name: "Chai Time",
+    mood: "Warm and welcoming",
+    price: 749,
+    description: "Like your favorite chai break in clothing form. Comfortable, inviting, and perfect for slowing down.",
+    quality: "240 GSM premium cotton · Ribbed neck · Oversized relaxed fit · Machine wash cold, inside out",
+    hsn: "6109",
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    comingSoon: false,
+    preorder: false
+  },
+  {
+    id: 3,
+    cat: "Tees",
+    img: "https://images.unsplash.com/photo-1596755294753-b3800d6e1e6b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+    images: [
+      "https://images.unsplash.com/photo-1596755294753-b3800d6e1e6b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
+    ],
+    name: "Monsoon Mood",
+    mood: "Reflective and calm",
+    price: 799,
+    description: "For when the rain is falling and you want to feel cozy indoors. Soft cotton that feels like a warm hug.",
+    quality: "240 GSM premium cotton · Ribbed neck · Oversized relaxed fit · Machine wash cold, inside out",
+    hsn: "6109",
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    comingSoon: false,
+    preorder: false
+  }
+];
 
 /* Category-level copy used to fill in description/quality for the default
    catalogue, and as a starting point when products are added without one. */
