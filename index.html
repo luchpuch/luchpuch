@@ -575,7 +575,7 @@
   display:grid;grid-template-columns:repeat(auto-fill, minmax(80px, 1fr));gap:12px;margin-top:16px;
 }
 #tryon-product-chip{
-  aspect-ratio:1/1.28;overflow:hidden;border-radius:12px;border:2px solid transparent;position:relative;cursor:pointer;transition:border-color .2s, transform .2s;
+  aspect-ratio:1/1.28;overflow:hidden;border-radius:12px;border:2px solid transparent;position:relative;cursor:pointer;pointer-events:auto;touch-action:manipulation;transition:border-color .2s, transform .2s;
 }
 #tryon-product-chip:hover{
   transform:scale(1.03);
@@ -3310,23 +3310,32 @@ function loadProductThumbnails() {
       <div class="label">${product.name}</div>
     `;
     chip.addEventListener('click', function() {
-      // Update active chip
-      document.querySelectorAll('.tryon-product-chip').forEach(c => c.classList.remove('active'));
-      chip.classList.add('active');
-      // Store selected product
-      tryonProductId = product.id;
-      // Convert product image to base64 for API
-      convertImageToBase64(product.img).then(base64 => {
-        tryonProductImageBase64 = base64;
-        // Enable generate button (we'll go to step 3)
-        showTryonStep(3);
-        // Generate the try-on image
-        generateTryonImage();
-      }).catch(err => {
-        console.error('Error converting product image:', err);
-        showToast('Could not process product image');
+      try {
+        // Update active chip
+        const chips = document.querySelectorAll('.tryon-product-chip');
+        for (let i = 0; i < chips.length; i++) {
+          chips[i].classList.remove('active');
+        }
+        chip.classList.add('active');
+        // Store selected product
+        tryonProductId = product.id;
+        // Convert product image to base64 for API
+        convertImageToBase64(product.img).then(base64 => {
+          tryonProductImageBase64 = base64;
+          // Enable generate button (we'll go to step 3)
+          showTryonStep(3);
+          // Generate the try-on image
+          generateTryonImage();
+        }).catch(err => {
+          console.error('Error converting product image:', err);
+          showToast('Could not process product image');
+          showTryonStep(2);
+        });
+      } catch (err) {
+        console.error('Error in try-on chip click handler:', err);
+        showToast('Error selecting product');
         showTryonStep(2);
-      });
+      }
     });
     grid.appendChild(chip);
   });
