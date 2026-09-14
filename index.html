@@ -3370,6 +3370,15 @@ async function generateTryonImage() {
     return;
   }
 
+  // Log diagnostic info (without sensitive data)
+  console.log('Try-on generation:', {
+    hasPhoto: !!tryonPhoto,
+    photoLength: tryonPhoto?.length,
+    hasProductImage: !!tryonProductImageBase64,
+    productImageLength: tryonProductImageBase64?.length,
+    productId: tryonProductId
+  });
+
   try {
     const response = await fetch(`${API_BASE}/virtual-try-on`, {
       method: 'POST',
@@ -3383,12 +3392,24 @@ async function generateTryonImage() {
       })
     });
 
+    // Log response status for debugging
+    console.log('Try-on API response status:', response.status);
+
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || 'API error');
+      let errorMessage = 'API error';
+      try {
+        const errorData = await response.json();
+        errorMessage = errorData.error || errorData.message || 'API error';
+        console.error('Try-on API error response:', errorData);
+      } catch (parseError) {
+        console.error('Could not parse API error response:', parseError);
+      }
+      throw new Error(errorMessage);
     }
 
     const result = await response.json();
+    console.log('Try-on API success response:', !!result.imageUrl);
+
     if (result.imageUrl) {
       document.getElementById('tryon-result-image').src = result.imageUrl;
       document.getElementById('tryon-result-name').textContent =
@@ -3397,11 +3418,22 @@ async function generateTryonImage() {
         `₹${PRODUCTS.find(p => p.id === tryonProductId)?.price || '0'}`;
       showTryonStep(4);
     } else {
-      throw new Error('No image URL in response');
+      throw new Error('No image URL in API response');
     }
   } catch (err) {
     console.error('Try-on generation error:', err);
-    showToast('Could not generate try-on image. Please try again.');
+
+    // Provide more specific error messages
+    let userMessage = 'Could not generate try-on image. Please try again.';
+    if (err.message.includes('Failed to fetch')) {
+      userMessage = 'Network error. Please check your connection and try again.';
+    } else if (err.message.includes('API error')) {
+      userMessage = 'Try-on service temporarily unavailable. Please try again later.';
+    } else if (err.message.includes('No image URL')) {
+      userMessage = 'Try-on service did not return a result. Please try again.';
+    }
+
+    showToast(userMessage);
     showTryonStep(2);
   }
 }
