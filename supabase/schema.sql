@@ -10,6 +10,26 @@ create table if not exists kv_store (
   updated_at timestamptz not null default now()
 );
 
+-- Customer reviews table
+create table if not exists reviews (
+  id uuid primary key default gen_random_uuid(),
+  name text not null,
+  rating integer not null check (rating >= 1 and rating <= 5),
+  comment text not null,
+  created_at timestamptz not null default now()
+);
+
+-- Enable RLS on reviews table
+alter table reviews enable row level security;
+
+-- Policy: Allow anyone to read reviews
+create policy "Reviews are viewable by everyone" on reviews
+  for select using (true);
+
+-- Policy: Allow anyone to insert reviews (you might want to restrict this in production)
+create policy "Anyone can insert reviews" on reviews
+  for insert with check (true);
+
 -- Orders get a real table because Postgres buys you something Blobs
 -- couldn't: an atomic sequence for invoice numbers with zero race window,
 -- even under real concurrent checkouts. `data` holds the full order object
