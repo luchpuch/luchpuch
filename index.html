@@ -182,6 +182,8 @@
   .pcard .pmood{font-size:12px;color:var(--ink-dim);}
   .pcard .prow{margin-top:auto;display:flex;align-items:center;justify-content:space-between;padding-top:10px;}
   .pcard .pprice{font-family:'Fredoka';font-weight:600;font-size:15px;color:var(--sage-dk);}
+.pcard .pprice-mrp{font-family:'Fredoka';font-size:13px;color:var(--ink-dim);text-decoration:line-through;margin-right:8px;}
+.pcard .pdiscount{font-family:'Fredoka';font-size:13px;color:var(--blush);font-weight:600;}
   .pcard .addbtn{border:1.5px solid var(--ink);background:none;color:var(--ink);border-radius:100px;padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer;transition:.2s;white-space:nowrap;}
   .pcard .addbtn:hover{background:var(--ink);color:var(--paper);}
   .pcard .addbtn.added{background:var(--sage-dk);border-color:var(--sage-dk);color:var(--paper);}
@@ -948,7 +950,9 @@
     </select>
     <label>Mood</label>
     <input type="text" id="pmMood" placeholder="e.g. Lazy but happy">
-    <label>Price (₹)</label>
+    <label>MRP (₹)</label>
+    <input type="number" id="pmMrp" min="0" placeholder="999">
+    <label>Discounted Price (₹)</label>
     <input type="number" id="pmPrice" min="0" placeholder="799">
     <label>Description</label>
     <textarea id="pmDesc" rows="3" placeholder="What is it, how does it fit, why would someone want it?"></textarea>
@@ -1937,7 +1941,13 @@ function renderGrid(){
         ${inCartSizes.length ? `<div class="incartnote">In bag: ${inCartSizes.join(", ")}</div>` : ''}
         <div class="sizerow" data-open="0"></div>
         <div class="prow">
-          <span class="pprice">₹${p.price}</span>
+          ${p.mrp && p.mrp > p.price ? `
+            <span class="pprice-mrp">₹${p.mrp}</span>
+            <span class="pprice">₹${p.price}</span>
+            <span class="pdiscount">-${Math.round(((p.mrp - p.price) / p.mrp) * 100)}% off</span>
+          ` : `
+            <span class="pprice">₹${p.price}</span>
+          `}
           <button class="addbtn" data-id="${p.id}" ${p.comingSoon ? 'disabled' : ''}>${p.comingSoon ? 'Coming soon' : (sizes.length>1 ? (p.preorder ? 'Pre-order' : 'Choose size') : (p.preorder ? 'Pre-order' : 'Add to bag'))}</button>
         </div>
       </div>`;
@@ -2151,7 +2161,7 @@ function closeCart(){ cartback.classList.remove("on"); cartEl.classList.remove("
      currency orders — it cannot process India-to-India payments, so this
      path is USD-only and meant for international customers.)
 ====================================================== */
-const RAZORPAY_KEY_ID = ""; // Set your Razorpay Key ID here
+const RAZORPAY_KEY_ID = "rzp_live_TJrOEqxhIERsYV"; // Set your Razorpay Key ID here
 const PAYPAL_CLIENT_ID = ""; // Set your PayPal Client ID here for international payments
 const USD_TO_INR = 95.39; // approximate — update to the live rate, or replace with a real FX API call
 
@@ -2835,6 +2845,7 @@ async function saveProductForm(){
   const name = document.getElementById("pmName").value.trim();
   const cat = document.getElementById("pmCat").value;
   const mood = document.getElementById("pmMood").value.trim();
+  const mrp = parseInt(document.getElementById("pmMrp").value, 10) || 0;
   const price = parseInt(document.getElementById("pmPrice").value, 10) || 0;
   const description = document.getElementById("pmDesc").value.trim();
   const quality = document.getElementById("pmQuality").value.trim();
@@ -2848,14 +2859,16 @@ async function saveProductForm(){
   let label;
   if(editingId !== null){
     const p = PRODUCTS.find(x=>x.id===editingId);
-    p.name = name; p.cat = cat; p.mood = mood; p.price = price;
+    p.name = name; p.cat = cat; p.mood = mood;
+    p.mrp = mrp;
+    p.price = price;
     p.description = description; p.quality = quality; p.hsn = hsn; p.sizes = sizes;
     p.images = [...pendingImages]; p.img = pendingImages[0]; p.comingSoon = comingSoon; p.preorder = preorder;
     label = `Updated "${name}"`;
   } else {
     PRODUCTS.push({
       id: PRODUCTS.length, cat, img: pendingImages[0], images: [...pendingImages],
-      name, mood, price, description, quality, hsn, sizes, comingSoon, preorder
+      name, mood, mrp, price, description, quality, hsn, sizes, comingSoon, preorder
     });
     label = `Added "${name}" to the catalogue`;
   }
@@ -2946,7 +2959,13 @@ function renderProductPage(id){
         ${p.comingSoon ? `<div class="pdvcomingtag">Coming Soon</div>` : (p.preorder ? `<div class="pdvpreordertag">Pre-order</div>` : '')}
         <h1>${p.name}</h1>
         <span class="pdvmood">Mood: ${p.mood}</span>
-        <div class="pdvprice">₹${p.price}</div>
+        ${p.mrp && p.mrp > p.price ? `
+            <span class="pdvprice-mrp">₹${p.mrp}</span>
+            <span class="pdvprice">₹${p.price}</span>
+            <span class="pdvdiscount">-${Math.round(((p.mrp - p.price) / p.mrp) * 100)}% off</span>
+          ` : `
+            <span class="pdvprice">₹${p.price}</span>
+          `}</div>
         <p class="pdvdesc">${p.description || ""}</p>
         ${p.quality ? `<div class="pdvqualitybox"><h4>Quality &amp; Fabric</h4><p>${p.quality}</p></div>` : ''}
         ${p.preorder && !p.comingSoon ? `<p class="pdvpreordernote">🕒 This is a pre-order — you can pay now to book your stock. We'll process and ship it as soon as this item goes live.</p>` : ''}
@@ -3160,346 +3179,6 @@ document.getElementById("luchiMessages").addEventListener("click", (e)=>{
 })();
 </script>
 
-<!-- Virtual Try-On Modal -->
-<div id="tryon-backdrop" onclick="closeTryon()"></div>
-<div id="tryon-modal">
-  <div id="tryon-header">
-    <h2>✨ Luchpuch Virtual Try-On</h2>
-    <button id="tryon-close" onclick="closeTryon()">×</button>
-  </div>
-  <div id="tryon-steps">
-    <!-- Step 1: Upload Photo -->
-    <div id="tryon-step-1" class="tryon-step">
-      <h3>Upload Your Photo</h3>
-      <div id="tryon-preview">
-        <div class="placeholder">Drag & drop or click to upload</div>
-      </div>
-      <input type="file" id="tryon-photo-input" accept="image/*" style="display:none;">
-      <button id="tryon-photo-button" class="tryon-btn tryon-btn-secondary">Upload Photo</button>
-      <p id="tryon-photo-hint">For the best result, use a clear front-facing photo with your upper body visible.</p>
-    </div>
-    <!-- Step 2: Select Product -->
-    <div id="tryon-step-2" class="tryon-step" style="display:none;">
-      <h3>Choose Your Luchpuch Tee</h3>
-      <div id="tryon-product-grid"></div>
-    </div>
-    <!-- Step 3: Generate -->
-    <div id="tryon-step-3" class="tryon-step" style="display:none;">
-      <h3>Creating Your Look</h3>
-      <div id="tryon-loading">
-        <div class="spinner"></div>
-        <p>✨ Creating your Luchpuch look...</p>
-      </div>
-    </div>
-    <!-- Step 4: Result -->
-    <div id="tryon-step-4" class="tryon-step" style="display:none;">
-      <div id="tryon-result">
-        <h2>✨ Your Luchpuch Look</h2>
-        <img id="tryon-result-image" alt="Your try-on result">
-        <div class="product-info">
-          <div id="tryon-result-name" class="product-name"></div>
-          <div id="tryon-result-price" class="product-price"></div>
-        </div>
-        <div class="actions">
-          <button id="tryon-btn-change-product" class="tryon-btn tryon-btn-ghost">Try Another Tee</button>
-          <button id="tryon-btn-change-photo" class="tryon-btn tryon-btn-ghost">Change Photo</button>
-          <button id="tryon-btn-add-to-cart" class="tryon-btn tryon-btn-solid">Add This Tee to Cart</button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script>
-// Virtual Try-On Feature JavaScript
-let tryonPhoto = null; // base64 string of the user's photo
-let tryonProductId = null; // ID of the selected product
-let tryonProductImageBase64 = null; // base64 string of the product image (for API)
-
-// Open the try-on modal
-function openTryon() {
-  document.getElementById('tryon-backdrop').classList.add('on');
-  document.getElementById('tryon-modal').classList.add('on');
-  document.body.style.overflow = 'hidden';
-  resetTryonState();
-  showTryonStep(1);
-}
-
-// Close the try-on modal
-function closeTryon() {
-  document.getElementById('tryon-backdrop').classList.remove('on');
-  document.getElementById('tryon-modal').classList.remove('on');
-  document.body.style.overflow = '';
-}
-
-// Reset the try-on state
-function resetTryonState() {
-  tryonPhoto = null;
-  tryonProductId = null;
-  tryonProductImageBase64 = null;
-  document.getElementById('tryon-photo-input').value = '';
-  document.getElementById('tryon-preview').innerHTML = '<div class="placeholder">Drag & drop or click to upload</div>';
-  document.getElementById('tryon-product-grid').innerHTML = '';
-  document.getElementById('tryon-result-image').src = '';
-  document.getElementById('tryon-result-name').textContent = '';
-  document.getElementById('tryon-result-price').textContent = '';
-}
-
-// Show a specific step (1-4)
-function showTryonStep(step) {
-  // Hide all steps
-  for (let i = 1; i <= 4; i++) {
-    document.getElementById(`tryon-step-${i}`).style.display = 'none';
-  }
-  // Show the requested step
-  document.getElementById(`tryon-step-${step}`).style.display = 'block';
-}
-
-// Initialize the try-on feature when the DOM is loaded
-document.addEventListener('DOMContentLoaded', function() {
-  // Photo upload button
-  document.getElementById('tryon-photo-button').addEventListener('click', function() {
-    document.getElementById('tryon-photo-input').click();
-  });
-
-  // Photo input change
-  document.getElementById('tryon-photo-input').addEventListener('change', function(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-    if (!file.type.startsWith('image/')) {
-      showToast('Please select an image file');
-      return;
-    }
-    if (file.size > 5 * 1024 * 1024) { // 5MB limit
-      showToast('Image file too large (max 5MB)');
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = function(event) {
-      tryonPhoto = event.target.result;
-      document.getElementById('tryon-preview').innerHTML = `<img src="${tryonPhoto}" alt="Preview">`;
-      // Enable next step if product is already selected (though we reset state, so we go to step 2)
-      showTryonStep(2);
-      loadProductThumbnails();
-    };
-    reader.onerror = function() {
-      showToast('Could not read the image file');
-    };
-    reader.readAsDataURL(file);
-  });
-
-  // Close button
-  document.getElementById('tryon-close').addEventListener('click', closeTryon);
-
-  // Step navigation buttons
-  document.getElementById('tryon-btn-change-product').addEventListener('click', function() {
-    showTryonStep(2);
-  });
-  document.getElementById('tryon-btn-change-photo').addEventListener('click', function() {
-    showTryonStep(1);
-  });
-  document.getElementById('tryon-btn-add-to-cart').addEventListener('click', function() {
-    if (tryonProductId) {
-      // Find the product to get its details for addToCart
-      const product = PRODUCTS.find(p => p.id === tryonProductId);
-      if (product) {
-        // We need to select a size - for simplicity, we'll use the first available size
-        // In a real implementation, we might want to show a size selector, but for now we use the first size.
-        const size = product.sizes && product.sizes.length ? product.sizes[0] : 'One Size';
-        addToCart(product, size);
-        closeTryon();
-        showToast(`Added "${product.name}" to your bag`);
-      }
-    }
-  });
-
-  // Also close on backdrop click (already set in HTML)
-});
-
-// Load product thumbnails for selection
-function loadProductThumbnails() {
-  const grid = document.getElementById('tryon-product-grid');
-  grid.innerHTML = '';
-  // Only show products that are enabled for try-on (for now, all products)
-  // In the future, we could have a virtualTryOn.enabled flag
-  const productsToShow = PRODUCTS.filter(p => !p.comingSoon); // Exclude coming soon products, allow live and preorder
-  if (productsToShow.length === 0) {
-    grid.innerHTML = '<p class="adstatus">No products available for try-on.</p>';
-    return;
-  }
-  productsToShow.forEach(product => {
-    const chip = document.createElement('div');
-    chip.className = 'tryon-product-chip';
-    chip.dataset.productId = product.id;
-    chip.innerHTML = `
-      <img src="${product.img}" alt="${product.name}">
-      <div class="label">${product.name}</div>
-    `;
-    chip.addEventListener('click', function() {
-      try {
-        // Update active chip
-        const chips = document.querySelectorAll('.tryon-product-chip');
-        for (let i = 0; i < chips.length; i++) {
-          chips[i].classList.remove('active');
-        }
-        chip.classList.add('active');
-        // Store selected product
-        tryonProductId = product.id;
-        // Convert product image to base64 for API
-        convertImageToBase64(product.img).then(base64 => {
-          tryonProductImageBase64 = base64;
-          // Enable generate button (we'll go to step 3)
-          showTryonStep(3);
-          // Generate the try-on image
-          generateTryonImage();
-        }).catch(err => {
-          console.error('Error converting product image:', err);
-          showToast('Could not process product image');
-          showTryonStep(2);
-        });
-      } catch (err) {
-        console.error('Error in try-on chip click handler:', err);
-        showToast('Error selecting product');
-        showTryonStep(2);
-      }
-    });
-    grid.appendChild(chip);
-  });
-}
-
-// Convert an image URL to base64
-function convertImageToBase64(url) {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.crossOrigin = 'anonymous'; // Important to avoid tainted canvas
-    img.onload = function() {
-      const canvas = document.createElement('canvas');
-      canvas.width = img.width;
-      canvas.height = img.height;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0);
-      const dataURL = canvas.toDataURL('image/jpeg', 0.82); // Same compression as product uploads
-      resolve(dataURL);
-    };
-    img.onerror = function() {
-      reject(new Error('Failed to load image'));
-    };
-    img.src = url;
-  });
-}
-
-// Generate the try-on image by calling our API
-async function generateTryonImage() {
-  if (!tryonPhoto || !tryonProductImageBase64 || !tryonProductId) {
-    showToast('Missing data for try-on generation');
-    showTryonStep(2);
-    return;
-  }
-
-  // Log diagnostic info (without sensitive data)
-  console.log('Try-on generation:', {
-    hasPhoto: !!tryonPhoto,
-    photoLength: tryonPhoto?.length,
-    hasProductImage: !!tryonProductImageBase64,
-    productImageLength: tryonProductImageBase64?.length,
-    productId: tryonProductId
-  });
-
-  try {
-    const response = await fetch(`${API_BASE}/virtual-try-on`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        personImage: tryonPhoto,
-        garmentImage: tryonProductImageBase64,
-        productId: tryonProductId
-      })
-    });
-
-    // Log response status for debugging
-    console.log('Try-on API response status:', response.status);
-
-    if (!response.ok) {
-      let errorMessage = 'API error';
-      let statusCode = response.status;
-      try {
-        const errorData = await response.json();
-        console.error('Try-on API error response:', errorData);
-        errorMessage = errorData.error || errorData.message ||
-          `API error ${statusCode}` ||
-          `API error (status ${statusCode})`;
-
-        // Provide more specific messages based on status code
-        if (statusCode === 400) {
-          errorMessage = 'Invalid request to try-on service. Please try again.';
-        } else if (statusCode === 401 || statusCode === 403) {
-          errorMessage = 'Try-on service access denied. Please try again later.';
-        } else if (statusCode === 404) {
-          errorMessage = 'Try-on service not found. Please contact support.';
-        } else if (statusCode === 429) {
-          errorMessage = 'Try-on service is busy. Please wait a moment and try again.';
-        } else if (statusCode >= 500) {
-          errorMessage = 'Try-on service is temporarily unavailable. Please try again later.';
-        }
-      } catch (parseError) {
-        // If JSON parsing fails, get the text response
-        console.error('Could not parse API error response as JSON:', parseError);
-        const errorText = await response.text();
-        console.error('Try-on API error response text:', errorText);
-        errorMessage = `API error ${statusCode}: ${errorText.substring(0, 100)}`;
-
-        // Provide status-based fallback messages
-        if (statusCode === 400) {
-          errorMessage = 'Invalid request to try-on service.';
-        } else if (statusCode === 401 || statusCode === 403) {
-          errorMessage = 'Try-on service access denied.';
-        } else if (statusCode === 404) {
-          errorMessage = 'Try-on service not found.';
-        } else if (statusCode === 429) {
-          errorMessage = 'Try-on service is busy. Please wait and try again.';
-        } else if (statusCode >= 500) {
-          errorMessage = 'Try-on service is temporarily unavailable.';
-        }
-      }
-      throw new Error(errorMessage);
-    }
-
-    const result = await response.json();
-    console.log('Try-on API success response:', !!result.imageUrl);
-
-    if (result.imageUrl) {
-      document.getElementById('tryon-result-image').src = result.imageUrl;
-      document.getElementById('tryon-result-name').textContent =
-        PRODUCTS.find(p => p.id === tryonProductId)?.name || 'Selected Product';
-      document.getElementById('tryon-result-price').textContent =
-        `₹${PRODUCTS.find(p => p.id === tryonProductId)?.price || '0'}`;
-      showTryonStep(4);
-    } else {
-      throw new Error('No image URL in API response');
-    }
-  } catch (err) {
-    console.error('Try-on generation error:', err);
-
-    // Provide more specific error messages
-    let userMessage = 'Could not generate try-on image. Please try again.';
-    if (err.message.includes('Failed to fetch')) {
-      userMessage = 'Network error. Please check your connection and try again.';
-    } else if (err.message.includes('API error')) {
-      userMessage = 'Try-on service temporarily unavailable. Please try again later.';
-    } else if (err.message.includes('No image URL')) {
-      userMessage = 'Try-on service did not return a result. Please try again.';
-    }
-
-    showToast(userMessage);
-    showTryonStep(2);
-  }
-}
-
-// Show toast message (reuse existing function)
-// Reuse the existing showToast function from the main script
-</script>
 
 </body>
 
