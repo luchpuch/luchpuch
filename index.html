@@ -43,6 +43,32 @@
     line-height: 1;
   }
 
+  /* Override for small circular display in chat header */
+  #luchiHeader .luchi-3d,
+  #luchiHeader .luchi-video {
+    width: 34px !important;
+    height: 34px !important;
+    animation: none !important;
+    transform-style: flat !important;
+    overflow: hidden !important;
+    border-radius: 50% !important;
+  }
+
+  /* Keep launcher video full size */
+  #luchiLauncher .luchi-video {
+    width: 58px !important;
+    height: 58px !important;
+  }
+
+  /* Video styling */
+  #luchiLauncher video,
+  #luchiHeader video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+
   @keyframes luchiFloat {
     0%, 100% { transform: translate3d(0, 0, 0) rotateX(0) rotateY(0); }
     25% { transform: translate3d(-5px, -5px, 10px) rotateX(5deg) rotateY(-5deg); }
