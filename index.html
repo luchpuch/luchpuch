@@ -3459,7 +3459,7 @@ function showMessage(message, isSuccess) {
 // Admin coupon management functions
 function renderAdminCouponRows(coupons) {
   const statusEl = document.getElementById("adminCouponsStatus");
-  statusEl.textContent = ${coupons.length} coupon${coupons.length===1?'':'s'};
+  statusEl.textContent = coupons.length + " coupon" + (coupons.length === 1 ? "" : "s");
   document.getElementById("adminCouponRows").innerHTML = coupons.map(c=>`
     <tr>
       <td>${escapeHtml(c.code)}</td>
