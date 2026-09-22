@@ -749,6 +749,32 @@
   <div id="cartitems"></div>
   <div id="cartfoot">
     <div class="ctotal"><span>Total</span><span id="carttotal">₹0</span></div>
+
+    <!-- Coupon Section -->
+    <div id="couponSection" style="display:none; margin: 16px 0; padding: 12px; background: var(--bg-soft); border-radius: 12px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <span style="font-weight:600; color:var(--ink-dim);">Have a coupon?</span>
+            <button id="toggleCoupon" class="btn btn-ghost" style="padding:4px 12px; font-size:12px;">Apply</button>
+        </div>
+        <div id="couponForm" style="display:flex; gap:8px; align-items:center;">
+            <input type="text" id="couponInput" placeholder="Enter coupon code" class="cemailinput" style="flex:1;">
+            <button type="submit" id="applyCoupon" class="btn btn-solid" style="padding:8px 16px; font-size:13px;">Apply</button>
+        </div>
+        <div id="couponMessage" style="margin-top:8px; min-height:20px; font-size:13px;"></div>
+        <div id="couponDetails" style="margin-top:12px; padding-top:8px; border-top:1px solid var(--line); display:none;">
+            <div class="ctotal" style="justify-content:space-between;">
+                <span>Subtotal</span><span id="couponSubtotal">₹0</span>
+            </div>
+            <div class="ctotal" style="justify-content:space-between; color:var(--blush);">
+                <span>Discount</span><span id="couponDiscount">-₹0</span>
+            </div>
+            <div class="ctotal" style="justify-content:space-between; font-weight:600;">
+                <span>Total</span><span id="couponFinalTotal">₹0</span>
+            </div>
+            <button type="button" id="removeCoupon" class="btn btn-ghost" style="margin-top:8px; width:100%; font-size:13px;">Remove Coupon</button>
+        </div>
+    </div>
+
     <div id="cartPreorderNote" class="preorderbanner" style="display:none;">🕒 Your bag includes a pre-order item — you'll be charged now, and that order is held and processed as soon as we mark the item Live.</div>
 
     <div id="authGate" style="display:none;">
@@ -1161,13 +1187,13 @@
 
 <!-- LUCHI CHAT WIDGET -->
 <button id="luchiLauncher" onclick="toggleLuchi()" aria-label="Chat with Luchi">
-  <video id="luchiLauncherIcon" class="luchi-video" src="Luchi.mp4" autoplay muted loop playsinline></video>
+  <video id="luchiLauncherIcon" class="luchi-video" src="/Luchi.mp4" autoplay muted loop playsinline></video>
 </button>
 <div id="luchiPanel">
   <div id="luchiHeader">
     <div>
       <div id="luchiAvatar" class="luchi-video">
-  <video src="Luchi.mp4" class="luchi-video" autoplay muted loop playsinline></video>
+  <video src="/Luchi.mp4" class="luchi-video" autoplay muted loop playsinline></video>
 </div>
       <div>
         <div id="luchiName">Luchi</div>
@@ -2069,11 +2095,25 @@ function selectMood(mood, btn){
 
 /* ---------------- cart ---------------- */
 let cart = [];
+let appliedCoupon = null; // Stores the currently applied coupon object
 const cartback = document.getElementById("cartback");
 const cartEl = document.getElementById("cart");
 const cartItemsEl = document.getElementById("cartitems");
 const navcount = document.getElementById("navcount");
 const carttotal = document.getElementById("carttotal");
+
+// Coupon DOM elements
+const couponSection = document.getElementById("couponSection");
+const couponForm = document.getElementById("couponForm");
+const couponInput = document.getElementById("couponInput");
+const applyCouponBtn = document.getElementById("applyCoupon");
+const toggleCouponBtn = document.getElementById("toggleCoupon");
+const couponMessage = document.getElementById("couponMessage");
+const couponDetails = document.getElementById("couponDetails");
+const couponSubtotal = document.getElementById("couponSubtotal");
+const couponDiscount = document.getElementById("couponDiscount");
+const couponFinalTotal = document.getElementById("couponFinalTotal");
+const removeCouponBtn = document.getElementById("removeCoupon");
 
 function addToCart(p, size){
   if(!cart.some(c=>c.id===p.id && c.size===size)){
@@ -2110,8 +2150,34 @@ function renderCart(){
         <div class="cprice">₹${p.price}</div>
       </div>`).join("");
   }
-  const total = cart.reduce((s,p)=>s+p.price,0);
+
+  // Calculate totals
+  const subtotal = cart.reduce((s,p)=>s+p.price,0);
+  let discount = 0;
+  if (appliedCoupon) {
+    // In a real implementation, we'd get the authoritative discount from server
+    // For UI purposes, we'll calculate based on appliedCoupon (which was validated)
+    if (appliedCoupon.discount_type === "fixed") {
+      discount = Math.min(appliedCoupon.discount_value, subtotal);
+    } else if (appliedCoupon.discount_type === "percentage") {
+      discount = Math.round((subtotal * appliedCoupon.discount_value) / 100);
+      if (appliedCoupon.maximum_discount !== null) {
+        discount = Math.min(discount, appliedCoupon.maximum_discount);
+      }
+    }
+    discount = Math.min(discount, subtotal);
+  }
+  const total = subtotal - discount;
+
   carttotal.textContent = "₹" + total;
+
+  // Update coupon section UI if visible
+  if (couponSection.style.display === "block") {
+    couponSubtotal.textContent = "₹" + subtotal;
+    couponDiscount.textContent = "-₹" + discount;
+    couponFinalTotal.textContent = "₹" + total;
+  }
+
   const preorderNote = document.getElementById("cartPreorderNote");
   if(preorderNote) preorderNote.style.display = cart.some(p=>p.preorder) ? "block" : "none";
   renderCartAuthGate();
@@ -3170,6 +3236,126 @@ document.getElementById("luchiMessages").addEventListener("click", (e)=>{
   if(e.target.tagName === "A") document.getElementById("luchiPanel").classList.remove("on");
 });
 
+/* ---------------- Coupon functionality ---------------- */
+// Initialize coupon UI event listeners
+function initCouponListeners() {
+  // Toggle coupon section visibility
+  toggleCouponBtn.addEventListener("click", () => {
+    const isHidden = couponForm.style.display === "none";
+    couponForm.style.display = isHidden ? "flex" : "none";
+    if (isHidden) {
+      couponInput.focus();
+      toggleCouponBtn.textContent = "Hide";
+    } else {
+      toggleCouponBtn.textContent = "Apply";
+    }
+  });
+
+  // Apply coupon button
+  applyCouponBtn.addEventListener("click", applyCoupon);
+
+  // Enter key to apply coupon
+  couponInput.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") {
+      applyCoupon();
+    }
+  });
+
+  // Remove coupon button
+  removeCouponBtn.addEventListener("click", removeCoupon);
+}
+
+// Apply coupon - calls backend validation
+async function applyCoupon() {
+  const code = couponInput.value.trim();
+  if (!code) {
+    showMessage("Please enter a coupon code", false);
+    return;
+  }
+
+  // Show loading state
+  applyCouponBtn.disabled = true;
+  applyCouponBtn.textContent = "Applying...";
+  couponMessage.textContent = "";
+
+  try {
+    const cartTotal = cart.reduce((sum, item) => sum + item.price, 0);
+    const cartItems = cart.map(item => ({
+      id: item.id,
+      name: item.name,
+      cat: item.cat,
+      price: item.price
+    }));
+
+    const response = await fetch(`${API_BASE}/coupon-validate`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        couponCode: code,
+        cartTotal: cartTotal,
+        cartItems: cartItems
+      })
+    });
+
+    const result = await response.json();
+
+    if (result.valid) {
+      // Store the validated coupon
+      appliedCoupon = {
+        id: Math.random().toString(36).substr(2, 9), // Temporary ID until we get real one from DB
+        code: result.couponCode,
+        discount_type: result.discountType,
+        discount_value: result.discountValue,
+        description: result.description
+      };
+
+      // Show success message and details
+      showMessage(`✓ Coupon ${result.couponCode} applied`, true);
+      couponDetails.style.display = "block";
+      couponForm.style.display = "none";
+      toggleCouponBtn.textContent = "Hide";
+
+      // Clear input
+      couponInput.value = "";
+    } else {
+      showMessage(result.error || "Invalid coupon code", false);
+    }
+  } catch (error) {
+    console.error("Coupon application error:", error);
+    showMessage("Could not validate coupon. Please try again.", false);
+  } finally {
+    applyCouponBtn.disabled = false;
+    applyCouponBtn.textContent = "Apply";
+  }
+
+  // Re-render cart to update totals
+  renderCart();
+}
+
+// Remove applied coupon
+function removeCoupon() {
+  appliedCoupon = null;
+  showMessage("Coupon removed", true);
+  couponDetails.style.display = "none";
+  couponForm.style.display = "flex";
+  toggleCouponBtn.textContent = "Apply";
+  couponInput.value = "";
+  renderCart();
+}
+
+// Show message in coupon section
+function showMessage(message, isSuccess) {
+  couponMessage.textContent = message;
+  couponMessage.style.color = isSuccess ? "var(--sage-dk)" : "var(--blush)";
+
+  // Clear message after 3 seconds
+  setTimeout(() => {
+    couponMessage.textContent = "";
+  }, 3000);
+}
+
 /* ---------------- init ---------------- */
 (async function init(){
   const saved = await loadProducts();
@@ -3187,6 +3373,7 @@ document.getElementById("luchiMessages").addEventListener("click", (e)=>{
   checkRoute();
   initAuth();
   initReviews();
+  initCouponListeners();
 })();
 </script>
 

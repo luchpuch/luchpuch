@@ -192,6 +192,87 @@ Deno.serve(async (req) => {
     order.userId = user.id; // links the order to the signed-in customer, independent of order.email
     applyTax(order);
 
+    // Extract coupon info if present in order data (sent from client)
+    const couponCode = order.couponCode ? order.couponCode.toUpperCase().trim() : null;
+    let couponId = null;
+    let discountAmount = 0;
+    let finalTotal = order.total;
+
+    // Validate and apply coupon if provided
+    if (couponCode) {
+      const { data: couponData, error: couponError } = await supabase
+        .from("coupons")
+        .select("*")
+        .eq("code", couponCode)
+        .single();
+
+      if (!couponError && couponData) {
+        const coupon = couponData;
+
+        // Check if coupon is active
+        if (coupon.is_active) {
+          // Check if coupon has started
+          if (!coupon.starts_at || new Date(coupon.starts_at) <= new Date()) {
+            // Check if coupon has expired
+            if (!coupon.expires_at || new Date(coupon.expires_at) >= new Date()) {
+              // Check usage limit
+              if (coupon.usage_limit === null) {
+                const { count } = await supabase
+                  .from("coupon_usage")
+                  .select("id", { count: "exact" })
+                  .eq("coupon_id", coupon.id);
+
+                if (!(count && count >= coupon.usage_limit)) {
+                  // Check per-customer limit (if user is signed in)
+                  const customerEmail = order.email.toLowerCase();
+                  if (coupon.per_customer_limit === null) {
+                    const { count } = await supabase
+                      .from("coupon_usage")
+                      .select("id", { count: "exact" })
+                      .eq("coupon_id", coupon.id)
+                      .eq("customer_email", customerEmail);
+
+                    if (!(count && count >= coupon.per_customer_limit)) {
+                      // Calculate discount
+                      let discount = 0;
+                      const eligibleSubtotal = order.total; // Simplified - in reality should check eligible items
+
+                      if (coupon.discount_type === "fixed") {
+                        discount = Math.min(coupon.discount_value, eligibleSubtotal);
+                      } else if (coupon.discount_type === "percentage") {
+                        discount = Math.round((eligibleSubtotal * coupon.discount_value) / 100);
+
+                        // Apply maximum discount if set
+                        if (coupon.maximum_discount !== null) {
+                          discount = Math.min(discount, coupon.maximum_discount);
+                        }
+                      }
+
+                      // Ensure discount doesn't exceed eligible subtotal
+                      discount = Math.min(discount, eligibleSubtotal);
+                      discountAmount = discount;
+                      finalTotal = Math.max(0, order.total - discount);
+                      couponId = coupon.id;
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // Update order with final totals and coupon info
+    order.total = finalTotal;
+    if (couponId) {
+      order.coupon_id = couponId;
+      order.coupon_code = couponCode;
+      order.discount_type = couponData.discount_type;
+      order.discount_value = couponData.discount_value;
+      order.discount_amount = discountAmount;
+    }
+
     const { error: insertErr } = await supabase.from("orders").insert({
       id: order.id,
       email: order.email.toLowerCase(),
@@ -202,6 +283,16 @@ Deno.serve(async (req) => {
       data: order,
     });
     if (insertErr) return json({ error: insertErr.message }, 500);
+
+    // Record coupon usage if a coupon was applied
+    if (couponId) {
+      await supabase.from("coupon_usage").insert({
+        coupon_id: couponId,
+        order_id: order.id,
+        customer_email: order.email,
+        discount_amount: discountAmount
+      });
+    }
 
     // Email failure should never fail the order — it already saved above.
     sendEmail({
