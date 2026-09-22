@@ -950,6 +950,7 @@
   <div class="admintabs">
     <button class="admintab active" id="admintabProducts" onclick="setAdminTab('products')">Products</button>
     <button class="admintab" id="admintabOrders" onclick="setAdminTab('orders')">Orders</button>
+    <button class="admintab" id="admintabCoupons" onclick="setAdminTab('coupons')">Coupons</button>
   </div>
   <div id="adminProductsPanel">
     <div id="adminbody">
@@ -967,6 +968,63 @@
       <table class="adtable">
         <thead><tr><th>Order</th><th>Date</th><th>Customer</th><th>Total</th><th>Status</th><th>Refund</th><th>Tracking</th><th>Invoice</th></tr></thead>
         <tbody id="adminOrderRows"></tbody>
+      </table>
+    </div>
+  </div>
+  <div id="adminCouponsPanel" style="display:none;">
+    <div class="adminbar">
+      <h2>🏷️ Coupon Management</h2>
+      <div class="abtns">
+        <button class="abtn primary" id="toggleCouponFormBtn">+ Add Coupon</button>
+      </div>
+    </div>
+    <div id="adminCouponsForm" style="display:none; margin-bottom: 24px; padding: 16px; background: var(--bg-soft); border-radius: 12px;">
+      <h3 id="adminCouponsFormTitle">Add Coupon</h3>
+      <p class="adstatus">Create a new discount code</p>
+      <label>Coupon Code</label>
+      <input type="text" id="adminCouponCode" placeholder="e.g. LUCHI200">
+      <label>Description</label>
+      <input type="text" id="adminCouponDesc" placeholder="Optional description">
+      <label>Discount Type</label>
+      <select id="adminCouponType">
+        <option value="fixed">Fixed amount (₹)</option>
+        <option value="percentage">Percentage (%)</option>
+      </select>
+      <label>Discount Value</label>
+      <input type="number" id="adminCouponValue" min="0" placeholder="Enter value">
+      <label>Minimum Order Value (₹)</label>
+      <input type="number" id="adminCouponMin" min="0" placeholder="0">
+      <label>Maximum Discount (₹) - for percentage coupons</label>
+      <input type="number" id="adminCouponMax" min="0" placeholder="0 (no limit)">
+      <label>Starts At (optional)</label>
+      <input type="datetime-local" id="adminCouponStartsAt">
+      <label>Expires At (optional)</label>
+      <input type="datetime-local" id="adminCouponExpiresAt">
+      <label>Usage Limit (total uses)</label>
+      <input type="number" id="adminCouponUsageLimit" min="0" placeholder="0 (unlimited)">
+      <label>Per Customer Limit</label>
+      <input type="number" id="adminCouponPerCustomerLimit" min="0" placeholder="1">
+      <label class="pmcheckrow"><input type="checkbox" id="adminCouponIsActive"> Active</label>
+      <div class="pmodal-actions">
+        <button class="btn btn-ghost" id="adminCouponCancelBtn">Cancel</button>
+        <button class="btn btn-solid" id="adminCouponSaveBtn">Save Coupon</button>
+      </div>
+    </div>
+    <div id="adminCouponsBody">
+      <p class="adstatus" id="adminCouponsStatus">Loading…</p>
+      <table class="adtable">
+        <thead>
+          <tr>
+            <th>Code</th>
+            <th>Description</th>
+            <th>Type</th>
+            <th>Value</th>
+            <th>Active</th>
+            <th>Usage</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="adminCouponRows"></tbody>
       </table>
     </div>
   </div>
@@ -2662,12 +2720,16 @@ async function cycleProductStatus(id){
 
 /* ---------------- admin: orders tab ---------------- */
 let adminOrdersLoaded = false;
+let adminCouponsLoaded = false;
 function setAdminTab(tab){
   document.getElementById("admintabProducts").classList.toggle("active", tab==="products");
   document.getElementById("admintabOrders").classList.toggle("active", tab==="orders");
+  document.getElementById("admintabCoupons").classList.toggle("active", tab==="coupons");
   document.getElementById("adminProductsPanel").style.display = tab==="products" ? "block" : "none";
   document.getElementById("adminOrdersPanel").style.display = tab==="orders" ? "block" : "none";
+  document.getElementById("adminCouponsPanel").style.display = tab==="coupons" ? "block" : "none";
   if(tab==="orders" && !adminOrdersLoaded) loadAdminOrders();
+  if(tab==="coupons" && !adminCouponsLoaded) loadAdminCoupons();
 }
 async function loadAdminOrders(){
   const statusEl = document.getElementById("adminOrdersStatus");
@@ -2686,6 +2748,24 @@ async function loadAdminOrders(){
     renderAdminOrderRows(orders);
   }catch(e){
     statusEl.textContent = "Couldn't load orders — check your connection and try again";
+  }
+}
+async function loadAdminCoupons() {
+  const statusEl = document.getElementById("adminCouponsStatus");
+  statusEl.textContent = "Loading coupons…";
+  try {
+    const res = await fetch(`${API_BASE}/admin-coupons`, { headers: { 'x-admin-key': getAdminKey() } });
+    if (!res.ok) {
+      statusEl.textContent = res.status === 401
+        ? "Your admin session expired — reopen #admin to re-enter the passcode"
+        : "Couldn't load coupons — check your connection and try again";
+      return;
+    }
+    const coupons = await res.json();
+    adminCouponsLoaded = true;
+    renderAdminCouponRows(coupons);
+  } catch (e) {
+    statusEl.textContent = "Couldn't load coupons — check your connection and try again";
   }
 }
 function renderAdminOrderRows(orders){
@@ -3375,6 +3455,256 @@ function showMessage(message, isSuccess) {
   initReviews();
   initCouponListeners();
 })();
+
+// Admin coupon management functions
+function renderAdminCouponRows(coupons) {
+  const statusEl = document.getElementById("adminCouponsStatus");
+  statusEl.textContent = ${coupons.length} coupon${coupons.length===1?'':'s'};
+  document.getElementById("adminCouponRows").innerHTML = coupons.map(c=>`
+    <tr>
+      <td>${escapeHtml(c.code)}</td>
+      <td>${escapeHtml(c.description || '')}</td>
+      <td>${c.discount_type === 'fixed' ? '₹'+c.discount_value : c.discount_value+'%'}</td>
+      <td>
+        ${c.discount_type === 'fixed' ? c.discount_value : ''}
+        ${c.discount_type === 'percentage' ? c.discount_value+'%' : ''}
+        ${c.maximum_discount !== null ? ' (max ₹'+c.maximum_discount+')' : ''}
+      </td>
+      <td>${c.is_active ? 'Yes' : 'No'}</td>
+      <td>${c.usage_count || 0}</td>
+      <td>
+        <button class="abtn" onclick="openEditCouponForm('${c.id}')">Edit</button>
+        <button class="abtn del" onclick="deleteCoupon('${c.id}')">Delete</button>
+      </td>
+    </tr>`).join("");
+}
+
+async function openEditCouponForm(id) {
+  try {
+    const res = await fetch(`${API_BASE}/admin-coupons`, { headers: { 'x-admin-key': getAdminKey() } });
+    if (!res.ok) throw new Error('Failed to fetch coupons');
+    const coupons = await res.json();
+    const coupon = coupons.find(c => c.id === id);
+    if (!coupon) { showToast('Coupon not found'); return; }
+    document.getElementById("adminCouponCode").value = coupon.code;
+    document.getElementById("adminCouponDesc").value = coupon.description || '';
+    document.getElementById("adminCouponType").value = coupon.discount_type;
+    document.getElementById("adminCouponValue").value = coupon.discount_value;
+    document.getElementById("adminCouponMin").value = coupon.minimum_order_value || 0;
+    document.getElementById("adminCouponMax").value = coupon.maximum_discount !== null ? coupon.maximum_discount : '';
+    document.getElementById("adminCouponStartsAt").value = coupon.starts_at ? new Date(coupon.starts_at).toISOString().slice(0,16) : '';
+    document.getElementById("adminCouponExpiresAt").value = coupon.expires_at ? new Date(coupon.expires_at).toISOString().slice(0,16) : '';
+    document.getElementById("adminCouponUsageLimit").value = coupon.usage_limit !== null ? coupon.usage_limit : '';
+    document.getElementById("adminCouponPerCustomerLimit").value = coupon.per_customer_limit !== null ? coupon.per_customer_limit : '';
+    document.getElementById("adminCouponIsActive").checked = coupon.is_active;
+    document.getElementById("adminCouponFormTitle").textContent = "Edit Coupon";
+    document.getElementById("adminCouponSaveBtn").onclick = async () => {
+      await saveEditCoupon(id);
+    };
+    document.getElementById("adminCouponsForm").style.display = "block";
+    document.getElementById("adminCouponsBody").style.display = "none";
+    document.getElementById("toggleCouponFormBtn").textContent = "Cancel";
+  } catch (e) {
+    console.error(e);
+    showToast("Error loading coupon for edit");
+  }
+}
+
+async function saveEditCoupon(id) {
+  const code = document.getElementById("adminCouponCode").value.trim();
+  const description = document.getElementById("adminCouponDesc").value.trim() || null;
+  const discount_type = document.getElementById("adminCouponType").value;
+  const discount_value = parseFloat(document.getElementById("adminCouponValue").value);
+  const minimum_order_value = parseFloat(document.getElementById("adminCouponMin").value) || 0;
+  const maximum_discount = document.getElementById("adminCouponMax").value === '' ? null : parseFloat(document.getElementById("adminCouponMax").value);
+  const starts_at = document.getElementById("adminCouponStartsAt").value ? new Date(document.getElementById("adminCouponStartsAt").value).toISOString() : null;
+  const expires_at = document.getElementById("adminCouponExpiresAt").value ? new Date(document.getElementById("adminCouponExpiresAt").value).toISOString() : null;
+  const usage_limit = document.getElementById("adminCouponUsageLimit").value === '' ? null : parseFloat(document.getElementById("adminCouponUsageLimit").value);
+  const per_customer_limit = document.getElementById("adminCouponPerCustomerLimit").value === '' ? null : parseFloat(document.getElementById("adminCouponPerCustomerLimit").value);
+  const is_active = document.getElementById("adminCouponIsActive").checked;
+
+  if (!code) { showToast("Coupon code is required"); return; }
+  if (!discount_type || !['fixed', 'percentage'].includes(discount_type)) { showToast("Valid discount type is required"); return; }
+  if (isNaN(discount_value) || discount_value < 0) { showToast("Valid discount value is required"); return; }
+
+  try {
+    const res = await fetch(`${API_BASE}/admin-coupons`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "x-admin-key": getAdminKey()
+      },
+      body: JSON.stringify({
+        id,
+        code,
+        description,
+        discount_type,
+        discount_value,
+        minimum_order_value,
+        maximum_discount,
+        starts_at,
+        expires_at,
+        usage_limit,
+        per_customer_limit,
+        is_active
+      })
+    });
+    if (!res.ok) {
+      const error = await res.json();
+      showToast(error.error || "Failed to update coupon");
+      return;
+    }
+    showToast("Coupon updated successfully");
+    document.getElementById("adminCouponForm").style.display = "none";
+    document.getElementById("adminCouponsBody").style.display = "block";
+    document.getElementById("toggleCouponFormBtn").textContent = "+ Add Coupon";
+    loadAdminCoupons();
+  } catch (e) {
+    console.error(e);
+    showToast("Error updating coupon");
+  }
+}
+
+async function deleteCoupon(id) {
+  if (!confirm("Are you sure you want to delete this coupon?")) return;
+  try {
+    const res = await fetch(`${API_BASE}/admin-coupons`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "x-admin-key": getAdminKey()
+      },
+      body: JSON.stringify({ id })
+    });
+    if (!res.ok) {
+      const error = await res.json();
+      showToast(error.error || "Failed to delete coupon");
+      return;
+    }
+    showToast("Coupon deleted successfully");
+    loadAdminCoupons();
+  } catch (e) {
+    console.error(e);
+    showToast("Error deleting coupon");
+  }
+}
+
+// Initialize admin coupon form toggle
+document.getElementById("toggleCouponFormBtn").addEventListener("click", () => {
+  const form = document.getElementById("adminCouponsForm");
+  const list = document.getElementById("adminCouponsBody");
+  if (form.style.display === "none") {
+    // Show form
+    form.style.display = "block";
+    list.style.display = "none";
+    document.getElementById("toggleCouponFormBtn").textContent = "Cancel";
+    // Clear the form and set to add mode
+    document.getElementById("adminCouponFormTitle").textContent = "Add Coupon";
+    document.getElementById("adminCouponSaveBtn").onclick = async () => {
+      await saveNewCoupon();
+    };
+    // Reset the form
+    document.getElementById("adminCouponCode").value = "";
+    document.getElementById("adminCouponDesc").value = "";
+    document.getElementById("adminCouponType").value = "fixed";
+    document.getElementById("adminCouponValue").value = "";
+    document.getElementById("adminCouponMin").value = "0";
+    document.getElementById("adminCouponMax").value = "";
+    document.getElementById("adminCouponStartsAt").value = "";
+    document.getElementById("adminCouponExpiresAt").value = "";
+    document.getElementById("adminCouponUsageLimit").value = "";
+    document.getElementById("adminCouponPerCustomerLimit").value = "1";
+    document.getElementById("adminCouponIsActive").checked = true;
+  } else {
+    // Show list
+    form.style.display = "none";
+    list.style.display = "block";
+    document.getElementById("toggleCouponFormBtn").textContent = "+ Add Coupon";
+  }
+});
+
+async function saveNewCoupon() {
+  const code = document.getElementById("adminCouponCode").value.trim();
+  const description = document.getElementById("adminCouponDesc").value.trim() || null;
+  const discount_type = document.getElementById("adminCouponType").value;
+  const discount_value = parseFloat(document.getElementById("adminCouponValue").value);
+  const minimum_order_value = parseFloat(document.getElementById("adminCouponMin").value) || 0;
+  const maximum_discount = document.getElementById("adminCouponMax").value === '' ? null : parseFloat(document.getElementById("adminCouponMax").value);
+  const starts_at = document.getElementById("adminCouponStartsAt").value ? new Date(document.getElementById("adminCouponStartsAt").value).toISOString() : null;
+  const expires_at = document.getElementById("adminCouponExpiresAt").value ? new Date(document.getElementById("adminCouponExpiresAt").value).toISOString() : null;
+  const usage_limit = document.getElementById("adminCouponUsageLimit").value === '' ? null : parseFloat(document.getElementById("adminCouponUsageLimit").value);
+  const per_customer_limit = document.getElementById("adminCouponPerCustomerLimit").value === '' ? null : parseFloat(document.getElementById("adminCouponPerCustomerLimit").value);
+  const is_active = document.getElementById("adminCouponIsActive").checked;
+
+  if (!code) { showToast("Coupon code is required"); return; }
+  if (!discount_type || !['fixed', 'percentage'].includes(discount_type)) { showToast("Valid discount type is required"); return; }
+  if (isNaN(discount_value) || discount_value < 0) { showToast("Valid discount value is required"); return; }
+
+  try {
+    const res = await fetch(`${API_BASE}/admin-coupons`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-admin-key": getAdminKey()
+      },
+      body: JSON.stringify({
+        code,
+        description,
+        discount_type,
+        discount_value,
+        minimum_order_value,
+        maximum_discount,
+        starts_at,
+        expires_at,
+        usage_limit,
+        per_customer_limit,
+        is_active
+      })
+    });
+    if (!res.ok) {
+      const error = await res.json();
+      showToast(error.error || "Failed to create coupon");
+      return;
+    }
+    showToast("Coupon created successfully");
+    document.getElementById("adminCouponForm").style.display = "none";
+    document.getElementById("adminCouponsBody").style.display = "block";
+    document.getElementById("toggleCouponFormBtn").textContent = "+ Add Coupon";
+    loadAdminCoupons();
+  } catch (e) {
+    console.error(e);
+    showToast("Error creating coupon");
+  }
+}
+
+// Update loadAdminCoupons to work with the new UI
+const originalLoadAdminCoupons = loadAdminCoupons;
+loadAdminCoupons = async function() {
+  const statusEl = document.getElementById("adminCouponsStatus");
+  statusEl.textContent = "Loading coupons…";
+  try{
+    const res = await fetch(`${API_BASE}/admin-coupons`, { headers: { 'x-admin-key': getAdminKey() } });
+    if(!res.ok){
+      statusEl.textContent = res.status === 401
+        ? "Your admin session expired — reopen #admin to re-enter the passcode"
+        : "Couldn't load coupons — check your connection and try again";
+      return;
+    }
+    const coupons = await res.json();
+    adminCouponsLoaded = true;
+    renderAdminCouponRows(coupons);
+    // If we are currently showing the form, we don't want to switch to list automatically
+    // Only switch to list if we are not in the form
+    if (document.getElementById("adminCouponsForm").style.display === "none") {
+      document.getElementById("adminCouponsBody").style.display = "block";
+      document.getElementById("adminCouponsForm").style.display = "none";
+      document.getElementById("toggleCouponFormBtn").textContent = "+ Add Coupon";
+    }
+  }catch(e){
+    statusEl.textContent = "Couldn't load coupons — check your connection and try again";
+  }
+};
+
 </script>
 
 
