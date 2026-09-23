@@ -3528,14 +3528,13 @@ async function saveEditCoupon(id) {
   if (isNaN(discount_value) || discount_value < 0) { showToast("Valid discount value is required"); return; }
 
   try {
-    const res = await fetch(`${API_BASE}/admin-coupons`, {
+    const res = await fetch(`${API_BASE}/admin-coupons?id=${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
         "x-admin-key": getAdminKey()
       },
       body: JSON.stringify({
-        id,
         code,
         description,
         discount_type,
@@ -3568,13 +3567,12 @@ async function saveEditCoupon(id) {
 async function deleteCoupon(id) {
   if (!confirm("Are you sure you want to delete this coupon?")) return;
   try {
-    const res = await fetch(`${API_BASE}/admin-coupons`, {
+    const res = await fetch(`${API_BASE}/admin-coupons?id=${id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
         "x-admin-key": getAdminKey()
-      },
-      body: JSON.stringify({ id })
+      }
     });
     if (!res.ok) {
       const error = await res.json();
